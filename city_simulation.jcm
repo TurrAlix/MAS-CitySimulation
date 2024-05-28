@@ -1,0 +1,18 @@
+mas city_simulation {
+
+    agent car : car.asl  {
+        focus: city.view
+    }
+    
+    agent car2 : car.asl  {
+        focus: city.view2
+    }
+
+    workspace mining {
+        // first parameter is the id of the scenario
+        // second parameter is the id of the agent in the scenario
+        artifact view: city.City(1, 0)
+        artifact view2: city.City(1, 1)
+    }
+}
+

@@ -1,7 +1,7 @@
 package city;
 
-import jason.environment.grid.GridWorldModel;
-import jason.environment.grid.Location;
+import lib.GridWorldModel;
+import lib.Location;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import city.City.Move;
 
 public class WorldModel extends GridWorldModel {
+    
 
     public static final int   DEPOT = 32;
     Location                  depot;

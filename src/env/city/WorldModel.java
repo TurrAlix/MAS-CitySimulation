@@ -18,9 +18,9 @@ public class WorldModel extends GridWorldModel {
     private String            id = "WorldModel";
     protected static WorldModel model = null;
 
-    synchronized public static WorldModel create(int w, int h) {
+    synchronized public static WorldModel create(int w, int h, int nbAgs) {
         if (model == null) {
-            model = new WorldModel(w, h);
+            model = new WorldModel(w, h, nbAgs);
         }
         return model;
     }
@@ -30,7 +30,7 @@ public class WorldModel extends GridWorldModel {
     public static void destroy() {
         model = null;
     }
-    private WorldModel(int w, int h) {
+    private WorldModel(int w, int h, int nbsAgs) {
         super(w, h, 1);
     }
     public String getId() {
@@ -79,9 +79,9 @@ public class WorldModel extends GridWorldModel {
         return true;
     }
 
-
+    
     static WorldModel world1() throws Exception {
-        WorldModel model = WorldModel.create(21, 21);
+        WorldModel model = WorldModel.create(21, 21, 1);
         model.setId("Scenario 1");
         model.setDepot(0, 0);
         // for (int i = 0; i < nAgt; i++) {
@@ -90,8 +90,23 @@ public class WorldModel extends GridWorldModel {
         model.setAgPos(0, 1, 0);
         return model;
     }
+    
+    /** Map with just one street*/
     static WorldModel world2() throws Exception {
-        return null;
+        WorldModel model = WorldModel.create(35, 35, 4);
+        model.setId("Scenario 2");
+        model.setDepot(0, 0);
+        model.setAgPos(0, 1, 0);
+        model.setAgPos(1, 22, 0);
+        model.setAgPos(2, 3, 22);
+        model.setAgPos(3, 22, 22);
+
+        int right = Direction.RIGHT.getValue();
+        for (int x = 8; x < 28; x++) {
+        model.add(new STREET(right), x, 17);
+        }
+        model.add(WorldModel.BUILDING, 20, 1);
+        return model;
     }
 
 }

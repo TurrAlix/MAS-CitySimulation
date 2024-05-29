@@ -6,8 +6,8 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
-import jason.environment.grid.GridWorldModel;
-import jason.environment.grid.Location;
+import lib.GridWorldModel;
+import lib.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +39,8 @@ public class get_direction extends DefaultInternalAction {
                 Location lini = new Location(iagx, iagy);
 
                 // destination should be a free place
-                while (!model.isFreeOfObstacle(itox,itoy) && itox > 0) itox--;
-                while (!model.isFreeOfObstacle(itox,itoy) && itox < model.getWidth()) itox++;
+                //while (!model.isFreeOfObstacle(itox,itoy) && itox > 0) itox--;
+                //while (!model.isFreeOfObstacle(itox,itoy) && itox < model.getWidth()) itox++;
 
                 Nodo solution = searchAlg.busca(new GridState(lini, lini,new Location(itox, itoy), model, "initial"));
                 if (solution != null) {
@@ -111,9 +111,9 @@ class GridState implements Estado, Heuristica {
     }
 
     private void suc(List<Estado> s, Location newl, String op) {
-        if (model.isFree(newl) || (from.distance(newl) > 3 && model.isFreeOfObstacle(newl))) {
+        /*if (model.isFree(newl) || (from.distance(newl) > 3 && model.isFreeOfObstacle(newl))) {
             s.add(new GridState(newl,from,to,model,op));
-        }
+        }*/
     }
 
     public boolean equals(Object o) {

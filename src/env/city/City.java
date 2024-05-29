@@ -2,7 +2,7 @@ package city;
 
 import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
-import jason.environment.grid.Location;
+import lib.Location;
 
 import java.util.logging.Logger;
 
@@ -108,7 +108,7 @@ public class City extends Artifact {
         updateAgPercept(l.x + 1, l.y + 1);
     }
 
-    private static Term obstacle = new Atom("obstacle");
+    private static Term building = new Atom("building");
 
     private void updateAgPercept(int x, int y) {
         if (model == null || !model.inGrid(x,y)) return;
@@ -116,8 +116,8 @@ public class City extends Artifact {
             removeObsPropertyByTemplate("cell", null, null, null); //remove the property that match these arguments
         } catch (IllegalArgumentException e) {}
 
-        if (model.hasObject(WorldModel.OBSTACLE, x, y)) {
-            defineObsProperty("cell", x, y, obstacle);
+        if (model.hasObject(WorldModel.BUILDING, x, y)) {
+            defineObsProperty("cell", x, y, building);
         } 
     }
 

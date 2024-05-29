@@ -10,11 +10,7 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 
-/**
- * View component for a GirdWorldModel.
- *
- * @author Jomi
- */
+
 public class GridWorldView extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -104,11 +100,11 @@ public class GridWorldView extends JFrame {
     private static int limit = (int)Math.pow(2,14);
 
     private void draw(Graphics g, int x, int y) {
-        if ((model.data[x][y] & GridWorldModel.OBSTACLE) != 0) {
+        if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             drawObstacle(g, x, y);
         }
 
-        int vl = GridWorldModel.OBSTACLE*2;
+        int vl = GridWorldModel.BUILDING*2;
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
                 draw(g, x, y, vl);

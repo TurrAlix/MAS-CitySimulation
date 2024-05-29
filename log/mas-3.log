@@ -1,15 +1,17 @@
 [car] **** Workspace city is not defined! The agent will not join it.
 [car2] **** Workspace city is not defined! The agent will not join it.
 [Cartago] Workspace mining created.
-[Cartago] artifact view: city.City(1,0) at mining created.
-[Cartago] artifact view2: city.City(1,0) at mining created.
+[City] Error creating world java.lang.ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1
+[Cartago] artifact view: city.City(2,0) at mining created.
+[City] Error creating world java.lang.ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1
+[Cartago] artifact view2: city.City(2,1) at mining created.
 [car2] focusing on artifact view2 (at workspace /main/city) using namespace default
 [car] focusing on artifact view (at workspace /main/city) using namespace default
-[car2] waiting a bit to join/focus -- art_env(city,view2,default) -- try #5
 [car] waiting a bit to join/focus -- art_env(city,view,default) -- try #5
+[car2] waiting a bit to join/focus -- art_env(city,view2,default) -- try #5
 [car2] focusing on artifact view2 (at workspace /main/city) using namespace default
-[car2] waiting a bit to join/focus -- art_env(city,view2,default) -- try #4
 [car] focusing on artifact view (at workspace /main/city) using namespace default
+[car2] waiting a bit to join/focus -- art_env(city,view2,default) -- try #4
 [car] waiting a bit to join/focus -- art_env(city,view,default) -- try #4
 [car2] focusing on artifact view2 (at workspace /main/city) using namespace default
 [car2] waiting a bit to join/focus -- art_env(city,view2,default) -- try #3

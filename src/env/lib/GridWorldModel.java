@@ -2,30 +2,7 @@ package lib;
 
 import java.util.Random;
 
-/**
- * Simple model for a grid world (with agents and obstacles).
- *
- * <p>Every agent gets an identification (a integer from 0 to the number of ag - 1).
- * The relation of this identification with agent's name should be done
- * in the environment class and is application dependent.
- *
- * <p>Every type of object in the environment is represented by a bit mask:
- * an agent    is 000010;
- * an obstacle is 000100; ....
- * New types of objects should follow this pattern,
- * for example, GOLD = 8 (001000), ENEMY=16 (010000), ...
- * A place with two object is represented by the OR between the masks:
- * an agent and a gold is 001010.
- *
- * <p>Limitations:
- * <ul>
- * <li>The number of agents can not change dynamically</li>
- * <li>Two agents can not share the same place. More generally,
- *     two objects with the same "mask" can not share a place.</li>
- * </ul>
- *
- * @author Jomi
- */
+
 public class GridWorldModel {
 
     // each different object is represented by having a single bit
@@ -34,7 +11,57 @@ public class GridWorldModel {
     // of objects which are all located in the same cell of the grid.
     public static final int       CLEAN    = 0;
     public static final int       AGENT    = 2;
-    public static final int       OBSTACLE = 4;
+    public static final int       BUILDING = 4;
+
+
+
+    // Enumeration associating directions with numerical values
+    public enum Direction {
+    UP(0), DOWN(1), RIGHT(2), LEFT(3);
+    
+    private final int value;
+    
+    // Constructor to associate value with constant
+    Direction(int value) {
+        this.value = value;
+    }
+    
+    // Method to get the associated value
+    public int getValue() {
+        return value;
+    }
+    
+    // Method to get the Direction from an integer value
+    public static Direction fromInt(int value) {
+        for (Direction direction : Direction.values()) {
+            if (direction.getValue() == value) {
+                return direction;
+            }
+        }
+        throw new IllegalArgumentException("Invalid direction value: " + value);
+    }
+}
+
+public static class STREET {
+    public static final int id = 6;
+    public Direction d;
+
+    // Constructor to associate a street with a direction
+    public STREET(int dir) {
+        this.d = Direction.fromInt(dir);
+    }
+
+     // Method to get the associated value
+     public int getValue() {
+        return id;
+    }
+
+     // Method to get the associated direction
+     public Direction getDirection() {
+        return d;
+    }
+}
+
 
     protected int                 width, height;
     protected int[][]             data = null;
@@ -120,10 +147,16 @@ public class GridWorldModel {
         if (view != null) view.update(x,y);
     }
 
+    //for streets
+    public void add(STREET street, int x, int y) {
+        data[x][y] |= street.getValue();
+        if (view != null) view.update(x,y);
+    }
+
     public void addWall(int x1, int y1, int x2, int y2) {
         for (int x = x1; x <= x2; x++) {
             for (int y = y1; y <= y2; y++) {
-                add(OBSTACLE, x, y);
+                add(BUILDING, x, y);
             }
         }
     }
@@ -176,14 +209,14 @@ public class GridWorldModel {
         return -1;
     }
 
-    /** returns true if the location l has no obstacle neither agent */
+    /** returns true if the location l has no building neither agent */
     public boolean isFree(Location l) {
         return isFree(l.x, l.y);
     }
 
-    /** returns true if the location x,y has neither obstacle nor agent */
+    /** returns true if the location x,y has neither building nor agent */
     public boolean isFree(int x, int y) {
-        return inGrid(x, y) && (data[x][y] & OBSTACLE) == 0 && (data[x][y] & AGENT) == 0;
+        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & AGENT) == 0;
     }
 
     /** returns true if the location l has not the object obj */
@@ -195,14 +228,14 @@ public class GridWorldModel {
         return inGrid(x, y) && (data[x][y] & obj) == 0;
     }
 
-    public boolean isFreeOfObstacle(Location l) {
-        return isFree(OBSTACLE, l);
+    public boolean isFreeOfBuilding(Location l) {
+        return isFree(BUILDING, l);
     }
-    public boolean isFreeOfObstacle(int x, int y) {
-        return isFree(OBSTACLE, x, y);
+    public boolean isFreeOfBuilding(int x, int y) {
+        return isFree(BUILDING, x, y);
     }
 
-    /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and obstacles) */
+    /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and buildings) */
     protected Location getFreePos() {
         for (int i=0; i<(getWidth()*getHeight()*5); i++) {
             int x = random.nextInt(getWidth());

@@ -19,6 +19,12 @@ import busca.Estado;
 import busca.Heuristica;
 import busca.Nodo;
 
+/*
+This code defines an internal action which determines the direction an agent should take to move
+from its current location to a target location within a grid-based world model.
+It uses the A* search algorithm to find the path and return the first move in the path. 
+*/
+
 public class get_direction extends DefaultInternalAction {
 
     @Override

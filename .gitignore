@@ -27,9 +27,10 @@ Thumbs.db
 .classpath
 .project
 .settings/
+.idea/
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -37,8 +38,8 @@ Thumbs.db
 !.vscode/*.code-snippets
 
 ### Gradle ###
-.gradle
-/buildOutputCleanup
+.gradle/
+gradle\wrapper/
 **/build/
 !src/**/build/
 # Ignore Gradle GUI config
@@ -49,6 +50,6 @@ gradle-app.setting
 !gradle-wrapper.properties
 # Cache of project
 .gradletasknamecache
-### Gradle Patch ###
+
 # Java heap dump
 *.hprof

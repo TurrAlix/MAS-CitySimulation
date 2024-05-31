@@ -72,109 +72,41 @@ public class WorldView extends GridWorldView {
     @Override
     public void draw(Graphics g, int x, int y, int object) {
         switch (object) {
-        case GridWorldModel.STREET.id:   drawStreetRight(g, x, y);  break;
+            case WorldModel.STREET_UP:      drawStreet(g, x, y, 0);         break;
+            case WorldModel.STREET_DOWN:    drawStreet(g, x, y, 1);         break;
+            case WorldModel.STREET_RIGHT:   drawStreet(g, x, y, 2);         break;
+            case WorldModel.STREET_LEFT:    drawStreet(g, x, y, 3);         break;
+            case WorldModel.BUILDING:           drawBuilding(g, x, y);              break;
+            // case WorldModel.DEPOT:              drawDepot(g, x, y);                 break;
+            case WorldModel.AGENT:              drawAgent(g, x, y, model.getAgAtPos(x,y));  break;
         }
     }
 
     @Override
-    public void drawAgent(Graphics g, int x, int y, Color c, int id) {
+    public void drawAgent(Graphics g, int x, int y, int id) {
+        super.drawAgent(g, x, y, -1); // -1 for what?
+        
         Color idColor = Color.black;
-        super.drawAgent(g, x, y, Color.yellow, -1);
         g.setColor(idColor);
         drawString(g, x, y, defaultFont, String.valueOf(id+1));
     }
 
-
-    public void drawStreetUp(Graphics g, int x, int y) {
-        // Set the color of the street
-        g.setColor(Color.yellow);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        
-        // Set the text
-        String text="^";
-
-        // Set color for text
-        g.setColor(Color.black);
-        
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        // Draw the text
-        g.drawString(text, centerX, centerY);
+    public void drawStreet(Graphics g, int x, int y, int dir) {
+        switch (dir) {
+            case 0: super.drawStreetUp(g, x, y); break;
+            case 1: super.drawStreetDown(g, x, y); break;
+            case 2: super.drawStreetRight(g, x, y); break;
+            case 3: super.drawStreetLeft(g, x, y); break;
+        }
     }
 
-
-    public void drawStreetDown(Graphics g, int x, int y) {
-        // Set the color of the street
-        g.setColor(Color.yellow);
+    public void drawDepot(Graphics g, int x, int y) {
+        g.setColor(Color.blue);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        
-        // Set the text
-        String text="v";
-
-        // Set color for text
-        g.setColor(Color.black);
-    
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        // Draw the text
-        g.drawString(text, centerX, centerY);
+        g.setColor(Color.pink);
+        g.drawRect(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
+        g.drawLine(x * cellSizeW + 2, y * cellSizeH + 2, (x + 1) * cellSizeW - 2, (y + 1) * cellSizeH - 2);
+        g.drawLine(x * cellSizeW + 2, (y + 1) * cellSizeH - 2, (x + 1) * cellSizeW - 2, y * cellSizeH + 2);
     }
-
-
-    public void drawStreetLeft(Graphics g, int x, int y) {
-        // Set the color of the street
-        g.setColor(Color.yellow);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        
-        //Set the text
-        String text="<";
-
-        // Set color for text
-        g.setColor(Color.black);
-    
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        // Draw the text
-        g.drawString("<", centerX, centerY);
-    }
-    
-
-    public void drawStreetRight(Graphics g, int x, int y) {
-        //Set the color of the street
-        g.setColor(Color.yellow);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        
-        //Set the text
-        String text=">";
-
-        // Set color for text
-        g.setColor(Color.black);
-    
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        // Draw the text
-        g.drawString(">", centerX, centerY);
-    }
-
 
 }

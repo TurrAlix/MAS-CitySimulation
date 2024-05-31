@@ -72,7 +72,7 @@ public class City extends Artifact {
             }
             // Observable properties of Cartago
             defineObsProperty("gsize", simId, model.getWidth(), model.getHeight());
-            defineObsProperty("depot", simId, model.getDepot().x, model.getDepot().y);
+            // defineObsProperty("depot", simId, model.getDepot().x, model.getDepot().y);
             defineObsProperty("pos", -1, -1);
 
             updateAgPercept();
@@ -108,7 +108,12 @@ public class City extends Artifact {
         updateAgPercept(l.x + 1, l.y + 1);
     }
 
-    private static Term building = new Atom("building");
+    private static Term building = new Atom("building"); //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
+    private static Term street_up = new Atom("street_up");
+    private static Term street_down = new Atom("street_down");
+    private static Term street_right = new Atom("street_right");
+    private static Term street_left = new Atom("street_left");
+
 
     private void updateAgPercept(int x, int y) {
         if (model == null || !model.inGrid(x,y)) return;
@@ -119,6 +124,21 @@ public class City extends Artifact {
         if (model.hasObject(WorldModel.BUILDING, x, y)) {
             defineObsProperty("cell", x, y, building);
         } 
+        if (model.hasObject(8, x, y)) {
+            defineObsProperty("cell", x, y, street_up);
+        }
+        if (model.hasObject(9, x, y)) {
+            defineObsProperty("cell", x, y, street_down);
+        }
+        if (model.hasObject(10, x, y)) {
+            defineObsProperty("cell", x, y, street_right);
+        }
+        if (model.hasObject(11, x, y)) {
+            defineObsProperty("cell", x, y, street_left);
+        }        
+        // if (model.hasObject(WorldModel.STREET, x, y)) {
+        //     defineObsProperty("cell", x, y, street);
+        // } 
     }
 
 }

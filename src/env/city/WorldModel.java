@@ -11,11 +11,9 @@ import city.City.Move;
 
 public class WorldModel extends GridWorldModel {
     
-
-    public static final int   DEPOT = 32;
-    Location                  depot;
-    int                       pedestrianSuccess   = 0;
-    private String            id = "WorldModel";
+    public static final int     DEPOT = 32;
+    Location                    depot;
+    private String              id = "WorldModel";
     protected static WorldModel model = null;
 
     synchronized public static WorldModel create(int w, int h, int nbAgs) {
@@ -31,7 +29,7 @@ public class WorldModel extends GridWorldModel {
         model = null;
     }
     private WorldModel(int w, int h, int nbsAgs) {
-        super(w, h, 1);
+        super(w, h, nbsAgs);
     }
     public String getId() {
         return id;
@@ -45,67 +43,79 @@ public class WorldModel extends GridWorldModel {
     public Location getDepot() {
         return depot;
     }
-
     public void setDepot(int x, int y) {
         depot = new Location(x, y);
-        data[x][y] = DEPOT;
+        data[x][y] = DEPOT;     
     }
 
     /** Actions **/
     boolean move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         switch (dir) {
-        case UP:
-            if (isFree(l.x, l.y - 1)) {
-                setAgPos(ag, l.x, l.y - 1);
-            }
-            break;
-        case DOWN:
-            if (isFree(l.x, l.y + 1)) {
-                setAgPos(ag, l.x, l.y + 1);
-            }
-            break;
-        case RIGHT:
-            if (isFree(l.x + 1, l.y)) {
-                setAgPos(ag, l.x + 1, l.y);
-            }
-            break;
-        case LEFT:
-            if (isFree(l.x - 1, l.y)) {
-                setAgPos(ag, l.x - 1, l.y);
-            }
-            break;
+            case UP:
+                if (isFree(l.x, l.y - 1)) {
+                    setAgPos(ag, l.x, l.y - 1);
+                }
+                break;
+            case DOWN:
+                if (isFree(l.x, l.y + 1)) {
+                    setAgPos(ag, l.x, l.y + 1);
+                }
+                break;
+            case RIGHT:
+                if (isFree(l.x + 1, l.y)) {
+                    setAgPos(ag, l.x + 1, l.y);
+                }
+                break;
+            case LEFT:
+                if (isFree(l.x - 1, l.y)) {
+                    setAgPos(ag, l.x - 1, l.y);
+                }
+                break;
         }
         return true;
     }
 
     
     static WorldModel world1() throws Exception {
-        WorldModel model = WorldModel.create(21, 21, 1);
+        WorldModel model = WorldModel.create(11, 11, 1);
         model.setId("Scenario 1");
-        model.setDepot(0, 0);
-        // for (int i = 0; i < nAgt; i++) {
-        //     model.setAgPos(i, 1, 0);
-        // }
-        model.setAgPos(0, 1, 0);
+
+        // model.setDepot(10, 10);
+        model.setAgPos(0, 0, 0);
         return model;
     }
     
     /** Map with just one street*/
     static WorldModel world2() throws Exception {
-        WorldModel model = WorldModel.create(35, 35, 4);
+        int w = 12;
+        int h = 12;
+        WorldModel model = WorldModel.create(w, h, 2);
         model.setId("Scenario 2");
-        model.setDepot(0, 0);
-        model.setAgPos(0, 1, 0);
-        model.setAgPos(1, 22, 0);
-        model.setAgPos(2, 3, 22);
-        model.setAgPos(3, 22, 22);
+        // model.setDepot(10, 10);
+        model.setAgPos(0, 0, 5);
+        model.setAgPos(1, 11, 6);
 
-        int right = Direction.RIGHT.getValue();
-        for (int x = 8; x < 28; x++) {
-        model.add(new STREET(right), x, 17);
+        // buildings
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < 5; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
         }
-        model.add(WorldModel.BUILDING, 20, 1);
+        for (int x = 0; x < w; x++) {
+            for (int y = 7; y < h; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
+        }
+        // streets in the middle
+        for (int x = 0; x < w; x++) {
+            model.add(WorldModel.STREET_RIGHT, x, 5);
+        }
+        for (int x = 0; x < w; x++) {
+            model.add(WorldModel.STREET_LEFT, x, 6);
+        }
+
+
         return model;
     }
 

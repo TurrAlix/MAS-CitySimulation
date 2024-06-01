@@ -33,19 +33,19 @@ public class random_direction extends DefaultInternalAction {
                 switch (rnd.nextInt(4)) {
                 case 0:
                     itox = iagx - 1;
-                    sAction = "left";
+                    sAction = "street_left";
                     break;
                 case 1:
                     itox = iagx + 1;
-                    sAction = "right";
+                    sAction = "street_right";
                     break;
                 case 2:
                     itoy = iagy - 1;
-                    sAction = "up";
+                    sAction = "street_up";
                     break;
                 case 3:
                     itoy = iagy + 1;
-                    sAction = "down";
+                    sAction = "street_down";
                     break;
                 }
             }

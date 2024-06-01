@@ -11,8 +11,6 @@ import city.City.Move;
 
 public class WorldModel extends GridWorldModel {
     
-    public static final int     DEPOT = 32;
-    Location                    depot;
     private String              id = "WorldModel";
     protected static WorldModel model = null;
 
@@ -40,48 +38,45 @@ public class WorldModel extends GridWorldModel {
     public String toString() {
         return id;
     }
-    public Location getDepot() {
-        return depot;
-    }
-    public void setDepot(int x, int y) {
-        depot = new Location(x, y);
-        data[x][y] = DEPOT;     
-    }
+
 
     /** Actions **/
     boolean move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
+        boolean moved=false;
         switch (dir) {
             case UP:
                 if (isFree(l.x, l.y - 1)) {
                     setAgPos(ag, l.x, l.y - 1);
+                    moved=true;
                 }
                 break;
             case DOWN:
                 if (isFree(l.x, l.y + 1)) {
                     setAgPos(ag, l.x, l.y + 1);
+                    moved=true;
                 }
                 break;
             case RIGHT:
                 if (isFree(l.x + 1, l.y)) {
                     setAgPos(ag, l.x + 1, l.y);
+                    moved=true;
                 }
                 break;
             case LEFT:
                 if (isFree(l.x - 1, l.y)) {
                     setAgPos(ag, l.x - 1, l.y);
+                    moved=true;
                 }
                 break;
         }
-        return true;
+        return moved;
     }
 
     
     static WorldModel world1() throws Exception {
         WorldModel model = WorldModel.create(11, 11, 1);
         model.setId("Scenario 1");
-
-        // model.setDepot(10, 10);
         model.setAgPos(0, 0, 0);
         return model;
     }
@@ -92,8 +87,7 @@ public class WorldModel extends GridWorldModel {
         int h = 12;
         WorldModel model = WorldModel.create(w, h, 2);
         model.setId("Scenario 2");
-        // model.setDepot(10, 10);
-        model.setAgPos(0, 0, 5);
+        //model.setAgPos(0, 0, 5);
         model.setAgPos(1, 11, 6);
 
         // buildings

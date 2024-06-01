@@ -38,15 +38,42 @@ public class City extends Artifact {
         sleep = s;
     }
 
+
     @OPERATION void up() throws Exception {     move(Move.UP);    }
     @OPERATION void down() throws Exception {   move(Move.DOWN);  }
     @OPERATION void right() throws Exception {  move(Move.RIGHT); }
     @OPERATION void left() throws Exception {   move(Move.LEFT);  }
     
+    
     void move(Move m) throws Exception {
         if (sleep > 0) await_time(sleep);
-        model.move(m, agId);
+        boolean success = model.move(m, agId);
         updateAgPercept();
+        if (m==Move.UP && success){
+            addPercept("up_successful");
+        }
+        if (m==Move.UP && !success){
+            addPercept("up_failed");
+        }
+        if (m==Move.DOWN && success){
+            addPercept("down_successful");
+        }
+        if (m==Move.DOWN && !success){
+            addPercept("down_failed");
+        }
+        if (m==Move.RIGHT && success){
+            addPercept("right_successful");
+        }
+        if (m==Move.RIGHT && !success){
+            addPercept("right_failed");
+        }
+        if (m==Move.LEFT && success){
+            addPercept("left_successful");
+        }
+        if (m==Move.LEFT && !success){
+            addPercept("left_failed");
+        }
+        
     }
 
     @OPERATION void skip() {
@@ -72,7 +99,6 @@ public class City extends Artifact {
             }
             // Observable properties of Cartago
             defineObsProperty("gsize", simId, model.getWidth(), model.getHeight());
-            // defineObsProperty("depot", simId, model.getDepot().x, model.getDepot().y);
             defineObsProperty("pos", -1, -1);
 
             updateAgPercept();
@@ -124,21 +150,22 @@ public class City extends Artifact {
         if (model.hasObject(WorldModel.BUILDING, x, y)) {
             defineObsProperty("cell", x, y, building);
         } 
-        if (model.hasObject(8, x, y)) {
+        if (model.hasObject(WorldModel.STREET_UP, x, y)) {
             defineObsProperty("cell", x, y, street_up);
         }
-        if (model.hasObject(9, x, y)) {
+        if (model.hasObject(WorldModel.STREET_DOWN, x, y)) {
             defineObsProperty("cell", x, y, street_down);
         }
-        if (model.hasObject(10, x, y)) {
+        if (model.hasObject(WorldModel.STREET_RIGHT, x, y)) {
             defineObsProperty("cell", x, y, street_right);
         }
-        if (model.hasObject(11, x, y)) {
+        if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
             defineObsProperty("cell", x, y, street_left);
         }        
-        // if (model.hasObject(WorldModel.STREET, x, y)) {
-        //     defineObsProperty("cell", x, y, street);
-        // } 
+    }
+
+    private void addPercept(String percept) {
+        defineObsProperty(percept);
     }
 
 }

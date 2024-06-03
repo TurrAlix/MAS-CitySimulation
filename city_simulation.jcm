@@ -11,8 +11,8 @@ mas city_simulation {
     workspace city {
         // first parameter is the id of the city 
         // second parameter is the id of the agent in the scenario
-        artifact view: city.City(2, 0)
-        artifact view2: city.City(2, 1)
+        artifact view: city.City(3, 0)
+        artifact view2: city.City(3, 1)
     }
 }
 

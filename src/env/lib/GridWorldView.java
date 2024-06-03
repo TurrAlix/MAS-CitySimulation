@@ -65,90 +65,37 @@ public class GridWorldView extends JFrame {
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
         
         System.out.println("Agent at: (" + x + ", " + y + ") with id: " + id);
- 
         if (id >= 0) { 
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
         }
     }
-    public void drawStreetUp(Graphics g, int x, int y) {
-        g.setColor(Color.lightGray);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
 
-        // Set the string and the color for text
-        String text="^";
-        g.setColor(Color.black);
-        
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-        g.drawString(text, centerX, centerY);
-        System.out.println("Street up at: (" + x + ", " + y + ")" + "value: " + text);
+    public void drawStreet(Graphics g, int x, int y, int id, String direction) {
+        g.setColor(Color.lightGray);
+        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+
+        if (id<0){
+            g.setColor(Color.lightGray);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            
+            String text=direction;
+            g.setColor(Color.black);
+            FontMetrics fm = g.getFontMetrics();
+            int textWidth = fm.stringWidth(text);
+            int textHeight = fm.getAscent();
+            int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
+            int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
+            g.drawString(text, centerX, centerY);
+            System.out.println("Street at: (" + x + ", " + y + ")" + " with value: " + text);
+
+        }else{
+            g.setColor(Color.lightGray);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawAgent(g, x, y, id);
+        }
     }
 
-    public void drawStreetDown(Graphics g, int x, int y) {
-        // Set the color of the street
-        g.setColor(Color.lightGray);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        
-        // Set the text
-        String text="v";
-        g.setColor(Color.black);
-    
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        g.drawString(text, centerX, centerY);
-        System.out.println("Street down at: (" + x + ", " + y + ")" + "value: " + text);
-    }
-    public void drawStreetLeft(Graphics g, int x, int y) {
-        // Set the color of the street
-        g.setColor(Color.lightGray);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        
-        //Set the text
-        String text="<";
-        g.setColor(Color.black);
-    
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        // Draw the text
-        g.drawString(text, centerX, centerY);
-        System.out.println("Street left at: (" + x + ", " + y + ")" + "value: " + text);
-    }
-    
-    public void drawStreetRight(Graphics g, int x, int y) {
-        //Set the color of the street
-        g.setColor(Color.lightGray);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-
-        //Set the text
-        String text=">";
-        g.setColor(Color.black);
-    
-        // Calculate position to center the text
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
-        int textHeight = fm.getAscent();
-        int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
-        int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
-    
-        // Draw the text
-        g.drawString(text, centerX, centerY);
-        System.out.println("Street right at: (" + x + ", " + y + ")" + "value: " + text);
-    }
     public void drawBuilding(Graphics g, int x, int y) {
         g.setColor(Color.orange);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
@@ -177,7 +124,7 @@ public class GridWorldView extends JFrame {
         //g.setColor(Color.black);
         //drawString(g,x,y,defaultFont,String.valueOf(object));
     }
-    private int limit = 100;
+    private int limit = 200;
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             drawBuilding(g, x, y);
@@ -187,20 +134,7 @@ public class GridWorldView extends JFrame {
             drawAgent(g, x, y, model.getAgAtPos(x, y));
         }
 
-        // if ((model.data[x][y] & GridWorldModel.STREET_UP) != 0) {
-        //     drawStreetUp(g, x, y);
-        // }
-        // if ((model.data[x][y] & GridWorldModel.STREET_DOWN) != 0) {
-        //     drawStreetDown(g, x, y);
-        // }
-        // if ((model.data[x][y] & GridWorldModel.STREET_RIGHT) != 0) {
-        //     drawStreetRight(g, x, y);
-        // }
-        // if ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) {
-        //     drawStreetLeft(g, x, y);
-        // }
-
-        int vl = GridWorldModel.STREET_UP*2;
+        int vl = GridWorldModel.STREET*2;
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
                 draw(g, x, y, vl);

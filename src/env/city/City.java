@@ -17,7 +17,7 @@ public class City extends Artifact {
     static WorldModel  model = null;
     static WorldView   view;
 
-    static int     simId    = 2;    // different type of environment
+    static int     simId    = 3;    // different type of environment
     static int     sleep    = 200;
     static boolean hasGUI   = true;
     int     agId     = -1;
@@ -43,7 +43,6 @@ public class City extends Artifact {
     @OPERATION void down() throws Exception {   move(Move.DOWN);  }
     @OPERATION void right() throws Exception {  move(Move.RIGHT); }
     @OPERATION void left() throws Exception {   move(Move.LEFT);  }
-    
     
     void move(Move m) throws Exception {
         if (sleep > 0) await_time(sleep);
@@ -88,6 +87,7 @@ public class City extends Artifact {
                 switch (w) {
                 case 1: model = WorldModel.world1(); break;
                 case 2: model = WorldModel.world2(); break;
+                case 3: model = WorldModel.world3(); break;
                 default:
                     logger.info("Invalid index for the enviroment!");
                     return;
@@ -134,7 +134,8 @@ public class City extends Artifact {
         updateAgPercept(l.x + 1, l.y + 1);
     }
 
-    private static Term building = new Atom("building"); //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
+    //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
+    private static Term building = new Atom("building");
     private static Term street_up = new Atom("street_up");
     private static Term street_down = new Atom("street_down");
     private static Term street_right = new Atom("street_right");

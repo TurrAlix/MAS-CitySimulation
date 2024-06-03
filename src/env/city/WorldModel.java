@@ -3,10 +3,6 @@ package city;
 import lib.GridWorldModel;
 import lib.Location;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import city.City.Move;
 
 public class WorldModel extends GridWorldModel {
@@ -87,29 +83,52 @@ public class WorldModel extends GridWorldModel {
         int h = 12;
         WorldModel model = WorldModel.create(w, h, 2);
         model.setId("Scenario 2");
-        //model.setAgPos(0, 0, 5);
-        model.setAgPos(1, 11, 6);
+
+        // Agents
+        model.setAgPos(0, 0, 5);
+        model.setAgPos(1, 0, 6);
 
         // buildings
         for (int x = 0; x < w; x++) {
-            for (int y = 0; y < 5; y++) {
-                model.add(WorldModel.BUILDING, x, y);
-            }
-        }
-        for (int x = 0; x < w; x++) {
-            for (int y = 7; y < h; y++) {
+            for (int y = 0; y < h; y++) {
                 model.add(WorldModel.BUILDING, x, y);
             }
         }
         // streets in the middle
         for (int x = 0; x < w; x++) {
             model.add(WorldModel.STREET_RIGHT, x, 5);
+            model.add(WorldModel.STREET_LEFT, x, 6);
         }
+        return model;
+    }
+
+    // Map with 2 streets, and so a crossroad
+    static WorldModel world3() throws Exception {
+        int w = 12;
+        int h = 12;
+        WorldModel model = WorldModel.create(w, h, 2);
+        model.setId("Scenario 3");
+
+        // Agents
+        model.setAgPos(0, 0, 5);
+        model.setAgPos(1, 0, 6);
+
+        // buildings
         for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
+        }
+        // streets in the middle
+        for (int x = 0; x < w; x++) {
+            model.add(WorldModel.STREET_RIGHT, x, 5);
             model.add(WorldModel.STREET_LEFT, x, 6);
         }
 
-
+        for (int y = 0; y < h; y++) {
+            model.add(WorldModel.STREET_DOWN, 5, y);
+            model.add(WorldModel.STREET_UP,6, y);
+        }
         return model;
     }
 

@@ -72,32 +72,22 @@ public class WorldView extends GridWorldView {
     @Override
     public void draw(Graphics g, int x, int y, int object) {
         switch (object) {
-            case WorldModel.STREET_UP:      drawStreet(g, x, y, 0);         break;
-            case WorldModel.STREET_DOWN:    drawStreet(g, x, y, 1);         break;
-            case WorldModel.STREET_RIGHT:   drawStreet(g, x, y, 2);         break;
-            case WorldModel.STREET_LEFT:    drawStreet(g, x, y, 3);         break;
-            case WorldModel.BUILDING:           drawBuilding(g, x, y);              break;
-            // case WorldModel.DEPOT:              drawDepot(g, x, y);                 break;
-            case WorldModel.AGENT:              drawAgent(g, x, y, model.getAgAtPos(x,y));  break;
+            case WorldModel.STREET_UP:      drawStreet(g, x, y, model.getAgAtPos(x,y), "^");         break;
+            case WorldModel.STREET_DOWN:    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");         break;
+            case WorldModel.STREET_RIGHT:   drawStreet(g, x, y, model.getAgAtPos(x,y), ">");         break;
+            case WorldModel.STREET_LEFT:    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");         break;
+            case WorldModel.BUILDING:       drawBuilding(g, x, y);                                             break;
+            case WorldModel.AGENT:          drawAgent(g, x, y, model.getAgAtPos(x,y));                         break;
         }
     }
 
     @Override
     public void drawAgent(Graphics g, int x, int y, int id) {
-        super.drawAgent(g, x, y, -1); // -1 for what?
-        
-        Color idColor = Color.black;
-        g.setColor(idColor);
+        g.setColor(Color.yellow);
+        g.drawArc(x, y, id, x, y, id);
+        g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);
+        g.setColor(Color.black);
         drawString(g, x, y, defaultFont, String.valueOf(id+1));
-    }
-
-    public void drawStreet(Graphics g, int x, int y, int dir) {
-        switch (dir) {
-            case 0: super.drawStreetUp(g, x, y); break;
-            case 1: super.drawStreetDown(g, x, y); break;
-            case 2: super.drawStreetRight(g, x, y); break;
-            case 3: super.drawStreetLeft(g, x, y); break;
-        }
     }
 
     public void drawDepot(Graphics g, int x, int y) {

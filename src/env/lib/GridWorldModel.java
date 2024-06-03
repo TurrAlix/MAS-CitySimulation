@@ -13,10 +13,11 @@ public class GridWorldModel {
     public static final int       AGENT    = 2;
     public static final int       BUILDING = 4;
 
-    public static final int       STREET_UP = 8;
-    public static final int       STREET_DOWN = 16;
-    public static final int       STREET_RIGHT = 32;
-    public static final int       STREET_LEFT = 64;
+    public static final int       STREET = 8;
+    public static final int       STREET_UP = 16;
+    public static final int       STREET_DOWN = 32;
+    public static final int       STREET_RIGHT = 64;
+    public static final int       STREET_LEFT = 128;
 
     protected int                 width, height;
     protected int[][]             data = null;

@@ -28,6 +28,7 @@ Thumbs.db
 .project
 .settings/
 .idea/
+.idea/*
 
 ### VisualStudioCode ###
 .vscode/

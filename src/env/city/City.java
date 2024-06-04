@@ -48,31 +48,12 @@ public class City extends Artifact {
         if (sleep > 0) await_time(sleep);
         boolean success = model.move(m, agId);
         updateAgPercept();
-        if (m==Move.UP && success){
-            addPercept("up_successful");
-        }
-        if (m==Move.UP && !success){
-            addPercept("up_failed");
-        }
-        if (m==Move.DOWN && success){
-            addPercept("down_successful");
-        }
-        if (m==Move.DOWN && !success){
-            addPercept("down_failed");
-        }
-        if (m==Move.RIGHT && success){
-            addPercept("right_successful");
-        }
-        if (m==Move.RIGHT && !success){
-            addPercept("right_failed");
-        }
-        if (m==Move.LEFT && success){
-            addPercept("left_successful");
-        }
-        if (m==Move.LEFT && !success){
-            addPercept("left_failed");
-        }
-        
+
+        if (success) {
+            addPercept(m.toString().toLowerCase() + "_successful"); // Add percept for successful move
+        } else {
+            addPercept(m.toString().toLowerCase() + "_failed"); // Add percept for failed move
+        }      
     }
 
     @OPERATION void skip() {
@@ -121,17 +102,11 @@ public class City extends Artifact {
         p.updateValue(1, l.y);
 
         // what's around (the private function under)
-        updateAgPercept(l.x - 1, l.y - 1);
-        updateAgPercept(l.x - 1, l.y);
-        updateAgPercept(l.x - 1, l.y + 1);
-
-        updateAgPercept(l.x, l.y - 1);
-        updateAgPercept(l.x, l.y);
-        updateAgPercept(l.x, l.y + 1);
-
-        updateAgPercept(l.x + 1, l.y - 1);
-        updateAgPercept(l.x + 1, l.y);
-        updateAgPercept(l.x + 1, l.y + 1);
+        for (int i=-1;i<1;i++) { //should be i<2 but for now does not work
+            for (int j=-1;j<1;j++) { //should be j<2 but for now does not work
+                updateAgPercept(l.x + i, l.y + j);
+            }
+        }
     }
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
@@ -140,10 +115,14 @@ public class City extends Artifact {
     private static Term street_down = new Atom("street_down");
     private static Term street_right = new Atom("street_right");
     private static Term street_left = new Atom("street_left");
+    private static Term agent = new Atom("agent");
 
 
     private void updateAgPercept(int x, int y) {
-        if (model == null || !model.inGrid(x,y)) return;
+        if (model == null || !model.inGrid(x,y)) {
+            System.out.println("x: " + x + ", y: " + y + " are out of the grid or model is null.");
+            return;
+        }
         try {
             removeObsPropertyByTemplate("cell", null, null, null); //remove the property that match these arguments
         } catch (IllegalArgumentException e) {}
@@ -162,9 +141,13 @@ public class City extends Artifact {
         }
         if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
             defineObsProperty("cell", x, y, street_left);
+        }
+        if (model.hasObject(WorldModel.AGENT, x, y)) {
+            defineObsProperty("cell", x, y, agent);
         }        
     }
 
+    
     private void addPercept(String percept) {
         defineObsProperty(percept);
     }

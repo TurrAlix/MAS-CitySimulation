@@ -40,6 +40,7 @@ public class WorldModel extends GridWorldModel {
     boolean move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         boolean moved=false;
+
         switch (dir) {
             case UP:
                 if (isFree(l.x, l.y - 1)) {
@@ -121,14 +122,22 @@ public class WorldModel extends GridWorldModel {
         }
         // streets in the middle
         for (int x = 0; x < w; x++) {
+            model.remove(WorldModel.BUILDING, x, 5);
             model.add(WorldModel.STREET_RIGHT, x, 5);
+            model.remove(WorldModel.BUILDING, x, 6);
             model.add(WorldModel.STREET_LEFT, x, 6);
         }
+        model.remove(WorldModel.STREET_RIGHT, 5, 5);
+        model.remove(WorldModel.STREET_LEFT, 5, 6);
 
         for (int y = 0; y < h; y++) {
+            model.remove(WorldModel.BUILDING, 5, y);
             model.add(WorldModel.STREET_DOWN, 5, y);
+            model.remove(WorldModel.BUILDING, 6, y);
             model.add(WorldModel.STREET_UP,6, y);
         }
+        model.remove(WorldModel.STREET_UP, 6, 5);
+        model.remove(WorldModel.STREET_UP, 6, 6);
         return model;
     }
 

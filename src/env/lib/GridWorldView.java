@@ -59,6 +59,7 @@ public class GridWorldView extends JFrame {
         draw(g, x, y);
         System.out.println("View updated, drawn something: (" + x + ", " + y + ")");
     }
+
     // draw the agent at x,y (if there is one) 
     public void drawAgent(Graphics g, int x, int y, int id) {
         g.setColor(Color.yellow);

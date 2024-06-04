@@ -17,29 +17,49 @@ there are no pedestrians
 /* Initial beliefs and rules */
 //gsize(_,W,H); Not so sure we need to use this here!
 
-
 /* Initial goals */
-!drive_random.
+!start.
 
 /* Plans */
-+!drive_random : pos(X,Y) && cell(X,Y,street_up) <- 
++!start <-
+    ?pos(X,Y);
+    ?cell(X,Y,D);
+    !drive_random.
+
+-?pos(X,Y) <-
+    .wait(200);
+    !start.
+
+-?cell(X,Y,D) <-
+    .wait(200);
+    !start.
+
++!drive_random : pos(X,Y) & cell(X,Y,street_up) <- 
     .print("Attempting to go up...");
-    up();
+    up;
+    .wait(1000);
     !drive_random.
 
-+!drive_random : pos(X,Y) && cell(X,Y,street_down) <-
++!drive_random : pos(X,Y) & cell(X,Y,street_down) <-
     .print("Attempting to go down...");
-    down();
+    down;
+    .wait(1000);
     !drive_random.
 
-+!drive_random : pos(X,Y) && cell(X,Y,street_left) <- 
++!drive_random : pos(X,Y) & cell(X,Y,street_left) <- 
     .print("Attempting to go left...");
-    left();
+    left;
+    .wait(1000);
     !drive_random.
 
-+!drive_random : pos(X,Y) && cell(X,Y,street_right) <- 
++!drive_random : pos(X,Y) & cell(X,Y,street_right) <- 
     .print("Attempting to go right...");
-    right();
+    right;
+    .wait(1000);
+    !drive_random.
+
+-!drive_random <-
+    .wait(200);
     !drive_random.
 
 
@@ -72,16 +92,26 @@ there are no pedestrians
     !change_direction.
 
 +!change_direction <-
+    .print("Trying to change of direction");
     ?pos(X,Y);
     ?cell(X,Y,D);
+    .print("Position: ", X, "/", Y, ";Street Direction: ", D);
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    (NewD != D ->
+    .print("New Direction Drawn: ", NewD);
+    if (not(NewD == D)) {
         -+cell(X,Y,D);
-    !change_direction). //if the new direction drawn is similar to the old one, another one is drawn
+        !drive_random;
+    } else {
+
+        !change_direction; //if the new direction drawn is similar to the old one, another one is drawn
+    }.
 
 
 //Logs for percepts
-+pos(X, Y) <- .print("I'm in (", X, ", ", Y).
++pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
+
++cell(X,Y,street_right) <-
+    .print("There is a street right at x=", X, " & y=", Y).
 
 +cell(X,Y,building) <-
     .print("There is a building at x=", X, " & y=", Y).
@@ -95,6 +125,5 @@ there are no pedestrians
 +cell(X,Y,street_left) <-
     .print("There is a street left at x=", X, " & y=", Y).
 
-+cell(X,Y,street_right) <-
-    .print("There is a street right at x=", X, " & y=", Y).
-
++cell(X,Y,agent) <-
+    .print("There is an agent at x=", X, " & y=", Y).

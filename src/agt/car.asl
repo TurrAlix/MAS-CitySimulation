@@ -18,22 +18,9 @@ there are no pedestrians
 //gsize(_,W,H); Not so sure we need to use this here!
 
 /* Initial goals */
-!start.
+!drive_random.
 
 /* Plans */
-+!start <-
-    ?pos(X,Y);
-    ?cell(X,Y,D);
-    !drive_random.
-
--?pos(X,Y) <-
-    .wait(200);
-    !start.
-
--?cell(X,Y,D) <-
-    .wait(200);
-    !start.
-
 +!drive_random : pos(X,Y) & cell(X,Y,street_up) <- 
     .print("Attempting to go up...");
     up;
@@ -92,19 +79,31 @@ there are no pedestrians
     !change_direction.
 
 +!change_direction <-
-    .print("Trying to change of direction");
     ?pos(X,Y);
     ?cell(X,Y,D);
     .print("Position: ", X, "/", Y, ";Street Direction: ", D);
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
     .print("New Direction Drawn: ", NewD);
-    if (not(NewD == D)) {
-        -+cell(X,Y,D);
+    if (not(NewD==D)) {
+        .print("Attempting to turn...");
+        if (NewD==street_up) {
+        up;
+        }
+        if (NewD==street_down) {
+        down;
+        }
+        if (NewD==street_right) {
+        right;
+        }
+        if (NewD==street_left) {
+        left;
+        }
+        .wait(2000);
         !drive_random;
     } else {
-
+        .wait(1000);
         !change_direction; //if the new direction drawn is similar to the old one, another one is drawn
-    }.
+    }. 
 
 
 //Logs for percepts

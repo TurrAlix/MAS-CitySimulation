@@ -7,7 +7,7 @@ free of obstacles (in our case, building or other cars), and retrieve its own po
 Let's assume the car will be represented as circles, so no need to define an orientation. 
 
 Then-more complex:
-according to the perceipts of the directions surrounding the agent, choose which street to take (in that case,
+according to the percepts of the directions surrounding the agent, choose which street to take (in that case,
 turn towards the direction of the guiding block if the car turns, not the block on which it is currently)
 If the next block is a zebra-crossing and there is no other streets to take instead, stop and wait until
 there are no pedestrians
@@ -51,28 +51,28 @@ there are no pedestrians
 
 
 +up_successful <-
-    .print("Going up!").
+    .print("Went up!").
     
 +up_failed <-
     .print("Cannot go up");
     !change_direction.
 
 +down_successful <-
-    .print("Going down!").
+    .print("Went down!").
     
 +down_failed <-
     .print("Cannot go down");
     !change_direction.
 
 +right_successful <-
-    .print("Going right!").
+    .print("Went right!").
     
 +right_failed <-
     .print("Cannot go right");
     !change_direction.
 
 +left_successful <-
-    .print("Going left!").
+    .print("Went left!").
     
 +left_failed <-
     .print("Cannot go left");
@@ -125,5 +125,8 @@ there are no pedestrians
 +cell(X,Y,street_left) <-
     .print("There is a street left at x=", X, " & y=", Y).
 
-+cell(X,Y,agent) <-
-    .print("There is an agent at x=", X, " & y=", Y).
++cell(X,Y,car) <-
+    .print("There is a car at x=", X, " & y=", Y).
+
++cell(X,Y,pedestrian) <-
+    .print("There is a pedestrian at x=", X, " & y=", Y).

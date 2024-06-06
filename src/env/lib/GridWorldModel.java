@@ -10,14 +10,15 @@ public class GridWorldModel {
     // represents different objects. Other numbers represent combinations
     // of objects which are all located in the same cell of the grid.
     public static final int       CLEAN    = 0;
-    public static final int       AGENT    = 2;
-    public static final int       BUILDING = 4;
+    public static final int       CAR    = 2;
+    public static final int       PEDESTRIAN    = 4;
+    public static final int       BUILDING = 8;
 
-    public static final int       STREET = 8;
-    public static final int       STREET_UP = 16;
-    public static final int       STREET_DOWN = 32;
-    public static final int       STREET_RIGHT = 64;
-    public static final int       STREET_LEFT = 128;
+    public static final int       STREET = 16;
+    public static final int       STREET_UP = 32;
+    public static final int       STREET_DOWN = 64;
+    public static final int       STREET_RIGHT = 128;
+    public static final int       STREET_LEFT = 256;
 
     protected int                 width, height;
     protected int[][]             data = null;
@@ -111,10 +112,12 @@ public class GridWorldModel {
     public void setAgPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) {
-            remove(AGENT, oldLoc.x, oldLoc.y);
+            if ((data[l.x][l.y] & CAR) != 0) { remove(CAR, oldLoc.x, oldLoc.y);};
+            if ((data[l.x][l.y] & PEDESTRIAN) != 0) { remove(PEDESTRIAN, oldLoc.x, oldLoc.y);};
         }
         agPos[ag] = l;
-        add(AGENT, l.x, l.y);
+        if ((data[l.x][l.y] & CAR) != 0) { add(CAR, l.x, l.y);};
+        if ((data[l.x][l.y] & PEDESTRIAN) != 0) { add(PEDESTRIAN, l.x, l.y);};
     }
     public void setAgPos(int ag, int x, int y) {
         setAgPos(ag, new Location(x, y));
@@ -129,10 +132,22 @@ public class GridWorldModel {
             return null;
         }
     }
+
+    /**returns the types contained in a block at a specific position */
+    public int getBlockTypeAtPos(Location l) {
+        return getBlockTypeAtPos(l.x, l.y);
+    }
+
+    public int getBlockTypeAtPos(int x, int y) {
+        return data[x][y];
+    }
+
     /** returns the agent at location l or -1 if there is not one there */
+    //this function and the following one should be distinct between cars and pedestrians TODO
     public int getAgAtPos(Location l) {
         return getAgAtPos(l.x, l.y);
     }
+    
     /** returns the agent at x,y or -1 if there is not one there */
     public int getAgAtPos(int x, int y) {
         for (int i=0; i<agPos.length; i++) {
@@ -149,7 +164,7 @@ public class GridWorldModel {
     }
     /** returns true if the location x,y has neither building nor agent */
     public boolean isFree(int x, int y) {
-        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & AGENT) == 0;
+        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0;
     }
     /** returns true if the location l has not the object obj */
     public boolean isFree(int obj, Location l) {

@@ -46,7 +46,10 @@ public class City extends Artifact {
     
     void move(Move m) throws Exception {
         if (sleep > 0) await_time(sleep);
-        boolean success = model.move(m, agId);
+        boolean success=false;
+        //TODO: We are trying to differentiate the call for move between car (1st case) or pedestrian (2d case)
+        //if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
+        //if ((model.data[l.x][l.y] & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);}; //TODO: create walk function
         updateAgPercept();
 
         if (success) {
@@ -125,7 +128,8 @@ public class City extends Artifact {
     private static Term street_down = new Atom("street_down");
     private static Term street_right = new Atom("street_right");
     private static Term street_left = new Atom("street_left");
-    private static Term agent = new Atom("agent");
+    private static Term car = new Atom("car");
+    private static Term pedestrian = new Atom("pedestrian");
 
 
     private void updateAgPercept(int x, int y) {
@@ -152,8 +156,11 @@ public class City extends Artifact {
         if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
             defineObsProperty("cell", x, y, street_left);
         }
-        if (model.hasObject(WorldModel.AGENT, x, y)) {
-            defineObsProperty("cell", x, y, agent);
+        if (model.hasObject(WorldModel.CAR, x, y)) {
+            defineObsProperty("cell", x, y, car);
+        } 
+        if (model.hasObject(WorldModel.PEDESTRIAN, x, y)) {
+            defineObsProperty("cell", x, y, pedestrian);
         }        
     }
 

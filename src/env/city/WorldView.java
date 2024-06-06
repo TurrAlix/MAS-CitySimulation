@@ -77,12 +77,13 @@ public class WorldView extends GridWorldView {
             case WorldModel.STREET_RIGHT:   drawStreet(g, x, y, model.getAgAtPos(x,y), ">");         break;
             case WorldModel.STREET_LEFT:    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");         break;
             case WorldModel.BUILDING:       drawBuilding(g, x, y);                                             break;
-            case WorldModel.AGENT:          drawAgent(g, x, y, model.getAgAtPos(x,y));                         break;
+            case WorldModel.CAR:            drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
+            case WorldModel.PEDESTRIAN:     drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
         }
     }
 
     @Override
-    public void drawAgent(Graphics g, int x, int y, int id) {
+    public void drawCar(Graphics g, int x, int y, int id) {
         g.setColor(Color.yellow);
         g.drawArc(x, y, id, x, y, id);
         g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);
@@ -91,13 +92,14 @@ public class WorldView extends GridWorldView {
     }
 
 
-    /*public void drawDepot(Graphics g, int x, int y) {
+    @Override
+    public void drawPedestrian(Graphics g, int x, int y, int id) {
         g.setColor(Color.blue);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        g.setColor(Color.pink);
-        g.drawRect(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-        g.drawLine(x * cellSizeW + 2, y * cellSizeH + 2, (x + 1) * cellSizeW - 2, (y + 1) * cellSizeH - 2);
-        g.drawLine(x * cellSizeW + 2, (y + 1) * cellSizeH - 2, (x + 1) * cellSizeW - 2, y * cellSizeH + 2);
-    }*/
+        g.drawArc(x, y, id, x, y, id);
+        g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);
+        g.setColor(Color.black);
+        drawString(g, x, y, defaultFont, String.valueOf(id+1));
+    }
+
 
 }

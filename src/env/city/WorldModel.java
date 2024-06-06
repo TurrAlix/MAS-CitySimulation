@@ -70,6 +70,9 @@ public class WorldModel extends GridWorldModel {
         return moved;
     }
 
+    /*TODO: create walk function here (for pedestrians) > similar to move one,
+    but instead of isFree we just need to call isInGrid*/
+
     
     static WorldModel world1() throws Exception {
         WorldModel model = WorldModel.create(11, 11, 1);

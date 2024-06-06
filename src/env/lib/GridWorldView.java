@@ -60,17 +60,41 @@ public class GridWorldView extends JFrame {
         System.out.println("View updated, drawn something: (" + x + ", " + y + ")");
     }
 
-    // draw the agent at x,y (if there is one) 
-    public void drawAgent(Graphics g, int x, int y, int id) {
+    // draw the car at x,y (if there is one) 
+    public void drawCar(Graphics g, int x, int y, int id) {
         g.setColor(Color.yellow);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
         
-        System.out.println("Agent at: (" + x + ", " + y + ") with id: " + id);
+        System.out.println("Car at: (" + x + ", " + y + ") with id: " + id);
         if (id >= 0) { 
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
         }
     }
+
+    // draw the pedestrian at x,y (if there is one)
+    public void drawPedestrian(Graphics g, int x, int y, int id) {
+        // Draw the body (blue circle)
+        g.setColor(Color.blue);
+        g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
+
+        // Draw the head (yellow circle)
+        g.setColor(Color.yellow);
+        int headSizeW = (cellSizeW - 4) / 2;
+        int headSizeH = (cellSizeH - 4) / 2;
+        int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
+        int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
+        g.fillOval(headX, headY, headSizeW, headSizeH);
+
+        System.out.println("Pedestrian at: (" + x + ", " + y + ") with id: " + id);
+
+        // Draw the ID if it is greater than or equal to 0
+        if (id >= 0) { 
+            g.setColor(Color.black);
+            drawString(g, x, y, defaultFont, String.valueOf(id + 1));
+        }
+    }
+
 
     public void drawStreet(Graphics g, int x, int y, int id, String direction) {
         g.setColor(Color.lightGray);
@@ -93,7 +117,7 @@ public class GridWorldView extends JFrame {
         }else{
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-            drawAgent(g, x, y, id);
+            drawCar(g, x, y, id);
         }
     }
 
@@ -102,7 +126,8 @@ public class GridWorldView extends JFrame {
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
         g.setColor(Color.lightGray);
         g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-    }
+    } /*TODO: adapt it to be sure than the pedestrians appear ON TOP OF the building blocks
+      (cf. street-car way of doing right above)*/
 
     public void drawString(Graphics g, int x, int y, Font f, String s) {
         g.setFont(f);
@@ -125,14 +150,18 @@ public class GridWorldView extends JFrame {
         //g.setColor(Color.black);
         //drawString(g,x,y,defaultFont,String.valueOf(object));
     }
-    private int limit = 200;
+    private int limit = 1000;
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             drawBuilding(g, x, y);
         }
 
-        if ((model.data[x][y] & GridWorldModel.AGENT) != 0) {
-            drawAgent(g, x, y, model.getAgAtPos(x, y));
+        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) {
+            drawPedestrian(g, x, y, model.getAgAtPos(x, y));
+        }
+        
+        if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
+            drawCar(g, x, y, model.getAgAtPos(x, y));
         }
 
         int vl = GridWorldModel.STREET*2;

@@ -84,6 +84,7 @@ public class WorldView extends GridWorldView {
 
     @Override
     public void drawCar(Graphics g, int x, int y, int id) {
+        System.out.println("Car");
         g.setColor(Color.yellow);
         g.drawArc(x, y, id, x, y, id);
         g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);
@@ -94,6 +95,7 @@ public class WorldView extends GridWorldView {
 
     @Override
     public void drawPedestrian(Graphics g, int x, int y, int id) {
+        System.out.println("drawPedestrian");
         g.setColor(Color.blue);
         g.drawArc(x, y, id, x, y, id);
         g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);

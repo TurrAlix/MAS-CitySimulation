@@ -2,6 +2,8 @@
 
 /* Initial goals */
 !walk_random.
+//!start
+//+!start : true <- .wait(500); skip; !start.
 
 /* Plans */
 +!walk_random <- 
@@ -24,7 +26,7 @@
         left;
     }
     .wait(4000);
-    !walk_random;
+    !walk_random.
 
 
 -!walk_random <-

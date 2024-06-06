@@ -108,7 +108,7 @@ public class GridWorldModel {
         if (view != null) view.update(x,y);
     }
 
-    
+    /*
     public void setAgPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) {
@@ -121,7 +121,36 @@ public class GridWorldModel {
     }
     public void setAgPos(int ag, int x, int y) {
         setAgPos(ag, new Location(x, y));
+    } */
+    public void setCarPos(int ag, int x, int y) {
+        setCarPos(ag, new Location(x, y));
     }
+    public void setPedestrianPos(int ag, int x, int y) {
+        setPedestrianPos(ag, new Location(x, y));
+    }
+
+    public void setCarPos(int ag, Location l) {
+        Location oldLoc = getAgPos(ag);
+        if (oldLoc != null) {
+            if ((data[l.x][l.y] & CAR) != 0) { remove(CAR, oldLoc.x, oldLoc.y);}
+            else{System.out.println("Problem with Car agent");}
+        }
+        agPos[ag] = l;
+        if ((data[l.x][l.y] & CAR) != 0) {add(CAR, l.x, l.y);};
+    }
+    public void setPedestrianPos(int ag, Location l) {
+        Location oldLoc = getAgPos(ag);
+        if (oldLoc != null) {
+            if ((data[l.x][l.y] & PEDESTRIAN) != 0) { remove(PEDESTRIAN, oldLoc.x, oldLoc.y);}
+            else{System.out.println("Problem with Pedestrian agent");}
+        }
+        agPos[ag] = l;
+        if ((data[l.x][l.y] & CAR) != 0) { add(CAR, l.x, l.y);};
+        if ((data[l.x][l.y] & PEDESTRIAN) != 0) { add(PEDESTRIAN, l.x, l.y);};
+    }
+
+
+
     public Location getAgPos(int ag) {
         try {
             if (agPos[ag].x == -1)

@@ -18,7 +18,7 @@ there are no pedestrians
 //gsize(_,W,H); Not so sure we need to use this here!
 
 /* Initial goals */
-!start.
+!drive_random.
 
 /* Plans */
 +!drive_random : pos(X,Y) & cell(X,Y,street_up) <- 

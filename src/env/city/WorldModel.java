@@ -44,25 +44,25 @@ public class WorldModel extends GridWorldModel {
         switch (dir) {
             case UP:
                 if (isFree(l.x, l.y - 1)) {
-                    setAgPos(ag, l.x, l.y - 1);
+                    setCarPos(ag, l.x, l.y - 1);
                     moved=true;
                 }
                 break;
             case DOWN:
                 if (isFree(l.x, l.y + 1)) {
-                    setAgPos(ag, l.x, l.y + 1);
+                    setCarPos(ag, l.x, l.y + 1);
                     moved=true;
                 }
                 break;
             case RIGHT:
                 if (isFree(l.x + 1, l.y)) {
-                    setAgPos(ag, l.x + 1, l.y);
+                    setCarPos(ag, l.x + 1, l.y);
                     moved=true;
                 }
                 break;
             case LEFT:
                 if (isFree(l.x - 1, l.y)) {
-                    setAgPos(ag, l.x - 1, l.y);
+                    setCarPos(ag, l.x - 1, l.y);
                     moved=true;
                 }
                 break;
@@ -77,7 +77,8 @@ public class WorldModel extends GridWorldModel {
     static WorldModel world1() throws Exception {
         WorldModel model = WorldModel.create(11, 11, 1);
         model.setId("Scenario 1");
-        model.setAgPos(0, 0, 0);
+        // model.setCarPos(0, 0, 0);
+        model.setPedestrianPos(2, 1, 1);
         return model;
     }
     
@@ -89,8 +90,8 @@ public class WorldModel extends GridWorldModel {
         model.setId("Scenario 2");
 
         // Agents
-        model.setAgPos(0, 0, 5);
-        model.setAgPos(1, 0, 6);
+        model.setCarPos(0, 0, 5);
+        model.setCarPos(1, 0, 6);
 
         // buildings
         for (int x = 0; x < w; x++) {
@@ -110,12 +111,13 @@ public class WorldModel extends GridWorldModel {
     static WorldModel world3() throws Exception {
         int w = 12;
         int h = 12;
-        WorldModel model = WorldModel.create(w, h, 2);
+        WorldModel model = WorldModel.create(w, h, 3);
         model.setId("Scenario 3");
 
         // Agents
-        model.setAgPos(0, 0, 5);
-        model.setAgPos(1, 0, 6);
+        model.setCarPos(0, 0, 5);
+        model.setCarPos(1, 0, 6);
+        model.setPedestrianPos(2, 0, 0);
 
         // buildings
         for (int x = 0; x < w; x++) {

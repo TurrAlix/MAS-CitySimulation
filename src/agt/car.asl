@@ -21,19 +21,6 @@ there are no pedestrians
 !start.
 
 /* Plans */
-+!start <-
-    ?pos(X,Y);
-    ?cell(X,Y,D);
-    !drive_random.
-
--?pos(X,Y) <-
-    .wait(200);
-    !start.
-
--?cell(X,Y,D) <-
-    .wait(200);
-    !start.
-
 +!drive_random : pos(X,Y) & cell(X,Y,street_up) <- 
     .print("Attempting to go up...");
     up;
@@ -98,13 +85,26 @@ there are no pedestrians
     .print("Position: ", X, "/", Y, ";Street Direction: ", D);
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
     .print("New Direction Drawn: ", NewD);
-    if (not(NewD == D)) {
-        -+cell(X,Y,D);
+    if (not(NewD==D)) {
+        .print("Attempting to turn...");
+        if (NewD==street_up) {
+        up;
+        }
+        if (NewD==street_down) {
+        down;
+        }
+        if (NewD==street_right) {
+        right;
+        }
+        if (NewD==street_left) {
+        left;
+        }
+        .wait(2000);
         !drive_random;
     } else {
-
+        .wait(1000);
         !change_direction; //if the new direction drawn is similar to the old one, another one is drawn
-    }.
+    }. 
 
 
 //Logs for percepts
@@ -127,4 +127,3 @@ there are no pedestrians
 
 +cell(X,Y,agent) <-
     .print("There is an agent at x=", X, " & y=", Y).
-

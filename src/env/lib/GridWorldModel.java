@@ -22,7 +22,7 @@ public class GridWorldModel {
 
     protected int                 width, height;
     protected int[][]             data = null;
-    protected Location[]          agPos;
+    protected static Location[]          agPos;
     protected GridWorldView       view;
     protected Random              random = new Random();
 
@@ -108,21 +108,35 @@ public class GridWorldModel {
         if (view != null) view.update(x,y);
     }
 
+    public void setCarPos(int ag, int x, int y) {
+        setCarPos(ag, new Location(x, y));
+    }
     
-    public void setAgPos(int ag, Location l) {
+    public void setCarPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
-        if (oldLoc != null) {
-            if ((data[l.x][l.y] & CAR) != 0) { remove(CAR, oldLoc.x, oldLoc.y);};
-            if ((data[l.x][l.y] & PEDESTRIAN) != 0) { remove(PEDESTRIAN, oldLoc.x, oldLoc.y);};
-        }
+        if (oldLoc != null) { //clear the previous position
+            remove(CAR, oldLoc.x, oldLoc.y);
+        };
         agPos[ag] = l;
-        if ((data[l.x][l.y] & CAR) != 0) { add(CAR, l.x, l.y);};
-        if ((data[l.x][l.y] & PEDESTRIAN) != 0) { add(PEDESTRIAN, l.x, l.y);};
+        data[l.x][l.y] |= CAR;
     }
-    public void setAgPos(int ag, int x, int y) {
-        setAgPos(ag, new Location(x, y));
+
+    public void setPedestrianPos(int ag, int x, int y) {
+        setPedestrianPos(ag, new Location(x, y));
     }
-    public Location getAgPos(int ag) {
+    
+    public void setPedestrianPos(int ag, Location l) {
+        Location oldLoc = getAgPos(ag);
+        if (oldLoc != null) { //clear the previous position
+            remove(PEDESTRIAN, oldLoc.x, oldLoc.y);
+        };
+        agPos[ag] = l;
+        data[l.x][l.y] |= PEDESTRIAN;
+    }
+    
+    
+    
+    public static Location getAgPos(int ag) {
         try {
             if (agPos[ag].x == -1)
                 return null;
@@ -143,7 +157,6 @@ public class GridWorldModel {
     }
 
     /** returns the agent at location l or -1 if there is not one there */
-    //this function and the following one should be distinct between cars and pedestrians TODO
     public int getAgAtPos(Location l) {
         return getAgAtPos(l.x, l.y);
     }

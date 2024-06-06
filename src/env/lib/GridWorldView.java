@@ -66,6 +66,7 @@ public class GridWorldView extends JFrame {
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
         
         System.out.println("Car at: (" + x + ", " + y + ") with id: " + id);
+        
         if (id >= 0) { 
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
@@ -98,9 +99,9 @@ public class GridWorldView extends JFrame {
 
     public void drawStreet(Graphics g, int x, int y, int id, String direction) {
         g.setColor(Color.lightGray);
-        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH); //we draw the outline
 
-        if (id<0){
+        if (((model.data[x][y] & GridWorldModel.CAR) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN) == 0)){ //means no agent has been spotted on the street block (cf. getAgAtPos)
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             
@@ -114,20 +115,32 @@ public class GridWorldView extends JFrame {
             g.drawString(text, centerX, centerY);
             System.out.println("Street at: (" + x + ", " + y + ")" + " with value: " + text);
 
-        }else{
+        }else{ //if there is an agent on the block, we must make sure that it is drawn on top of the street
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             drawCar(g, x, y, id);
+            if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) { //pedestrians can be on streets too (zebra-crossings)
+                System.out.println("Drawing a pedestrian at: x="+x+";y="+y);
+                drawPedestrian(g, x, y, id);
+            }
+            if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
+                System.out.println("Drawing a car at: x="+x+";y="+y);
+                drawCar(g, x, y, id);
+            }
         }
     }
 
-    public void drawBuilding(Graphics g, int x, int y) {
-        g.setColor(Color.orange);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        g.setColor(Color.lightGray);
-        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-    } /*TODO: adapt it to be sure than the pedestrians appear ON TOP OF the building blocks
-      (cf. street-car way of doing right above)*/
+    public void drawBuilding(Graphics g, int x, int y, int id) {
+        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) == 0){
+            g.setColor(Color.orange);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        }else{
+            g.setColor(Color.orange);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawPedestrian(g, x, y, id);
+        }
+    } 
+    
 
     public void drawString(Graphics g, int x, int y, Font f, String s) {
         g.setFont(f);
@@ -145,23 +158,19 @@ public class GridWorldView extends JFrame {
     }
 
 
-    /** method to draw unknown object, probably overridden by the user viewer class */
+    //TODO: do we need to keep this function as it's overriden in WorldView?
+    /** method to draw unknown object, overridden by the user viewer class */
     public void draw(Graphics g, int x, int y, int object) {
         //g.setColor(Color.black);
         //drawString(g,x,y,defaultFont,String.valueOf(object));
     }
-    private int limit = 1000;
+    
+    /**because STREET id go from 32 to 256,
+    each of them being the power of two of the previous one!*/
+    private int limit = 300; 
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
-            drawBuilding(g, x, y);
-        }
-
-        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) {
-            drawPedestrian(g, x, y, model.getAgAtPos(x, y));
-        }
-        
-        if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
-            drawCar(g, x, y, model.getAgAtPos(x, y));
+            draw(g, x, y, GridWorldModel.BUILDING);
         }
 
         int vl = GridWorldModel.STREET*2;
@@ -170,6 +179,17 @@ public class GridWorldView extends JFrame {
                 draw(g, x, y, vl);
             }
             vl *= 2;
+        }
+
+        /*TODO: not sure we need this and the drawCar as we draw the pedestrians and cars on top of the streets/buildings
+        in their respective function
+         */
+        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) { 
+            drawPedestrian(g, x, y, model.getAgAtPos(x, y));
+        }
+        
+        if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
+            drawCar(g, x, y, model.getAgAtPos(x, y));
         }
 
     }

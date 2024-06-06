@@ -4,8 +4,10 @@
 !walk_random.
 
 /* Plans */
-+!walk_random <- 
-    jia.random_direction(X,Y,D); //draw a different direction that is free
++!walk_random <-
+    .print("Hey!");
+    ?pos(X,Y);
+    jia.random_walk(X,Y,D); //draw a different direction that is free
     .print("Direction Drawn: ", D);
     if (D==street_up) {
         .print("Attempting to go up.");
@@ -23,13 +25,13 @@
         .print("Attempting to go left.");
         left;
     }
-    .wait(4000);
-    !walk_random;
+    .wait(3000);
+    !walk_random.
 
 
 -!walk_random <-
     .wait(200);
-    !drive_random.
+    !walk_random.
 
 
 +up_successful <-

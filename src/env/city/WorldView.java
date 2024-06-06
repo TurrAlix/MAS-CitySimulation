@@ -76,30 +76,8 @@ public class WorldView extends GridWorldView {
             case WorldModel.STREET_DOWN:    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");         break;
             case WorldModel.STREET_RIGHT:   drawStreet(g, x, y, model.getAgAtPos(x,y), ">");         break;
             case WorldModel.STREET_LEFT:    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");         break;
-            case WorldModel.BUILDING:       drawBuilding(g, x, y);                                             break;
-            case WorldModel.CAR:            drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
-            case WorldModel.PEDESTRIAN:     drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
+            case WorldModel.BUILDING:       drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
         }
     }
-
-    @Override
-    public void drawCar(Graphics g, int x, int y, int id) {
-        g.setColor(Color.yellow);
-        g.drawArc(x, y, id, x, y, id);
-        g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);
-        g.setColor(Color.black);
-        drawString(g, x, y, defaultFont, String.valueOf(id+1));
-    }
-
-
-    @Override
-    public void drawPedestrian(Graphics g, int x, int y, int id) {
-        g.setColor(Color.blue);
-        g.drawArc(x, y, id, x, y, id);
-        g.fillArc(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4, 0, 360);
-        g.setColor(Color.black);
-        drawString(g, x, y, defaultFont, String.valueOf(id+1));
-    }
-
 
 }

@@ -35,9 +35,7 @@ public class WorldModel extends GridWorldModel {
         return id;
     }
 
-
     /** Actions **/
-
     //movement of car agents
     boolean move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
@@ -72,7 +70,6 @@ public class WorldModel extends GridWorldModel {
         return moved;
     }
 
-    
     //movement of pedestrian agents
     boolean walk(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
@@ -106,7 +103,6 @@ public class WorldModel extends GridWorldModel {
         }
         return moved;
     }
-
     
     /** Maps **/
     static WorldModel world1() throws Exception {

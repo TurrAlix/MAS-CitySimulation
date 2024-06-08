@@ -39,7 +39,6 @@ public class City extends Artifact {
         sleep = s;
     }
 
-
     @OPERATION void up() throws Exception {     move(Move.UP);    }
     @OPERATION void down() throws Exception {   move(Move.DOWN);  }
     @OPERATION void right() throws Exception {  move(Move.RIGHT); }
@@ -106,15 +105,10 @@ public class City extends Artifact {
 
         // percepts of the surroundings
         updateAgPercept(l.x, l.y - 1);
-        System.out.println("percept: x,y-1");
         updateAgPercept(l.x, l.y + 1);
-        System.out.println("percept: x,y+1");
         updateAgPercept(l.x, l.y);
-        System.out.println("percept: x,y");
         updateAgPercept(l.x-1, l.y);
-        System.out.println("percept: x-1, y");
         updateAgPercept(l.x+1, l.y);
-        System.out.println("percept: x+1,y");
     }
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
@@ -159,7 +153,6 @@ public class City extends Artifact {
         }        
     }
 
-    
     private void addPercept(String percept) {
         defineObsProperty(percept);
     }

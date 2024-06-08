@@ -4,7 +4,6 @@ import java.util.Random;
 
 
 public class GridWorldModel {
-
     // each different object is represented by having a single bit
     // set (a bit mask is used in the model), so any power of two
     // represents different objects. Other numbers represent combinations
@@ -70,7 +69,6 @@ public class GridWorldModel {
         return inGrid(x, y) && (data[x][y] & obj) != 0;
     }
 
-
     public void set(int value, int x, int y) {
         data[x][y] = value;
         if (view != null){
@@ -79,6 +77,7 @@ public class GridWorldModel {
         }
         System.out.println("Cell added: (" + x + ", " + y + ")" + " with value: " + value);
     }
+
     public void add(int value, Location l) {
         add(value, l.x, l.y);
     }
@@ -99,19 +98,19 @@ public class GridWorldModel {
         }
     }
 
-
     public void remove(int value, Location l) {
         remove(value, l.x, l.y);
     }
     public void remove(int value, int x, int y) {
         data[x][y] &= ~value;
-        if (view != null) view.update(x,y);
+        if (view != null) view.update(x,y);     // put here: agents disappear after moving
+        // if (view != null) view.update(x,y, data[x][y]); 
+        // TODO CHOOSE WHICH ONE TO USE: we could pass directly in the update the data[x][y] value so later we don't have to do model.data[x][y] & obj
     }
 
     public void setCarPos(int ag, int x, int y) {
         setCarPos(ag, new Location(x, y));
     }
-    
     public void setCarPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) { //clear the previous position
@@ -119,12 +118,12 @@ public class GridWorldModel {
         };
         agPos[ag] = l;
         data[l.x][l.y] |= CAR;
+        if (view != null) view.update(l.x, l.y, CAR);         //ADDED this motherfuckerrr
     }
 
     public void setPedestrianPos(int ag, int x, int y) {
         setPedestrianPos(ag, new Location(x, y));
     }
-    
     public void setPedestrianPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) { //clear the previous position
@@ -132,10 +131,13 @@ public class GridWorldModel {
         };
         agPos[ag] = l;
         data[l.x][l.y] |= PEDESTRIAN;
+        if (view != null) view.update(l.x, l.y, PEDESTRIAN); //ADDED this motherfuckerrr
     }
     
-    
-    
+    /** returns the agent at location l or -1 if there is not one there */
+    public int getAgAtPos(Location l) {
+        return getAgAtPos(l.x, l.y);
+    }
     public static Location getAgPos(int ag) {
         try {
             if (agPos[ag].x == -1)
@@ -146,21 +148,6 @@ public class GridWorldModel {
             return null;
         }
     }
-
-    /**returns the types contained in a block at a specific position */
-    public int getBlockTypeAtPos(Location l) {
-        return getBlockTypeAtPos(l.x, l.y);
-    }
-
-    public int getBlockTypeAtPos(int x, int y) {
-        return data[x][y];
-    }
-
-    /** returns the agent at location l or -1 if there is not one there */
-    public int getAgAtPos(Location l) {
-        return getAgAtPos(l.x, l.y);
-    }
-    
     /** returns the agent at x,y or -1 if there is not one there */
     public int getAgAtPos(int x, int y) {
         for (int i=0; i<agPos.length; i++) {
@@ -169,6 +156,14 @@ public class GridWorldModel {
             }
         }
         return -1;
+    }
+
+    /**returns the types contained in a block at a specific position */
+    public int getBlockTypeAtPos(Location l) {
+        return getBlockTypeAtPos(l.x, l.y);
+    }
+    public int getBlockTypeAtPos(int x, int y) {
+        return data[x][y];
     }
 
     /** returns true if the location l has no building neither agent */

@@ -68,16 +68,4 @@ public class WorldView extends GridWorldView {
         getContentPane().add(BorderLayout.SOUTH, s);
 
     }
-
-    @Override
-    public void draw(Graphics g, int x, int y, int object) {
-        switch (object) {
-            case WorldModel.STREET_UP:      drawStreet(g, x, y, model.getAgAtPos(x,y), "^");         break;
-            case WorldModel.STREET_DOWN:    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");         break;
-            case WorldModel.STREET_RIGHT:   drawStreet(g, x, y, model.getAgAtPos(x,y), ">");         break;
-            case WorldModel.STREET_LEFT:    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");         break;
-            case WorldModel.BUILDING:       drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
-        }
-    }
-
 }

@@ -109,6 +109,7 @@ there are no pedestrians
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
+/*
 +cell(X,Y,street_right) <-
     .print("There is a street right at x=", X, " & y=", Y).
 
@@ -129,3 +130,4 @@ there are no pedestrians
 
 +cell(X,Y,pedestrian) <-
     .print("There is a pedestrian at x=", X, " & y=", Y).
+*/

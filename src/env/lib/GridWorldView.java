@@ -46,6 +46,7 @@ public class GridWorldView extends JFrame {
         super.repaint();
         drawArea.repaint();
     }
+
     /** updates all the frame */
     public void update() {
         repaint();
@@ -59,21 +60,63 @@ public class GridWorldView extends JFrame {
         draw(g, x, y);
         System.out.println("View updated, drawn something: (" + x + ", " + y + ")");
     }
+    public void update(int x, int y, int value) {
+        Graphics g = drawArea.getGraphics();
+        if (g == null) return;
+        drawEmpty(g, x, y);
+        draw(g, x, y, value);
+    }
 
-    // draw the car at x,y (if there is one) 
+    public void draw(Graphics g, int x, int y, int object) {
+        switch (object) {
+            case GridWorldModel.STREET_UP:      drawStreet(g, x, y, model.getAgAtPos(x,y), "^");         break;
+            case GridWorldModel.STREET_DOWN:    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");         break;
+            case GridWorldModel.STREET_RIGHT:   drawStreet(g, x, y, model.getAgAtPos(x,y), ">");         break;
+            case GridWorldModel.STREET_LEFT:    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");         break;
+            case GridWorldModel.BUILDING:       drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
+            case GridWorldModel.CAR:            drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
+            case GridWorldModel.PEDESTRIAN:     drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
+        }
+    }
+
+    /* because STREET id go from 32 to 256, each of them being the power of two of the previous one!*/
+    private int limit = 300; 
+    private void draw(Graphics g, int x, int y) {
+        System.out.println("GRIDWORDVIEW DATA: " + model.data[x][y]);
+
+        if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
+            draw(g, x, y, GridWorldModel.BUILDING);
+        }
+
+        int vl = GridWorldModel.STREET*2;
+        while (vl < limit) {
+            if ((model.data[x][y] & vl) != 0) {
+                draw(g, x, y, vl);
+            }
+            vl *= 2;
+        }
+    }
+
     public void drawCar(Graphics g, int x, int y, int id) {
+        // Background 
+        g.setColor(Color.lightGray);
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        // Draw the veicle 
         g.setColor(Color.yellow);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-        
-        System.out.println("Car at: (" + x + ", " + y + ") with id: " + id);
+        // System.out.println("Car at: (" + x + ", " + y + ") with id: " + id);
         if (id >= 0) { 
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
         }
     }
 
-    // draw the pedestrian at x,y (if there is one)
     public void drawPedestrian(Graphics g, int x, int y, int id) {
+        // TODO CHECK IF I CAN JUST CALL THE DRAWBUILDING (it has the check if there is a pedestrian or not on it) and vice-versa for the cars (maybe its fine like this, it works)
+        // Background 
+        g.setColor(Color.orange);
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+
         // Draw the body (blue circle)
         g.setColor(Color.blue);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
@@ -85,22 +128,17 @@ public class GridWorldView extends JFrame {
         int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
         int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
         g.fillOval(headX, headY, headSizeW, headSizeH);
-
-        System.out.println("Pedestrian at: (" + x + ", " + y + ") with id: " + id);
-
-        // Draw the ID if it is greater than or equal to 0
         if (id >= 0) { 
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, String.valueOf(id + 1));
         }
     }
 
-
     public void drawStreet(Graphics g, int x, int y, int id, String direction) {
         g.setColor(Color.lightGray);
-        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH); //we draw the outline
 
-        if (id<0){
+        if (((model.data[x][y] & GridWorldModel.CAR) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN) == 0)){ //means no agent has been spotted on the street block (cf. getAgAtPos)
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             
@@ -114,20 +152,31 @@ public class GridWorldView extends JFrame {
             g.drawString(text, centerX, centerY);
             System.out.println("Street at: (" + x + ", " + y + ")" + " with value: " + text);
 
-        }else{
+        }else{ //if there is an agent on the block, we must make sure that it is drawn on top of the street
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             drawCar(g, x, y, id);
+            if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) { //pedestrians can be on streets too (zebra-crossings)
+                System.out.println("Drawing a pedestrian at: x="+x+";y="+y);
+                drawPedestrian(g, x, y, id);
+            }
+            if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
+                System.out.println("Drawing a car at: x="+x+";y="+y);
+                drawCar(g, x, y, id);
+            }
         }
     }
-
-    public void drawBuilding(Graphics g, int x, int y) {
-        g.setColor(Color.orange);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        g.setColor(Color.lightGray);
-        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-    } /*TODO: adapt it to be sure than the pedestrians appear ON TOP OF the building blocks
-      (cf. street-car way of doing right above)*/
+    
+    public void drawBuilding(Graphics g, int x, int y, int id) {
+        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) == 0){
+            g.setColor(Color.orange);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        }else{
+            g.setColor(Color.orange);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawPedestrian(g, x, y, id);
+        }
+    }     
 
     public void drawString(Graphics g, int x, int y, Font f, String s) {
         g.setFont(f);
@@ -140,38 +189,8 @@ public class GridWorldView extends JFrame {
     public void drawEmpty(Graphics g, int x, int y) {
         g.setColor(Color.white);
         g.fillRect(x * cellSizeW + 1, y * cellSizeH+1, cellSizeW-1, cellSizeH-1);
-        g.setColor(Color.lightGray);
-        g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-    }
-
-
-    /** method to draw unknown object, probably overridden by the user viewer class */
-    public void draw(Graphics g, int x, int y, int object) {
-        //g.setColor(Color.black);
-        //drawString(g,x,y,defaultFont,String.valueOf(object));
-    }
-    private int limit = 1000;
-    private void draw(Graphics g, int x, int y) {
-        if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
-            drawBuilding(g, x, y);
-        }
-
-        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) {
-            drawPedestrian(g, x, y, model.getAgAtPos(x, y));
-        }
-        
-        if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
-            drawCar(g, x, y, model.getAgAtPos(x, y));
-        }
-
-        int vl = GridWorldModel.STREET*2;
-        while (vl < limit) {
-            if ((model.data[x][y] & vl) != 0) {
-                draw(g, x, y, vl);
-            }
-            vl *= 2;
-        }
-
+        // g.setColor(Color.lightGray);
+        // g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
     }
 
     public Canvas getCanvas() {
@@ -183,7 +202,6 @@ public class GridWorldView extends JFrame {
     }
 
     class GridCanvas extends Canvas {
-
         private static final long serialVersionUID = 1L;
         public void paint(Graphics g) {
             cellSizeW = drawArea.getWidth() / model.getWidth();

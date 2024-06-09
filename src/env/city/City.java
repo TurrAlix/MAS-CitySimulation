@@ -2,6 +2,7 @@ package city;
 
 import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
+import lib.GridWorldModel;
 import lib.Location;
 
 import java.util.logging.Logger;
@@ -38,7 +39,6 @@ public class City extends Artifact {
         sleep = s;
     }
 
-
     @OPERATION void up() throws Exception {     move(Move.UP);    }
     @OPERATION void down() throws Exception {   move(Move.DOWN);  }
     @OPERATION void right() throws Exception {  move(Move.RIGHT); }
@@ -47,9 +47,8 @@ public class City extends Artifact {
     void move(Move m) throws Exception {
         if (sleep > 0) await_time(sleep);
         boolean success=false;
-        //TODO: We are trying to differentiate the call for move between car (1st case) or pedestrian (2d case)
-        //if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
-        //if ((model.data[l.x][l.y] & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);}; //TODO: create walk function
+        if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
+        if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);};
         updateAgPercept();
 
         if (success) {
@@ -99,27 +98,17 @@ public class City extends Artifact {
     }
 
     private void updateAgPercept() {
-        Location l = model.getAgPos(agId);
+        Location l = GridWorldModel.getAgPos(agId);
         ObsProperty p = getObsProperty("pos");
         p.updateValue(0, l.x);
         p.updateValue(1, l.y);
 
-        // what's around (the private function under)
-        /*for (int i=-1;i<1;i++) { //should be i<2 but for now does not work
-            for (int j=-1;j<1;j++) { //should be j<2 but for now does not work
-                updateAgPercept(l.x + i, l.y + j);
-            }
-        }*/
+        // percepts of the surroundings
         updateAgPercept(l.x, l.y - 1);
-        System.out.println("percept: x,y-1");
         updateAgPercept(l.x, l.y + 1);
-        System.out.println("percept: x,y+1");
         updateAgPercept(l.x, l.y);
-        System.out.println("percept: x,y");
         updateAgPercept(l.x-1, l.y);
-        System.out.println("percept: x-1, y");
         updateAgPercept(l.x+1, l.y);
-        System.out.println("percept: x+1,y");
     }
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
@@ -164,7 +153,6 @@ public class City extends Artifact {
         }        
     }
 
-    
     private void addPercept(String percept) {
         defineObsProperty(percept);
     }

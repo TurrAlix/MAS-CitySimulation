@@ -37,6 +37,7 @@ public class City extends Artifact {
     }
     public void setSleep(int s) {
         sleep = s;
+        System.out.println("Sleep:"+s);
     }
 
     @OPERATION void up() throws Exception {     move(Move.UP);    }
@@ -45,7 +46,11 @@ public class City extends Artifact {
     @OPERATION void left() throws Exception {   move(Move.LEFT);  }
     
     void move(Move m) throws Exception {
-        if (sleep > 0) await_time(sleep);
+        if (sleep > 0) {
+            System.out.println("Agent: "+agId+"; Sleeping before for "+sleep+"ms");
+            await_time(sleep);
+            System.out.println("Agent: "+agId+"; Done sleeping for "+sleep+"ms, let's go!");
+        }
         boolean success=false;
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);};
@@ -150,7 +155,7 @@ public class City extends Artifact {
         } 
         if (model.hasObject(WorldModel.PEDESTRIAN, x, y)) {
             defineObsProperty("cell", x, y, pedestrian);
-        }        
+        }       
     }
 
     private void addPercept(String percept) {

@@ -22,31 +22,31 @@ there are no pedestrians
 
 /* Plans */
 +!drive_random : pos(X,Y) & cell(X,Y,street_up) <- 
+    .wait(2000);
     .print("Attempting to go up...");
     up;
-    .wait(1000);
     !drive_random.
 
 +!drive_random : pos(X,Y) & cell(X,Y,street_down) <-
+    .wait(2000);
     .print("Attempting to go down...");
     down;
-    .wait(1000);
     !drive_random.
 
 +!drive_random : pos(X,Y) & cell(X,Y,street_left) <- 
+    .wait(2000);
     .print("Attempting to go left...");
     left;
-    .wait(1000);
     !drive_random.
 
 +!drive_random : pos(X,Y) & cell(X,Y,street_right) <- 
+    .wait(2000);
     .print("Attempting to go right...");
     right;
-    .wait(1000);
     !drive_random.
 
 -!drive_random <-
-    .wait(200);
+    .wait(500);
     !drive_random.
 
 
@@ -78,7 +78,17 @@ there are no pedestrians
     .print("Cannot go left");
     !change_direction.
 
+/*TODO
+For now, change_direction is actually occuring at the same time as drive_random as this latter is
+triggered as soon as there is a pos and a cell percepts without no constraint of previous success or whatever (so
+basically it's triggered almost constantly, even when there is a change of direction occuring...)
+> this leads to repetitions in the car logs and probably explains why it goes crazy at some point (with car 2
+going crazy from the very start as it calls change_direction right away); to fix this, we probably need to be
+more restrictive in our calls of the drive_random functions so that they cannot occur in parallel of change_direction
+(creation of additional control beliefs maybe? > to be investigated)
+*/
 +!change_direction <-
+    .wait(2000);
     .print("Trying to change of direction");
     ?pos(X,Y);
     ?cell(X,Y,D);
@@ -86,6 +96,7 @@ there are no pedestrians
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
     .print("New Direction Drawn: ", NewD);
     if (not(NewD==D)) {
+        .wait(5000);
         .print("Attempting to turn...");
         if (NewD==street_up) {
         up;
@@ -99,10 +110,9 @@ there are no pedestrians
         if (NewD==street_left) {
         left;
         }
-        .wait(2000);
         !drive_random;
     } else {
-        .wait(1000);
+        .wait(2000);
         !change_direction; //if the new direction drawn is similar to the old one, another one is drawn
     }. 
 
@@ -110,7 +120,6 @@ there are no pedestrians
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
-/*
 +cell(X,Y,street_right) <-
     .print("There is a street right at x=", X, " & y=", Y).
 
@@ -126,9 +135,12 @@ there are no pedestrians
 +cell(X,Y,street_left) <-
     .print("There is a street left at x=", X, " & y=", Y).
 
-+cell(X,Y,car) <-
+
+/*TODO: We should try to make car and pedestrian as separated percepts compared to
+cells (so also some changes needed in City.java) so as to not compare D="car" with
+NewD="street_left" (for example) in change_direction function*/
+/*+cell(X,Y,car) <-
     .print("There is a car at x=", X, " & y=", Y).
 
 +cell(X,Y,pedestrian) <-
-    .print("There is a pedestrian at x=", X, " & y=", Y).
-*/
+    .print("There is a pedestrian at x=", X, " & y=", Y).*/

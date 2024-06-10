@@ -202,7 +202,7 @@ public class GridWorldView extends JFrame {
     }
 
     class GridCanvas extends Canvas {
-        private static final long serialVersionUID = 1L;
+         private static final long serialVersionUID = 1L;
         public void paint(Graphics g) {
             cellSizeW = drawArea.getWidth() / model.getWidth();
             cellSizeH = drawArea.getHeight() / model.getHeight();

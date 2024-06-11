@@ -74,28 +74,28 @@ public class WorldModel extends GridWorldModel {
     boolean walk(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         boolean moved=false;
-
         switch (dir) {
+            //check if in Grid, if in Building and if in zebra_crossing
             case UP:
-                if (inGrid(l.x, l.y - 1)) {
+                if (inBuilding(l.x, l.y - 1)) { 
                     setPedestrianPos(ag, l.x, l.y - 1);
                     moved=true;
                 }
                 break;
             case DOWN:
-                if (inGrid(l.x, l.y + 1)) {
+                if (inBuilding(l.x, l.y + 1)) {
                     setPedestrianPos(ag, l.x, l.y + 1);
                     moved=true;
                 }
                 break;
             case RIGHT:
-                if (inGrid(l.x + 1, l.y)) {
+                if (inBuilding(l.x + 1, l.y)) {
                     setPedestrianPos(ag, l.x + 1, l.y);
                     moved=true;
                 }
                 break;
             case LEFT:
-                if (inGrid(l.x - 1, l.y)) {
+                if (inBuilding(l.x - 1, l.y)) {
                     setPedestrianPos(ag, l.x - 1, l.y);
                     moved=true;
                 }

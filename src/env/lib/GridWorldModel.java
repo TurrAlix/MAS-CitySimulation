@@ -63,6 +63,12 @@ public class GridWorldModel {
         return y >= 0 && y < height && x >= 0 && x < width;
     }
 
+    @SuppressWarnings("unused")
+    public boolean inBuilding(int x, int y) {
+        System.out.println("inBuilding: " + ((data[x][y] & BUILDING) != 0) + " x: " + x + " y: " + y);
+        return (((data[x][y] & BUILDING) != 0) && inGrid(x, y)) || ((data[x][y] & ZEBRA_CROSSING) != 0);
+    }
+
     public boolean hasObject(int obj, Location l) {
         return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) != 0;
     }

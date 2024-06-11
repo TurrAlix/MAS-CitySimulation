@@ -5,7 +5,6 @@
 
 /* Plans */
 +!walk_random <-
-    .print("Hey!");
     ?pos(X,Y);
     jia.random_walk(X,Y,D); //draw a different direction that is free
     .print("Direction Drawn: ", D);

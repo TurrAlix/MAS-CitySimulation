@@ -55,12 +55,15 @@ public class City extends Artifact {
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);};
         updateAgPercept();
+        ObsProperty s = getObsProperty("success");
 
         if (success) {
-            addPercept(m.toString().toLowerCase() + "_successful"); // Add percept for successful move
+            s.updateValue(0, 1);                            // Add percept for successful move
+            s.updateValue(1, m.toString().toLowerCase()); 
         } else {
-            addPercept(m.toString().toLowerCase() + "_failed"); // Add percept for failed move
-        }      
+            s.updateValue(0, 0);
+            s.updateValue(1, m.toString().toLowerCase());
+        }
     }
 
     @OPERATION void skip() {
@@ -77,7 +80,7 @@ public class City extends Artifact {
                 case 2: model = WorldModel.world2(); break;
                 case 3: model = WorldModel.world3(); break;
                 default:
-                    logger.info("Invalid index for the enviroment!");
+                    logger.info("Invalid index for the environment!");
                     return;
                 }
                 if (hasGUI) {
@@ -87,9 +90,25 @@ public class City extends Artifact {
             }
             // Observable properties of Cartago
             defineObsProperty("gsize", simId, model.getWidth(), model.getHeight());
+
             defineObsProperty("pos", -1, -1);
+            defineObsProperty("cellL", -1, -1, -1); //what type of infrastructure in the left cell?
+            defineObsProperty("cellR", -1, -1, -1);
+            defineObsProperty("cellC", -1, -1, -1);
+            defineObsProperty("cellU", -1, -1, -1);
+            defineObsProperty("cellD", -1, -1, -1);
+
+            defineObsProperty("whoL", -1, -1, -1); //is there an agent on the left?
+            defineObsProperty("whoR", -1, -1, -1);
+            defineObsProperty("whoC", -1, -1, -1);
+            defineObsProperty("whoU", -1, -1, -1);
+            defineObsProperty("whoD", -1, -1, -1);
+
+            defineObsProperty("success", -1, ""); // success(if <1st argument>==1) or failure of move in <2d argument> direction
+
 
             updateAgPercept();
+
         } catch (Exception e) {
             logger.warning("Error creating world "+e);
             e.printStackTrace();
@@ -107,13 +126,24 @@ public class City extends Artifact {
         ObsProperty p = getObsProperty("pos");
         p.updateValue(0, l.x);
         p.updateValue(1, l.y);
+        ObsProperty cl = getObsProperty("cellL");
+        ObsProperty cr = getObsProperty("cellR");
+        ObsProperty cc = getObsProperty("cellC");
+        ObsProperty cu = getObsProperty("cellU");
+        ObsProperty cd = getObsProperty("cellD");
+        ObsProperty whol = getObsProperty("whoL");
+        ObsProperty whor = getObsProperty("whoR");
+        ObsProperty whoc = getObsProperty("whoC");
+        ObsProperty whou = getObsProperty("whoU");
+        ObsProperty whod = getObsProperty("whoD");         
 
         // percepts of the surroundings
-        updateAgPercept(l.x, l.y - 1);
-        updateAgPercept(l.x, l.y + 1);
-        updateAgPercept(l.x, l.y);
-        updateAgPercept(l.x-1, l.y);
-        updateAgPercept(l.x+1, l.y);
+        updateAgPercept(l.x, l.y - 1, cu, whou);
+        updateAgPercept(l.x, l.y + 1, cd, whod);
+        updateAgPercept(l.x, l.y, cc, whoc);
+        updateAgPercept(l.x-1, l.y, cl, whol);
+        updateAgPercept(l.x+1, l.y, cr, whor);
+
     }
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
@@ -124,42 +154,53 @@ public class City extends Artifact {
     private static Term street_left = new Atom("street_left");
     private static Term car = new Atom("car");
     private static Term pedestrian = new Atom("pedestrian");
+    private static Term nobody = new Atom("nobody");
 
 
-    private void updateAgPercept(int x, int y) {
+    private void updateAgPercept(int x, int y, ObsProperty obs1, ObsProperty obs2) {
         if (model == null || !model.inGrid(x,y)) {
             System.out.println("x: " + x + ", y: " + y + " are out of the grid or model is null.");
             return;
         }
         try {
-            removeObsPropertyByTemplate("cell", null, null, null); //remove the property that match these arguments
+            removeObsPropertyByTemplate(obs1.toString(), null, null, null);
+            removeObsPropertyByTemplate(obs2.toString(), null, null, null);
         } catch (IllegalArgumentException e) {}
 
+        obs1.updateValue(0, x);
+        obs1.updateValue(1, y);
+        obs2.updateValue(0, x);
+        obs2.updateValue(1, y);
+
         if (model.hasObject(WorldModel.BUILDING, x, y)) {
-            defineObsProperty("cell", x, y, building);
+            obs1.updateValue(2, building);
         } 
         if (model.hasObject(WorldModel.STREET_UP, x, y)) {
-            defineObsProperty("cell", x, y, street_up);
+            obs1.updateValue(2, street_up);
         }
         if (model.hasObject(WorldModel.STREET_DOWN, x, y)) {
-            defineObsProperty("cell", x, y, street_down);
+            obs1.updateValue(2, street_down);
         }
         if (model.hasObject(WorldModel.STREET_RIGHT, x, y)) {
-            defineObsProperty("cell", x, y, street_right);
+            obs1.updateValue(2, street_right);
         }
         if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
-            defineObsProperty("cell", x, y, street_left);
+            obs1.updateValue(2, street_left);
         }
+
         if (model.hasObject(WorldModel.CAR, x, y)) {
-            defineObsProperty("cell", x, y, car);
+            obs2.updateValue(2, car);
         } 
         if (model.hasObject(WorldModel.PEDESTRIAN, x, y)) {
-            defineObsProperty("cell", x, y, pedestrian);
-        }       
+            obs2.updateValue(2, pedestrian);;
+        }
+        if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN, x, y))) {
+            obs2.updateValue(2, nobody);
+        } 
     }
 
-    private void addPercept(String percept) {
+    /*private void addPercept(String percept) {
         defineObsProperty(percept);
-    }
+    }*/
 
 }

@@ -8,6 +8,7 @@
     ?pos(X,Y);
     jia.random_walk(X,Y,D); //draw a different direction that is free
     .print("Direction Drawn: ", D);
+    .wait(1000);
     if (D==street_up) {
         .print("Attempting to go up.");
         up;
@@ -23,9 +24,7 @@
     if (D==street_left) {
         .print("Attempting to go left.");
         left;
-    }
-    .wait(3000);
-    !walk_random.
+    }.
 
 
 -!walk_random <-
@@ -33,57 +32,67 @@
     !walk_random.
 
 
-+up_successful <-
-    .print("Went up!").
++success(1,"up") <-
+    .print("Went up!");
+    !walk_random.
     
-+up_failed <-
++success(0,"up") <-
     .print("Cannot go up");
     !walk_random.
 
-+down_successful <-
-    .print("Went down!").
++success(1,"down") <-
+    .print("Went down!");
+    !walk_random.
     
-+down_failed <-
++success(0,"down") <-
     .print("Cannot go down");
     !walk_random.
 
-+right_successful <-
-    .print("Went right!").
++success(1,"right") <-
+    .print("Went right!");
+    !walk_random.
     
-+right_failed <-
++success(0,"right") <-
     .print("Cannot go right");
     !walk_random.
 
-+left_successful <-
-    .print("Went left!").
++success(1,"left") <-
+    .print("Went left!"); 
+    !walk_random.
     
-+left_failed <-
++success(0,"left") <-
     .print("Cannot go left");
     !walk_random.
-
 
 
 
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
-+cell(X,Y,street_right) <-
-    .print("There is a street right at x=", X, " & y=", Y).
++cellL(X,Y,D) <-
+    .print("Left cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,building) <-
-    .print("There is a building at x=", X, " & y=", Y).
++cellR(X,Y,D) <-
+    .print("Right cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,street_up) <-
-    .print("There is a street up at x=", X, " & y=", Y).
++cellC(X,Y,D) <-
+    .print("Current cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,street_down) <-
-    .print("There is a street down at x=", X, " & y=", Y).
++cellU(X,Y,D) <-
+    .print("Up cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,street_left) <-
-    .print("There is a street left at x=", X, " & y=", Y).
++cellD(X,Y,D) <-
+    .print("Down cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,car) <-
-    .print("There is a car at x=", X, " & y=", Y).
 
-+cell(X,Y,pedestrian) <-
-    .print("There is a pedestrian at x=", X, " & y=", Y).
++whoL(X,Y,W) <-
+    .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).
+
++whoR(X,Y,W) <-
+    .print("Agent on right cell?: x=", X, " & y=", Y, " ; ", W).
+
++whoU(X,Y,W) <-
+    .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
+
++whoD(X,Y,W) <-
+    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).

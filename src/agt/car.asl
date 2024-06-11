@@ -22,115 +22,92 @@ busy(0). //not turning or in the process of driving
 !drive_random.
 
 /* Plans */
-+!drive_random : pos(X,Y) & cell(X,Y,street_up) & busy(0)  <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_up) & busy(0)  <- 
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(2000);
+    .wait(500);
     .print("Attempting to go up...");
-    up;
-    !drive_random.
+    up.
 
-+!drive_random : pos(X,Y) & cell(X,Y,street_down) & busy(0) <-
++!drive_random : pos(X,Y) & cellC(X,Y,street_down) & busy(0) <-
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(2000);
+    .wait(500);
     .print("Attempting to go down...");
-    down;
-    !drive_random.
+    down.
 
-+!drive_random : pos(X,Y) & cell(X,Y,street_left) & busy(0) <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_left) & busy(0) <- 
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(2000);
+    .wait(500);
     .print("Attempting to go left...");
-    left;
-    !drive_random.
+    left.
 
-+!drive_random : pos(X,Y) & cell(X,Y,street_right) & busy(0) <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_right) & busy(0) <- 
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(2000);
+    .wait(500);
     .print("Attempting to go right...");
-    right;
-    !drive_random.
+    right.
 
 -!drive_random <-
-    .wait(500);
+    .wait(200);
     !drive_random.
 
 
-+up_successful <-
++success(1,"up") <-
     .print("Went up!");
-    -up_successful;
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B).
+    .print("Busy?", B);
+    !drive_random.
     
-+up_failed <-
++success(0,"up") <-
     .print("Cannot go up");
-    -up_failed;
     !change_direction.
 
-+down_successful <-
++success(1,"down") <-
     .print("Went down!");
-    -down_successful;
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B).
+    .print("Busy?", B);
+    !drive_random.
     
-+down_failed <-
++success(0,"down") <-
     .print("Cannot go down");
-    -down_failed;
     !change_direction.
 
-+right_successful <-
++success(1,"right") <-
     .print("Went right!");
-    -right_successful;
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B).
+    .print("Busy?", B);
+    !drive_random.
     
-+right_failed <-
++success(0,"right") <-
     .print("Cannot go right");
-    -right_failed;
     !change_direction.
 
-+left_successful <-
-    .print("Went left!");
-    -left_successful;
++success(1,"left") <-
+    .print("Went left!"); 
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B).
+    .print("Busy?", B);
+    !drive_random.
     
-+left_failed <-
++success(0,"left") <-
     .print("Cannot go left");
-    -left_failed;
     !change_direction.
 
-/*TODO
-For now, change_direction is actually occuring at the same time as drive_random as this latter is
-triggered as soon as there is a pos and a cell percepts without no constraint of previous success or whatever (so
-basically it's triggered almost constantly, even when there is a change of direction occuring...)
-> this leads to repetitions in the car logs and probably explains why it goes crazy at some point (with car 2
-going crazy from the very start as it calls change_direction right away); to fix this, we probably need to be
-more restrictive in our calls of the drive_random functions so that they cannot occur in parallel of change_direction
-(creation of additional control beliefs maybe? > to be investigated)
--------------UPDATEEE-----------------------
-Now thanks to the belief busy() it works fine to prevent change_direction from occuring at the same time as drive_random,
-but since the cell beliefs are all stored in the beliefs' base when the car is going on a block on which it has already gone,
-it calls several times drive_random simultaneously (interferences between the percept coming from the environment and
-the one already stored in the belief's base >> so we should find a way to remove the cell percepts along the way 
-while not preventing the change_direction function from working as it needs the D value from the cell percept...)
-*/
 +!change_direction <-
-    .wait(2000);
+    .wait(500);
     .print("Trying to change of direction");
     ?pos(X,Y);
-    ?cell(X,Y,D);
+    ?cellC(X,Y,D);
     .print("Position: ", X, "/", Y, "; Street Direction: ", D);
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
     .print("New Direction Drawn: ", NewD);
@@ -148,7 +125,6 @@ while not preventing the change_direction function from working as it needs the 
         if (NewD==street_left) {
         left;
         }
-        !drive_random;
     } else {
         !change_direction; //if the new direction drawn is similar to the old one, another one is drawn
     }. 
@@ -157,27 +133,30 @@ while not preventing the change_direction function from working as it needs the 
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
-+cell(X,Y,street_right) <-
-    .print("There is a street right at x=", X, " & y=", Y).
++cellL(X,Y,D) <-
+    .print("Left cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,building) <-
-    .print("There is a building at x=", X, " & y=", Y).
++cellR(X,Y,D) <-
+    .print("Right cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,street_up) <-
-    .print("There is a street up at x=", X, " & y=", Y).
++cellC(X,Y,D) <-
+    .print("Current cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,street_down) <-
-    .print("There is a street down at x=", X, " & y=", Y).
++cellU(X,Y,D) <-
+    .print("Up cell: x=", X, " & y=", Y, " ; ", D).
 
-+cell(X,Y,street_left) <-
-    .print("There is a street left at x=", X, " & y=", Y).
++cellD(X,Y,D) <-
+    .print("Down cell: x=", X, " & y=", Y, " ; ", D).
 
 
-/*TODO: We should try to make car and pedestrian as separated percepts compared to
-cells (so also some changes needed in City.java) so as to not compare D="car" with
-NewD="street_left" (for example) in change_direction function*/
-/*+cell(X,Y,car) <-
-    .print("There is a car at x=", X, " & y=", Y).
++whoL(X,Y,W) : (W==car) | (W==pedestrian) <-
+    .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).
 
-+cell(X,Y,pedestrian) <-
-    .print("There is a pedestrian at x=", X, " & y=", Y).*/
++whoR(X,Y,W) : (W==car) | (W==pedestrian) <-
+    .print("Agent on right cell?: x=", X, " & y=", Y, " ; ", W).
+
++whoU(X,Y,W) : (W==car) | (W==pedestrian) <-
+    .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
+
++whoD(X,Y,W) : (W==car) | (W==pedestrian) <-
+    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).

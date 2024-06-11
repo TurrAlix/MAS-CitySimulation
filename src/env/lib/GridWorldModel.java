@@ -9,6 +9,7 @@ public class GridWorldModel {
     // represents different objects. Other numbers represent combinations
     // of objects which are all located in the same cell of the grid.
     public static final int       CLEAN    = 0;
+    public static final int       ZEBRA_CROSSING = 1;
     public static final int       CAR    = 2;
     public static final int       PEDESTRIAN    = 4;
     public static final int       BUILDING = 8;
@@ -118,7 +119,7 @@ public class GridWorldModel {
         };
         agPos[ag] = l;
         data[l.x][l.y] |= CAR;
-        if (view != null) view.update(l.x, l.y, CAR);         //ADDED this motherfuckerrr
+        if (view != null) view.update(l.x, l.y, CAR);         
     }
 
     public void setPedestrianPos(int ag, int x, int y) {
@@ -131,7 +132,7 @@ public class GridWorldModel {
         };
         agPos[ag] = l;
         data[l.x][l.y] |= PEDESTRIAN;
-        if (view != null) view.update(l.x, l.y, PEDESTRIAN); //ADDED this motherfuckerrr
+        if (view != null) view.update(l.x, l.y, PEDESTRIAN); 
     }
     
     /** returns the agent at location l or -1 if there is not one there */

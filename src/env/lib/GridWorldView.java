@@ -56,9 +56,7 @@ public class GridWorldView extends JFrame {
         Graphics g = drawArea.getGraphics();
         if (g == null) return;
         drawEmpty(g, x, y);
-        System.out.println("drawned empty: (" + x + ", " + y + ")");
         draw(g, x, y);
-        System.out.println("View updated, drawn something: (" + x + ", " + y + ")");
     }
     public void update(int x, int y, int value) {
         Graphics g = drawArea.getGraphics();
@@ -82,8 +80,6 @@ public class GridWorldView extends JFrame {
     /* because STREET id go from 32 to 256, each of them being the power of two of the previous one!*/
     private int limit = 300; 
     private void draw(Graphics g, int x, int y) {
-        System.out.println("GRIDWORDVIEW DATA: " + model.data[x][y]);
-
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             draw(g, x, y, GridWorldModel.BUILDING);
         }
@@ -91,12 +87,12 @@ public class GridWorldView extends JFrame {
         int vl = GridWorldModel.STREET*2;
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
+                System.out.println("DISEGNO: " + model.data[x][y]);
                 draw(g, x, y, vl);
             }
             vl *= 2;
         }
     }
-
     public void drawCar(Graphics g, int x, int y, int id) {
         // Background 
         g.setColor(Color.lightGray);
@@ -104,7 +100,6 @@ public class GridWorldView extends JFrame {
         // Draw the veicle 
         g.setColor(Color.yellow);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-        // System.out.println("Car at: (" + x + ", " + y + ") with id: " + id);
         if (id >= 0) { 
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
@@ -162,6 +157,20 @@ public class GridWorldView extends JFrame {
             }
             if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
                 System.out.println("Drawing a car at: x="+x+";y="+y);
+                drawCar(g, x, y, id);
+            }
+        }
+        if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
+            g.setColor(Color.white);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            if((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0){
+                g.setColor(Color.white);
+                g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+                drawPedestrian(g, x, y, id);
+            }
+            if((model.data[x][y] & GridWorldModel.CAR) != 0){
+                g.setColor(Color.white);
+                g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
                 drawCar(g, x, y, id);
             }
         }

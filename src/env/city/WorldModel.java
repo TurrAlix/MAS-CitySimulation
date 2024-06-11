@@ -167,6 +167,13 @@ public class WorldModel extends GridWorldModel {
         model.remove(WorldModel.STREET_RIGHT, 5, 5);
         model.remove(WorldModel.STREET_LEFT, 5, 6);
 
+        //zebra_crossing
+        // If I remove the street underneat the zebra crossing the visualization is fine!!
+        // model.remove(WorldModel.STREET_RIGHT, 3, 5);
+        // model.remove(WorldModel.STREET_LEFT, 3, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 3, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
+
         for (int y = 0; y < h; y++) {
             model.remove(WorldModel.BUILDING, 5, y);
             model.add(WorldModel.STREET_DOWN, 5, y);

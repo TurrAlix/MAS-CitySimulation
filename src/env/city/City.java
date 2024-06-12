@@ -56,13 +56,12 @@ public class City extends Artifact {
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);};
         updateAgPercept();
         ObsProperty s = getObsProperty("success");
+        ObsProperty ls = getObsProperty("fail");
 
         if (success) {
-            s.updateValue(0, 1);                            // Add percept for successful move
-            s.updateValue(1, m.toString().toLowerCase()); 
+            s.updateValue(0, m.toString().toLowerCase()); // Add percept for successful move
         } else {
-            s.updateValue(0, 0);
-            s.updateValue(1, m.toString().toLowerCase());
+            ls.updateValue(0, m.toString().toLowerCase()); // Add percept for failed move
         }
     }
 
@@ -104,9 +103,10 @@ public class City extends Artifact {
             defineObsProperty("whoU", -1, -1, -1);
             defineObsProperty("whoD", -1, -1, -1);
 
-            defineObsProperty("success", -1, ""); // success(if <1st argument>==1) or failure of move in <2d argument> direction
-
-
+            defineObsProperty("success", ""); // success in <argument> direction
+            defineObsProperty("fail", ""); // fail in <argument> direction
+            
+            
             updateAgPercept();
 
         } catch (Exception e) {

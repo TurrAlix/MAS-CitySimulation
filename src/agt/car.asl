@@ -26,7 +26,7 @@ busy(0). //not turning or in the process of driving
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(500);
+    .wait(200);
     .print("Attempting to go up...");
     up.
 
@@ -34,7 +34,7 @@ busy(0). //not turning or in the process of driving
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(500);
+    .wait(200);
     .print("Attempting to go down...");
     down.
 
@@ -42,7 +42,7 @@ busy(0). //not turning or in the process of driving
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(500);
+    .wait(200);
     .print("Attempting to go left...");
     left.
 
@@ -50,90 +50,140 @@ busy(0). //not turning or in the process of driving
     -+busy(1);
     ?busy(B);
     .print("Busy?", B);
-    .wait(500);
+    .wait(200);
     .print("Attempting to go right...");
     right.
 
 -!drive_random <-
-    .wait(200);
+    .wait(100);
     !drive_random.
 
 
-+success(1,"up") <-
++success("up") <-
     .print("Went up!");
     -+busy(0);
     ?busy(B);
     .print("Busy?", B);
     !drive_random.
     
-+success(0,"up") <-
++fail("up") <-
     .print("Cannot go up");
     !change_direction.
 
-+success(1,"down") <-
++success("down") <-
     .print("Went down!");
     -+busy(0);
     ?busy(B);
     .print("Busy?", B);
     !drive_random.
     
-+success(0,"down") <-
++fail("down") <-
     .print("Cannot go down");
     !change_direction.
 
-+success(1,"right") <-
++success("right") <-
     .print("Went right!");
     -+busy(0);
     ?busy(B);
     .print("Busy?", B);
     !drive_random.
     
-+success(0,"right") <-
++fail("right") <-
     .print("Cannot go right");
     !change_direction.
 
-+success(1,"left") <-
++success("left") <-
     .print("Went left!"); 
     -+busy(0);
     ?busy(B);
     .print("Busy?", B);
     !drive_random.
     
-+success(0,"left") <-
++fail("left") <-
     .print("Cannot go left");
     !change_direction.
 
 +!change_direction <-
-    .wait(500);
+    .wait(200);
     .print("Trying to change of direction");
     ?pos(X,Y);
-    ?cellC(X,Y,D);
-    .print("Position: ", X, "/", Y, "; Street Direction: ", D);
+    ?cellC(X,Y,D1);
+    ?success(D2); //last successful move
+    .print("Position: ", X, "/", Y, "; Street Direction: ", D1, "; Last successful move: ", D2);
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
     .print("New Direction Drawn: ", NewD);
-    if (not(NewD==D)) {
-        .print("Attempting to turn...");
-        if (NewD==street_up) {
-        up;
+    if(D2=="up") {
+        if (not(NewD==D1) & not(NewD==street_down)) {
+            .print("Attempting to turn...");
+            if (NewD==street_up) {
+            up;
+            }
+            if (NewD==street_right) {
+            right;
+            }
+            if (NewD==street_left) {
+            left;
+            }
+        } else {
+        !change_direction; //need to draw another direction then
         }
-        if (NewD==street_down) {
-        down;
+    }
+    if(D2=="down") {
+        if (not(NewD==D1) & not(NewD==street_up)) {
+            .print("Attempting to turn...");
+            if (NewD==street_down) {
+            down;
+            }
+            if (NewD==street_right) {
+            right;
+            }
+            if (NewD==street_left) {
+            left;
+            }
+        } else {
+        !change_direction;
         }
-        if (NewD==street_right) {
-        right;
+    }
+    if(D2=="right") {
+        if (not(NewD==D1) & not(NewD==street_left)) {
+            .print("Attempting to turn...");
+            if (NewD==street_up) {
+            up;
+            }
+            if (NewD==street_down) {
+            down;
+            }
+            if (NewD==street_right) {
+            right;
+            }
+        } else {
+        !change_direction;
         }
-        if (NewD==street_left) {
-        left;
+    }
+    if(D2=="left") {
+        if (not(NewD==D1) & not(NewD==street_right)) {
+            .print("Attempting to turn...");
+            if (NewD==street_up) {
+            up;
+            }
+            if (NewD==street_down) {
+            down;
+            }
+            if (NewD==street_left) {
+            left;
+            }
+        } else {
+        !change_direction;
         }
-    } else {
-        !change_direction; //if the new direction drawn is similar to the old one, another one is drawn
+    } else { //car is blocked right from the start, so no last successful move to rely on yet
+        .print("Please don't start a car in a blocking position from the start, it is not fair!!"); //we try again to change direction with the new values for success percept
     }. 
 
 
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
-+cellL(X,Y,D) <-
+/*+cellL(X,Y,D) <-
     .print("Left cell: x=", X, " & y=", Y, " ; ", D).
 
 +cellR(X,Y,D) <-
@@ -159,4 +209,4 @@ busy(0). //not turning or in the process of driving
     .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
 
 +whoD(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).
+    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).*/

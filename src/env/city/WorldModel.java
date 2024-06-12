@@ -36,11 +36,9 @@ public class WorldModel extends GridWorldModel {
     }
 
     /** Actions **/
-    //movement of car agents
     boolean move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         boolean moved=false;
-
         switch (dir) {
             case UP:
                 if (isFree(l.x, l.y - 1)) {
@@ -141,16 +139,14 @@ public class WorldModel extends GridWorldModel {
     static WorldModel world3() throws Exception {
         int w = 12;
         int h = 12;
-        WorldModel model = WorldModel.create(w, h, 3);
+        WorldModel model = WorldModel.create(w, h, 4);
         model.setId("Scenario 3");
-
         // Cars
         model.setCarPos(0, 0, 5);
-        model.setCarPos(1, 0, 6);
-
+        model.setCarPos(1, 11, 6);
         // Pedestrians
         model.setPedestrianPos(2,0,0);
-
+        model.setPedestrianPos(3,11,11);
         // Buildings
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
@@ -160,19 +156,69 @@ public class WorldModel extends GridWorldModel {
         // Streets in the middle
         for (int x = 0; x < w; x++) {
             model.remove(WorldModel.BUILDING, x, 5);
-            model.add(WorldModel.STREET_RIGHT, x, 5);
+            model.add(WorldModel.STREET_LEFT, x, 5);
             model.remove(WorldModel.BUILDING, x, 6);
-            model.add(WorldModel.STREET_LEFT, x, 6);
+            model.add(WorldModel.STREET_RIGHT, x, 6);    
         }
-        model.remove(WorldModel.STREET_RIGHT, 5, 5);
-        model.remove(WorldModel.STREET_LEFT, 5, 6);
+        model.remove(WorldModel.STREET_LEFT, 5, 5);
+        model.remove(WorldModel.STREET_RIGHT, 5, 6);
 
         //zebra_crossing
-        // If I remove the street underneat the zebra crossing the visualization is fine!!
-        // model.remove(WorldModel.STREET_RIGHT, 3, 5);
-        // model.remove(WorldModel.STREET_LEFT, 3, 6);
         model.add(WorldModel.ZEBRA_CROSSING, 3, 5);
         model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
+
+        for (int y = 0; y < h; y++) {
+            model.remove(WorldModel.BUILDING, 5, y);
+            model.add(WorldModel.STREET_DOWN, 5, y);
+            model.remove(WorldModel.BUILDING, 6, y);
+            model.add(WorldModel.STREET_UP,6, y);
+        }
+        model.remove(WorldModel.STREET_UP, 6, 5);
+        model.remove(WorldModel.STREET_UP, 6, 6);
+        return model;
+    }
+
+
+    // Map with different buildings
+    static WorldModel world4() throws Exception {
+        int w = 12;
+        int h = 12;
+        WorldModel model = WorldModel.create(w, h, 4);
+        model.setId("Scenario 4");
+        // Cars
+        model.setCarPos(0, 0, 5);
+        model.setCarPos(1, 11, 6);
+        // Pedestrians
+        model.setPedestrianPos(2,0,0);
+        model.setPedestrianPos(3,11,11);
+
+        // Buildings
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
+        }
+        // supermarket, a school, a park, and an office
+        model.add(WorldModel.SCHOOL, 0, 0);
+        model.add(WorldModel.OFFICE, 11, 0);
+        model.add(WorldModel.PARK, 0, 11);
+        model.add(WorldModel.SUPERMARKET, 11, 11);
+
+        // Streets in the middle
+        for (int x = 0; x < w; x++) {
+            model.remove(WorldModel.BUILDING, x, 5);
+            model.add(WorldModel.STREET_LEFT, x, 5);
+            model.remove(WorldModel.BUILDING, x, 6);
+            model.add(WorldModel.STREET_RIGHT, x, 6);    
+        }
+        model.remove(WorldModel.STREET_LEFT, 5, 5);
+        model.remove(WorldModel.STREET_RIGHT, 5, 6);
+
+        //zebra_crossing
+        model.add(WorldModel.ZEBRA_CROSSING, 3, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 8, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
 
         for (int y = 0; y < h; y++) {
             model.remove(WorldModel.BUILDING, 5, y);

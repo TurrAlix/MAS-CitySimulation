@@ -25,7 +25,7 @@ busy(0). //not turning or in the process of driving
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up) & busy(0)  <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
+    //.print("Busy?", B);
     .wait(500);
     .print("Attempting to go up...");
     up.
@@ -33,7 +33,7 @@ busy(0). //not turning or in the process of driving
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down) & busy(0) <-
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
+    //.print("Busy?", B);
     .wait(500);
     .print("Attempting to go down...");
     down.
@@ -41,7 +41,7 @@ busy(0). //not turning or in the process of driving
 +!drive_random : pos(X,Y) & cellC(X,Y,street_left) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
+    //.print("Busy?", B);
     .wait(500);
     .print("Attempting to go left...");
     left.
@@ -49,7 +49,7 @@ busy(0). //not turning or in the process of driving
 +!drive_random : pos(X,Y) & cellC(X,Y,street_right) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
+    //.print("Busy?", B);
     .wait(500);
     .print("Attempting to go right...");
     right.
@@ -63,7 +63,6 @@ busy(0). //not turning or in the process of driving
     .print("Went up!");
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +success(0,"up") <-
@@ -74,7 +73,6 @@ busy(0). //not turning or in the process of driving
     .print("Went down!");
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +success(0,"down") <-
@@ -85,7 +83,6 @@ busy(0). //not turning or in the process of driving
     .print("Went right!");
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +success(0,"right") <-
@@ -96,7 +93,6 @@ busy(0). //not turning or in the process of driving
     .print("Went left!"); 
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +success(0,"left") <-

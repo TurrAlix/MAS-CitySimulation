@@ -18,7 +18,7 @@ public class City extends Artifact {
     static WorldModel  model = null;
     static WorldView   view;
 
-    static int     simId    = 3;    // different type of environment
+    static int     simId    = 5;    // different type of environment
     static int     sleep    = 200;
     static boolean hasGUI   = true;
     int     agId     = -1;
@@ -37,7 +37,6 @@ public class City extends Artifact {
     }
     public void setSleep(int s) {
         sleep = s;
-        System.out.println("Sleep:"+s);
     }
 
     @OPERATION void up() throws Exception {     move(Move.UP);    }
@@ -47,9 +46,7 @@ public class City extends Artifact {
     
     void move(Move m) throws Exception {
         if (sleep > 0) {
-            System.out.println("Agent: "+agId+"; Sleeping before for "+sleep+"ms");
             await_time(sleep);
-            System.out.println("Agent: "+agId+"; Done sleeping for "+sleep+"ms, let's go!");
         }
         boolean success=false;
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
@@ -79,6 +76,9 @@ public class City extends Artifact {
                 case 1: model = WorldModel.world1(); break;
                 case 2: model = WorldModel.world2(); break;
                 case 3: model = WorldModel.world3(); break;
+                case 4: model = WorldModel.world4(); break;
+                // case 5: model = WorldModel.world5(); break;
+                // case 6: model = WorldModel.world6(); break;
                 default:
                     logger.info("Invalid index for the environment!");
                     return;
@@ -143,7 +143,6 @@ public class City extends Artifact {
         updateAgPercept(l.x, l.y, cc, whoc);
         updateAgPercept(l.x-1, l.y, cl, whol);
         updateAgPercept(l.x+1, l.y, cr, whor);
-
     }
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
@@ -159,7 +158,6 @@ public class City extends Artifact {
 
     private void updateAgPercept(int x, int y, ObsProperty obs1, ObsProperty obs2) {
         if (model == null || !model.inGrid(x,y)) {
-            System.out.println("x: " + x + ", y: " + y + " are out of the grid or model is null.");
             return;
         }
         try {

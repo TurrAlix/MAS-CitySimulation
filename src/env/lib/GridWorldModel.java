@@ -12,17 +12,21 @@ public class GridWorldModel {
     public static final int       ZEBRA_CROSSING = 1;
     public static final int       CAR    = 2;
     public static final int       PEDESTRIAN    = 4;
-    public static final int       BUILDING = 8;
 
-    public static final int       STREET = 16;
-    public static final int       STREET_UP = 32;
-    public static final int       STREET_DOWN = 64;
-    public static final int       STREET_RIGHT = 128;
-    public static final int       STREET_LEFT = 256;
+    public static final int       BUILDING = 8;
+    public static final int       SUPERMARKET = 256;
+    public static final int       PARK = 512;
+    public static final int       OFFICE = 1024;
+    public static final int       SCHOOL = 2048;
+
+    public static final int       STREET_UP = 16;
+    public static final int       STREET_DOWN = 32;
+    public static final int       STREET_RIGHT = 64;
+    public static final int       STREET_LEFT = 128;
 
     protected int                 width, height;
     protected int[][]             data = null;
-    protected static Location[]          agPos;
+    protected static Location[]   agPos;
     protected GridWorldView       view;
     protected Random              random = new Random();
 
@@ -65,7 +69,6 @@ public class GridWorldModel {
 
     @SuppressWarnings("unused")
     public boolean inBuilding(int x, int y) {
-        System.out.println("inBuilding: " + ((data[x][y] & BUILDING) != 0) + " x: " + x + " y: " + y);
         return (((data[x][y] & BUILDING) != 0) && inGrid(x, y)) || ((data[x][y] & ZEBRA_CROSSING) != 0);
     }
 
@@ -80,9 +83,7 @@ public class GridWorldModel {
         data[x][y] = value;
         if (view != null){
             view.update(x,y);
-            System.out.println("View updated: (" + x + ", " + y + ")");
         }
-        System.out.println("Cell added: (" + x + ", " + y + ")" + " with value: " + value);
     }
 
     public void add(int value, Location l) {
@@ -90,18 +91,8 @@ public class GridWorldModel {
     }
     public void add(int value, int x, int y) {
         data[x][y] |= value;
-        
         if (view != null){
             view.update(x,y);
-            System.out.println("Cell updated: (" + x + ", " + y + ")" + " with value: " + value);
-        }
-    }
-    // from x1,y1 to x2,y2 add all buildings
-    public void addBuilding(int x1, int y1, int x2, int y2) {
-        for (int x = x1; x <= x2; x++) {
-            for (int y = y1; y <= y2; y++) {
-                add(BUILDING, x, y);
-            }
         }
     }
 

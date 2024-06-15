@@ -63,7 +63,6 @@ busy(0). //not turning or in the process of driving
     .print("Went up!");
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +fail("up") <-
@@ -74,7 +73,6 @@ busy(0). //not turning or in the process of driving
     .print("Went down!");
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +fail("down") <-
@@ -85,7 +83,6 @@ busy(0). //not turning or in the process of driving
     .print("Went right!");
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +fail("right") <-
@@ -96,38 +93,50 @@ busy(0). //not turning or in the process of driving
     .print("Went left!"); 
     -+busy(0);
     ?busy(B);
-    .print("Busy?", B);
     !drive_random.
     
 +fail("left") <-
     .print("Cannot go left");
     !change_direction.
 
-+!change_direction <-
-    .wait(200);
++!change_direction : success("up") <-
     .print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
     .print("New Direction Drawn: ", NewD);
-    if(D=="up") {
-       !no_going_back(NewD,street_down);
-    }
-    if(D=="down") {
-        !no_going_back(NewD,street_up);
-    }
-    if(D=="right") {
-        !no_going_back(NewD,street_left);
-    }
-    if(D=="left") {
-        !no_going_back(NewD,street_right);
-    } else { //car is blocked right from the start, so no last successful move to rely on yet
-        .print("Please don't start a car in a blocking position from the start, it is not fair!!"); //we try again to change direction with the new values for success percept
-    }. 
+    !no_going_back(NewD,street_down).
 
-+!no_going_back(NewD,D1) <-
-    ?cellC(X,Y,D2);
-    if (not(NewD==D1) & not(NewD==D2)) {
++!change_direction : success("down") <-
+    .print("Trying to change of direction");
+    ?pos(X,Y);
+    ?success(D); //last successful move
+    jia.random_direction(X,Y,NewD); //draw a different direction that is free
+    .print("New Direction Drawn: ", NewD);
+    !no_going_back(NewD,street_up).
+
++!change_direction : success("right") <-
+    .print("Trying to change of direction");
+    ?pos(X,Y);
+    ?success(D); //last successful move
+    jia.random_direction(X,Y,NewD); //draw a different direction that is free
+    .print("New Direction Drawn: ", NewD);    
+    !no_going_back(NewD,street_left).
+
++!change_direction : success("left") <-
+    .print("Trying to change of direction");
+    ?pos(X,Y);
+    ?success(D); //last successful move
+    jia.random_direction(X,Y,NewD); //draw a different direction that is free
+    .print("New Direction Drawn: ", NewD);  
+    !no_going_back(NewD,street_right).
+
+-!change_direction <- //car is blocked right from the start, so no last successful move to rely on yet
+    .print("Please don't start a car in a blocking position from the start, it is not fair!!").
+
+
++!no_going_back(NewD,D) <-
+    if (not(NewD==D)) {
         .print("Attempting to turn...");
         if (NewD==street_up) {
         up;

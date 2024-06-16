@@ -147,10 +147,16 @@ public class City extends Artifact {
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
     private static Term building = new Atom("building");
+
     private static Term street_up = new Atom("street_up");
     private static Term street_down = new Atom("street_down");
     private static Term street_right = new Atom("street_right");
     private static Term street_left = new Atom("street_left");
+    private static Term street_up_left = new Atom("street_up_left");
+    private static Term street_down_left = new Atom("street_down_left");
+    private static Term street_up_right = new Atom("street_up_right");
+    private static Term street_down_right = new Atom("street_down_right");
+
     private static Term car = new Atom("car");
     private static Term pedestrian = new Atom("pedestrian");
     private static Term nobody = new Atom("nobody");
@@ -174,16 +180,40 @@ public class City extends Artifact {
             obs1.updateValue(2, building);
         } 
         if (model.hasObject(WorldModel.STREET_UP, x, y)) {
-            obs1.updateValue(2, street_up);
+            if (model.hasObject(WorldModel.STREET_RIGHT, x, y)) {
+                obs1.updateValue(2, street_up_right);
+            } else if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
+                obs1.updateValue(2, street_up_left);
+            } else {
+                obs1.updateValue(2, street_up);
+            }
         }
         if (model.hasObject(WorldModel.STREET_DOWN, x, y)) {
-            obs1.updateValue(2, street_down);
+            if (model.hasObject(WorldModel.STREET_RIGHT, x, y)) {
+                obs1.updateValue(2, street_down_right);
+            } else if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
+                obs1.updateValue(2, street_down_left);
+            } else {
+                obs1.updateValue(2, street_down);
+            }
         }
         if (model.hasObject(WorldModel.STREET_RIGHT, x, y)) {
-            obs1.updateValue(2, street_right);
+            if (model.hasObject(WorldModel.STREET_UP, x, y)) {
+                obs1.updateValue(2, street_up_right);
+            } else if (model.hasObject(WorldModel.STREET_DOWN, x, y)) {
+                obs1.updateValue(2, street_down_right);
+            } else {
+                obs1.updateValue(2, street_right);
+            }
         }
         if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
-            obs1.updateValue(2, street_left);
+            if (model.hasObject(WorldModel.STREET_UP, x, y)) {
+                obs1.updateValue(2, street_up_left);
+            } else if (model.hasObject(WorldModel.STREET_DOWN, x, y)) {
+                obs1.updateValue(2, street_down_left);
+            } else {
+                obs1.updateValue(2, street_left);
+            }
         }
 
         if (model.hasObject(WorldModel.CAR, x, y)) {

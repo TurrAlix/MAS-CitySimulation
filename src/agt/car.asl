@@ -54,9 +54,63 @@ busy(0). //not turning or in the process of driving
     .print("Attempting to go right...");
     right.
 
++!drive_random : pos(X,Y) & cellC(X,Y,street_up_right) & busy(0) <- 
+    -+busy(1);
+    ?busy(B);
+    .print("Busy?", B);
+    .wait(200);
+    !draw_random_direction(street_up, street_right).
+
++!drive_random : pos(X,Y) & cellC(X,Y,street_up_left) & busy(0) <- 
+    -+busy(1);
+    ?busy(B);
+    .print("Busy?", B);
+    .wait(200);
+    !draw_random_direction(street_up, street_left).
+
++!drive_random : pos(X,Y) & cellC(X,Y,street_down_right) & busy(0) <- 
+    -+busy(1);
+    ?busy(B);
+    .print("Busy?", B);
+    .wait(200);
+    !draw_random_direction(street_down, street_right).
+
++!drive_random : pos(X,Y) & cellC(X,Y,street_down_left) & busy(0) <- 
+    -+busy(1);
+    ?busy(B);
+    .print("Busy?", B);
+    .wait(200);
+    !draw_random_direction(street_down, street_left).
+
 -!drive_random <-
     .wait(100);
     !drive_random.
+
+
++!draw_random_direction(D1, D2) <- 
+    ?pos(X,Y);
+    jia.random_direction(X, Y, D);
+    //.print("New Direction Drawn: ", D);
+    if (not(D == D1) & not(D == D2)) {
+        !draw_random_direction(D1, D2);
+    } else {
+        if (D==street_up) {
+        .print("Attempting to go up...");
+        up;
+        }
+        if (D==street_down) {
+        .print("Attempting to go down...");
+        down;
+        }
+        if (D==street_right) {
+        .print("Attempting to go right...");
+        right;
+        }
+        if (D==street_left) {
+        .print("Attempting to go left...");
+        left;
+        }
+    }.
 
 
 +success("up") <-
@@ -99,36 +153,37 @@ busy(0). //not turning or in the process of driving
     .print("Cannot go left");
     !change_direction.
 
+
 +!change_direction : success("up") <-
-    .print("Trying to change of direction");
+    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    .print("New Direction Drawn: ", NewD);
+    //.print("New Direction Drawn: ", NewD);
     !no_going_back(NewD,street_down).
 
 +!change_direction : success("down") <-
-    .print("Trying to change of direction");
+    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    .print("New Direction Drawn: ", NewD);
+    //.print("New Direction Drawn: ", NewD);
     !no_going_back(NewD,street_up).
 
 +!change_direction : success("right") <-
-    .print("Trying to change of direction");
+    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    .print("New Direction Drawn: ", NewD);    
+    //.print("New Direction Drawn: ", NewD);    
     !no_going_back(NewD,street_left).
 
 +!change_direction : success("left") <-
-    .print("Trying to change of direction");
+    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    .print("New Direction Drawn: ", NewD);  
+    //.print("New Direction Drawn: ", NewD);  
     !no_going_back(NewD,street_right).
 
 -!change_direction <- //car is blocked right from the start, so no last successful move to rely on yet
@@ -171,8 +226,7 @@ busy(0). //not turning or in the process of driving
     .print("Up cell: x=", X, " & y=", Y, " ; ", D).
 
 +cellD(X,Y,D) <-
-    .print("Down cell: x=", X, " & y=", Y, " ; ", D).
-
+    .print("Down cell: x=", X, " & y=", Y, " ; ", D).*/
 
 +whoL(X,Y,W) : (W==car) | (W==pedestrian) <-
     .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).
@@ -184,4 +238,4 @@ busy(0). //not turning or in the process of driving
     .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
 
 +whoD(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).*/
+    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).

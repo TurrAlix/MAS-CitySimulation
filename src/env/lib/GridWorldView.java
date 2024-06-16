@@ -67,31 +67,63 @@ public class GridWorldView extends JFrame {
 
     public void draw(Graphics g, int x, int y, int object) {
         switch (object) {
-            case GridWorldModel.STREET_UP:      drawStreet(g, x, y, model.getAgAtPos(x,y), "^");         break;
-            case GridWorldModel.STREET_DOWN:    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");         break;
-            case GridWorldModel.STREET_RIGHT:   drawStreet(g, x, y, model.getAgAtPos(x,y), ">");         break;
-            case GridWorldModel.STREET_LEFT:    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");         break;
-            case GridWorldModel.SCHOOL:         drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "School");        break;
-            case GridWorldModel.SUPERMARKET:    drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Market");        break;
-            case GridWorldModel.OFFICE:         drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Office");        break;
-            case GridWorldModel.PARK:           drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Park");        break;
+            case GridWorldModel.STREET_UP :
+                if ((model.data[x][y] & GridWorldModel.STREET_RIGHT) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "^>");
+                } else if ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<^");
+                } else {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "^");
+                }
+                break;
+            case GridWorldModel.STREET_DOWN:
+                if ((model.data[x][y] & GridWorldModel.STREET_RIGHT) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "v>");
+                } else if ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<v");
+                } else {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");
+                }
+                break;
+            case GridWorldModel.STREET_RIGHT:
+                if ((model.data[x][y] & GridWorldModel.STREET_UP) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "^>");
+                } else if ((model.data[x][y] & GridWorldModel.STREET_DOWN) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "v>");
+                } else {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), ">");
+                }
+                break;
+            case GridWorldModel.STREET_LEFT:
+                if ((model.data[x][y] & GridWorldModel.STREET_UP) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<^");
+                } else if ((model.data[x][y] & GridWorldModel.STREET_DOWN) != 0) {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<v");
+                } else {
+                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");
+                }
+                break;
+            case GridWorldModel.SCHOOL:         drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "School");   break;
+            case GridWorldModel.SUPERMARKET:    drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Market");   break;
+            case GridWorldModel.OFFICE:         drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Office");   break;
+            case GridWorldModel.PARK:           drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Park");     break;
             case GridWorldModel.BUILDING:       drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
             case GridWorldModel.CAR:            drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
             case GridWorldModel.PEDESTRIAN:     drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
         }
     }
 
-    /* because STREET id go from 32 to 256, each of them being the power of two of the previous one!*/
-    private int limit = 6000; 
+    /* because of the int used to represent the infrastructures and agents, each of them being the power of two of the previous one!*/
+    private int limit = 2100; 
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             draw(g, x, y, GridWorldModel.BUILDING);
         }
 
-        int vl = 16;
+        int vl = 16; //infrastructure (except building) int go from 16 to 2048
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
-                System.out.println("DISEGNO: " + model.data[x][y] + "(" + x + "," + y + ")");
+                System.out.println("Drawing: " + model.data[x][y] + "(" + x + "," + y + ")");
                 draw(g, x, y, vl);
             }
             vl *= 2;
@@ -144,7 +176,7 @@ public class GridWorldView extends JFrame {
             int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
             int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
             g.drawString(text, centerX, centerY);
-        }else{ //if there is an agent on the block, we must make sure that it is drawn on top of the street
+        } else { //if there is an agent on the block, we must make sure that it is drawn on top of the street
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             if ((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0) { //pedestrians can be on streets too (zebra-crossings)

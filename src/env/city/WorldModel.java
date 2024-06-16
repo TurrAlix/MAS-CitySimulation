@@ -212,8 +212,6 @@ public class WorldModel extends GridWorldModel {
             model.remove(WorldModel.BUILDING, x, 6);
             model.add(WorldModel.STREET_RIGHT, x, 6);    
         }
-        model.remove(WorldModel.STREET_LEFT, 5, 5);
-        model.remove(WorldModel.STREET_RIGHT, 5, 6);
 
         //zebra_crossing
         model.add(WorldModel.ZEBRA_CROSSING, 3, 5);
@@ -227,8 +225,6 @@ public class WorldModel extends GridWorldModel {
             model.remove(WorldModel.BUILDING, 6, y);
             model.add(WorldModel.STREET_UP,6, y);
         }
-        model.remove(WorldModel.STREET_UP, 6, 5);
-        model.remove(WorldModel.STREET_UP, 6, 6);
         return model;
     }
 

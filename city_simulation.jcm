@@ -16,6 +16,10 @@ mas city_simulation {
         focus: city.view4
     }
 
+    agent helicopter : helicopter.asl  {
+        focus: city.view5
+    }
+
     workspace city {
         // first parameter is the id of the city 
         // second parameter is the id of the agent in the scenario
@@ -23,6 +27,7 @@ mas city_simulation {
         artifact view2: city.City(4, 1)
         artifact view3: city.City(4, 2)
         artifact view4: city.City(4, 3)
+        artifact view5: city.City(4, 4)
     }
 }
 

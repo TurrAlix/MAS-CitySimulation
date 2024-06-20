@@ -24,6 +24,9 @@ public class GridWorldModel {
     public static final int       STREET_RIGHT = 64;
     public static final int       STREET_LEFT = 128;
 
+    public static final int       PARKING_HELICOPTER = 4096;
+    public static final int       HELICOPTER = 8192;
+
     protected int                 width, height;
     protected int[][]             data = null;
     protected static Location[]   agPos;
@@ -131,6 +134,19 @@ public class GridWorldModel {
         data[l.x][l.y] |= PEDESTRIAN;
         if (view != null) view.update(l.x, l.y, PEDESTRIAN); 
     }
+
+    public void setHelicopterPos(int ag, int x, int y) {
+        setHelicopterPos(ag, new Location(x, y));
+    }
+    public void setHelicopterPos(int ag, Location l) {
+        Location oldLoc = getAgPos(ag);
+        if (oldLoc != null) { //clear the previous position
+            remove(HELICOPTER, oldLoc.x, oldLoc.y);
+        };
+        agPos[ag] = l;
+        data[l.x][l.y] |= HELICOPTER;
+        if (view != null) view.update(l.x, l.y, HELICOPTER);         
+    }
     
     /** returns the agent at location l or -1 if there is not one there */
     public int getAgAtPos(Location l) {
@@ -170,7 +186,7 @@ public class GridWorldModel {
     }
     /** returns true if the location x,y has neither building nor agent */
     public boolean isFree(int x, int y) {
-        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0 && (data[x][y] & PEDESTRIAN) == 0;
+        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0 && (data[x][y] & PEDESTRIAN) == 0 && (data[x][y] & PARKING_HELICOPTER) == 0;
     }
     /** returns true if the location l has not the object obj */
     public boolean isFree(int obj, Location l) {

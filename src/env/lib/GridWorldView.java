@@ -103,18 +103,20 @@ public class GridWorldView extends JFrame {
                     drawStreet(g, x, y, model.getAgAtPos(x,y), "<");
                 }
                 break;
-            case GridWorldModel.SCHOOL:         drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "School");   break;
-            case GridWorldModel.SUPERMARKET:    drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Market");   break;
-            case GridWorldModel.OFFICE:         drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Office");   break;
-            case GridWorldModel.PARK:           drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Park");     break;
-            case GridWorldModel.BUILDING:       drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
-            case GridWorldModel.CAR:            drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
-            case GridWorldModel.PEDESTRIAN:     drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
+            case GridWorldModel.SCHOOL:             drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "School");   break;
+            case GridWorldModel.SUPERMARKET:        drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Market");   break;
+            case GridWorldModel.OFFICE:             drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Office");   break;
+            case GridWorldModel.PARK:               drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Park");     break;
+            case GridWorldModel.BUILDING:           drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
+            case GridWorldModel.CAR:                drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
+            case GridWorldModel.PEDESTRIAN:         drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
+            case GridWorldModel.HELICOPTER:         drawHelicopter(g, x, y, model.getAgAtPos(x,y));                    break;
+            case GridWorldModel.PARKING_HELICOPTER: drawParkingHelicopter(g, x, y, model.getAgAtPos(x,y));             break;
         }
     }
 
     /* because of the int used to represent the infrastructures and agents, each of them being the power of two of the previous one!*/
-    private int limit = 2100; 
+    private int limit = 10000; 
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             draw(g, x, y, GridWorldModel.BUILDING);
@@ -133,7 +135,7 @@ public class GridWorldView extends JFrame {
         // Background 
         g.setColor(Color.lightGray);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        // Draw the veicle 
+        // Draw the vehicle 
         g.setColor(Color.yellow);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
         if (id >= 0) { 
@@ -141,6 +143,7 @@ public class GridWorldView extends JFrame {
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
         }
     }
+
 
     public void drawPedestrian(Graphics g, int x, int y, int id) {
         // Background 
@@ -162,10 +165,26 @@ public class GridWorldView extends JFrame {
         }
     }
 
+
+    public void drawHelicopter(Graphics g, int x, int y, int id) {
+        // Draw the body
+        g.setColor(Color.blue);
+        g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
+        // If the helicopter has an ID, draw it
+        if (id >= 0) {
+            g.setColor(Color.white);
+            drawString(g, x, y, defaultFont, "SOS");
+        }
+    }
+    
+
+
     public void drawStreet(Graphics g, int x, int y, int id, String direction) {
         g.setColor(Color.lightGray);
         g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH); //we draw the outline
-        if (((model.data[x][y] & GridWorldModel.CAR) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN) == 0)){ //means no agent has been spotted on the street block (cf. getAgAtPos)
+        if (((model.data[x][y] & GridWorldModel.CAR) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN) == 0)
+           && ((model.data[x][y] & GridWorldModel.HELICOPTER) == 0)) {
+            //means no agent has been spotted on the street block (cf. getAgAtPos)
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             String text=direction;
@@ -185,12 +204,14 @@ public class GridWorldView extends JFrame {
             if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
                 drawCar(g, x, y, id);
             }
+            if ((model.data[x][y] & GridWorldModel.HELICOPTER) != 0) {
+                drawHelicopter(g, x, y, id);
+            }
         }
         // zebra crossing
         if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
             g.setColor(Color.white);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-            System.out.println("Zebra crossing" + model.data[x][y]);
             if((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0){
                 System.out.println("Pedestrian on zebra crossing");
                 g.setColor(Color.white);
@@ -210,11 +231,19 @@ public class GridWorldView extends JFrame {
                     drawString(g, x, y, defaultFont, String.valueOf(id + 1));
                 }
             }
-            if((model.data[x][y] & GridWorldModel.CAR) != 0){
-                System.out.println("car on zebra crossing");
+            if((model.data[x][y] & GridWorldModel.HELICOPTER) != 0){
+                /*TODO: how to do so that the helicopter appears on top of the car
+                and that the id doesn't take the value of the one of the car?*/
+                System.out.println("Helicopter on zebra crossing");
                 g.setColor(Color.white);
                 g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-                // Draw the veicle 
+                drawHelicopter(g, x, y, id);
+            }
+            if((model.data[x][y] & GridWorldModel.CAR) != 0){
+                System.out.println("Car on zebra crossing");
+                g.setColor(Color.white);
+                g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+                // Draw the vehicle 
                 g.setColor(Color.yellow);
                 g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
                 if (id >= 0) { 
@@ -222,8 +251,9 @@ public class GridWorldView extends JFrame {
                     drawString(g, x, y, defaultFont, String.valueOf(id+1));
                 }
             }
-        }
+        }        
     }
+
 
     public void drawSpecialBuilding(Graphics g, int x, int y, int id, String t) {
         g.setColor(Color.black);
@@ -252,11 +282,31 @@ public class GridWorldView extends JFrame {
             g.setColor(Color.orange);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
         }else{
-            g.setColor(Color.orange);
-            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            /*g.setColor(Color.orange);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);*/
             drawPedestrian(g, x, y, id);
         }
-    }     
+    }  
+    
+    public void drawParkingHelicopter(Graphics g, int x, int y, int id) {
+        if((model.data[x][y] & GridWorldModel.HELICOPTER) == 0){
+            g.setColor(Color.darkGray);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            String text="P";
+            g.setColor(Color.white);
+            FontMetrics fm = g.getFontMetrics();
+            int textWidth = fm.stringWidth(text);
+            int textHeight = fm.getAscent();
+            int centerX = x * cellSizeW + (cellSizeW - textWidth) / 2;
+            int centerY = y * cellSizeH + (cellSizeH - textHeight) / 2 + fm.getAscent();
+            g.drawString(text, centerX, centerY);
+        }else{ //helicopter parked
+            g.setColor(Color.darkGray);
+            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawHelicopter(g, x, y, id);
+        }
+    }
+
 
     public void drawString(Graphics g, int x, int y, Font f, String s) {
         g.setFont(f);

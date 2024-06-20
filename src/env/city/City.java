@@ -62,6 +62,10 @@ public class City extends Artifact {
         }
     }
 
+
+    
+
+
     @OPERATION void skip() {
         if (sleep > 0) await_time(sleep);
         updateAgPercept();

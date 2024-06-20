@@ -29,6 +29,10 @@ public class GridWorldModel {
     protected static Location[]   agPos;
     protected GridWorldView       view;
     protected Random              random = new Random();
+    protected Location            school;
+    protected Location            park;
+    protected Location            office;
+    protected Location            supermarket;
 
     protected GridWorldModel(int w, int h, int nbAgs) {
         width  = w;
@@ -67,9 +71,9 @@ public class GridWorldModel {
         return y >= 0 && y < height && x >= 0 && x < width;
     }
 
-    @SuppressWarnings("unused")
     public boolean inBuilding(int x, int y) {
-        return (((data[x][y] & BUILDING) != 0) && inGrid(x, y)) || ((data[x][y] & ZEBRA_CROSSING) != 0);
+        System.out.println("IN BUILDING, DATA: " + data[x][y]);
+        return inGrid(x, y) && ((data[x][y] & BUILDING) != 0 || ((data[x][y] & ZEBRA_CROSSING) != 0 && (data[x][y] & CAR) == 0));
     }
 
     public boolean hasObject(int obj, Location l) {
@@ -102,9 +106,52 @@ public class GridWorldModel {
     public void remove(int value, int x, int y) {
         data[x][y] &= ~value;
         if (view != null) view.update(x,y);     // put here: agents disappear after moving
-        // if (view != null) view.update(x,y, data[x][y]); 
-        // TODO CHOOSE WHICH ONE TO USE: we could pass directly in the update the data[x][y] value so later we don't have to do model.data[x][y] & obj
     }
+
+    // ----------------------------------------------------- //
+
+    public void setSchoolPos(int x, int y) {
+        setSchoolPos(new Location(x, y));
+    }
+    public void setSchoolPos(Location l) {
+        school = l;
+    }
+    public Location getSchoolPos() {
+        return school;
+    }
+
+    public void setParkPos(int x, int y) {
+        setParkPos(new Location(x, y));
+    }
+    public void setParkPos(Location l) {
+        park = l;
+    }
+    public Location getParkPos() {
+        return park;
+    }
+
+    public void setOfficePos(int x, int y) {
+        setOfficePos(new Location(x, y));
+    }
+    public void setOfficePos(Location l) {
+        office = l;
+    }
+    public Location getOfficePos() {
+        return office;
+    }
+
+    public void setSupermarketPos(int x, int y) {
+        setSupermarketPos(new Location(x, y));
+    }
+    public void setSupermarketPos(Location l) {
+        supermarket = l;
+    }
+    public Location getSupermarketPos() {
+        return supermarket;
+    }
+
+    // ----------------------------------------------------- //
+
 
     public void setCarPos(int ag, int x, int y) {
         setCarPos(ag, new Location(x, y));

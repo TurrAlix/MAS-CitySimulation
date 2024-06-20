@@ -91,7 +91,7 @@ public class GridWorldView extends JFrame {
         int vl = 16;
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
-                System.out.println("DISEGNO: " + model.data[x][y] + "(" + x + "," + y + ")");
+                // System.out.println("DISEGNO: " + model.data[x][y] + "(" + x + "," + y + ")");
                 draw(g, x, y, vl);
             }
             vl *= 2;
@@ -158,9 +158,9 @@ public class GridWorldView extends JFrame {
         if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
             g.setColor(Color.white);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-            System.out.println("Zebra crossing" + model.data[x][y]);
+            // System.out.println("Zebra crossing" + model.data[x][y]);
             if((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0){
-                System.out.println("Pedestrian on zebra crossing");
+                // System.out.println("Pedestrian on zebra crossing");
                 g.setColor(Color.white);
                 g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
                 // draw Pedestrian
@@ -179,7 +179,7 @@ public class GridWorldView extends JFrame {
                 }
             }
             if((model.data[x][y] & GridWorldModel.CAR) != 0){
-                System.out.println("car on zebra crossing");
+                // System.out.println("car on zebra crossing");
                 g.setColor(Color.white);
                 g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
                 // Draw the veicle 

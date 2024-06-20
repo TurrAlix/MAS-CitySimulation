@@ -189,7 +189,7 @@ public class WorldModel extends GridWorldModel {
         model.setCarPos(0, 0, 5);
         model.setCarPos(1, 11, 6);
         // Pedestrians
-        model.setPedestrianPos(2,0,0);
+        model.setPedestrianPos(2,3,0);
         model.setPedestrianPos(3,11,11);
 
         // Buildings
@@ -199,10 +199,14 @@ public class WorldModel extends GridWorldModel {
             }
         }
         // supermarket, a school, a park, and an office
-        model.add(WorldModel.SCHOOL, 0, 0);
-        model.add(WorldModel.OFFICE, 11, 0);
-        model.add(WorldModel.PARK, 0, 11);
+        model.add(WorldModel.OFFICE, 0, 0);
+        model.setOfficePos(0, 0);
+        model.add(WorldModel.SCHOOL, 0, 11);
+        model.setSchoolPos(0, 11);
+        model.add(WorldModel.PARK, 11, 0);
+        model.setParkPos(11, 0);
         model.add(WorldModel.SUPERMARKET, 11, 11);
+        model.setSupermarketPos(11, 11);
 
         // Streets in the middle
         for (int x = 0; x < w; x++) {

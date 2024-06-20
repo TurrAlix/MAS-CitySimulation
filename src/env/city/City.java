@@ -53,14 +53,14 @@ public class City extends Artifact {
         if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);};
         updateAgPercept();
         ObsProperty s = getObsProperty("success");
+        ObsProperty ls = getObsProperty("fail");
 
         if (success) {
-            s.updateValue(0, 1);                            // Add percept for successful move
-            s.updateValue(1, m.toString().toLowerCase()); 
+            s.updateValue(0, m.toString().toLowerCase()); // Add percept for successful move
         } else {
-            s.updateValue(0, 0);
-            s.updateValue(1, m.toString().toLowerCase());
+            ls.updateValue(0, m.toString().toLowerCase()); // Add percept for failed move
         }
+
     }
 
     @OPERATION void skip() {
@@ -90,6 +90,10 @@ public class City extends Artifact {
             }
             // Observable properties of Cartago
             defineObsProperty("gsize", simId, model.getWidth(), model.getHeight());
+            defineObsProperty("school", model.getSchoolPos().x, model.getSchoolPos().y);
+            defineObsProperty("park", model.getParkPos().x, model.getParkPos().y);
+            defineObsProperty("office", model.getOfficePos().x, model.getOfficePos().y);
+            defineObsProperty("supermarket", model.getSupermarketPos().x, model.getSupermarketPos().y);
 
             defineObsProperty("pos", -1, -1);
             defineObsProperty("cellL", -1, -1, -1); //what type of infrastructure in the left cell?
@@ -104,8 +108,8 @@ public class City extends Artifact {
             defineObsProperty("whoU", -1, -1, -1);
             defineObsProperty("whoD", -1, -1, -1);
 
-            defineObsProperty("success", -1, ""); // success(if <1st argument>==1) or failure of move in <2d argument> direction
-
+            defineObsProperty("success", ""); // success in <argument> direction
+            defineObsProperty("fail", ""); // fail in <argument> direction
 
             updateAgPercept();
 
@@ -122,6 +126,24 @@ public class City extends Artifact {
     }
 
     private void updateAgPercept() {
+
+        ObsProperty school = getObsProperty("school");
+        school.updateValue(0, model.getSchoolPos().x);
+        school.updateValue(1, model.getSchoolPos().y);
+
+        ObsProperty park = getObsProperty("park"); 
+        park.updateValue(0, model.getParkPos().x);
+        park.updateValue(1, model.getParkPos().y);
+
+        ObsProperty office = getObsProperty("office");
+        office.updateValue(0, model.getOfficePos().x);
+        office.updateValue(1, model.getOfficePos().y);
+
+        ObsProperty supermarket = getObsProperty("supermarket"); 
+        supermarket.updateValue(0, model.getSupermarketPos().x);
+        supermarket.updateValue(1, model.getSupermarketPos().y);
+        
+
         Location l = GridWorldModel.getAgPos(agId);
         ObsProperty p = getObsProperty("pos");
         p.updateValue(0, l.x);
@@ -131,12 +153,13 @@ public class City extends Artifact {
         ObsProperty cc = getObsProperty("cellC");
         ObsProperty cu = getObsProperty("cellU");
         ObsProperty cd = getObsProperty("cellD");
+
         ObsProperty whol = getObsProperty("whoL");
         ObsProperty whor = getObsProperty("whoR");
         ObsProperty whoc = getObsProperty("whoC");
         ObsProperty whou = getObsProperty("whoU");
-        ObsProperty whod = getObsProperty("whoD");         
-
+        ObsProperty whod = getObsProperty("whoD"); 
+        
         // percepts of the surroundings
         updateAgPercept(l.x, l.y - 1, cu, whou);
         updateAgPercept(l.x, l.y + 1, cd, whod);
@@ -154,8 +177,13 @@ public class City extends Artifact {
     private static Term car = new Atom("car");
     private static Term pedestrian = new Atom("pedestrian");
     private static Term nobody = new Atom("nobody");
+    private static Term school = new Atom("school");
+    private static Term park = new Atom("park");
+    private static Term office = new Atom("office");
+    private static Term supermarket = new Atom("supermarket");
 
 
+    // obs1: infrastructure, obs2: agent
     private void updateAgPercept(int x, int y, ObsProperty obs1, ObsProperty obs2) {
         if (model == null || !model.inGrid(x,y)) {
             return;
@@ -185,7 +213,6 @@ public class City extends Artifact {
         if (model.hasObject(WorldModel.STREET_LEFT, x, y)) {
             obs1.updateValue(2, street_left);
         }
-
         if (model.hasObject(WorldModel.CAR, x, y)) {
             obs2.updateValue(2, car);
         } 
@@ -197,8 +224,8 @@ public class City extends Artifact {
         } 
     }
 
-    /*private void addPercept(String percept) {
-        defineObsProperty(percept);
-    }*/
+    // private void addPercept(String percept) {
+    //     defineObsProperty(percept);
+    // }
 
 }

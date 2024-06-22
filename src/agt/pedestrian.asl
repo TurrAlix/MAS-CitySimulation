@@ -1,19 +1,15 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 
-//school(0,11).
 target(_ ,_ , _). //creating the template
 
 /* Initial goals */
 !live.
-
 
 // ---------------------------------------------------------------------- //
 +!live <- 
     ?school(X,Y);
     .print("I'm going to school at ", school(X,Y), " now.");
     -+target("school",X, Y);
-    //.print("I'm going to school at ", school(X,Y), " now.");
-    .wait(100);
     !goToPos(X,Y).
 
 -!live <- 
@@ -22,18 +18,14 @@ target(_ ,_ , _). //creating the template
     !live.
 
 // ---------------------------------------------------------------------- //
-/* These plans encode how an agent should go to an exact position X,Y.
- * This one assumes that the position is reachable. If the position is not reachable, it will loop forever.  */
 // i'm not in the target position yet
 +!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y))    
-   <- //.print("GOTOPOS: not yet arrived");
-      .wait(100);
-      !next_step(X,Y).
+   <- !next_step(X,Y).
 
 // i'm in the school position
 +!goToPos(X,Y) : pos(X, Y) & school(X, Y)
     <- .print("GOTOPOS: I'm at school!");
-        .wait(5000);
+        .wait(4000);
         ?park(PX, PY);
         -+target("park", PX, PY);
         .print("I'm going to park at ", park(PX,PY), " now.");
@@ -42,7 +34,7 @@ target(_ ,_ , _). //creating the template
 // i'm in the park position
 +!goToPos(X,Y) : pos(X, Y) & park(X, Y)
     <- .print("GOTOPOS: I'm at park!");
-        .wait(5000);
+        .wait(4000);
         -+target("stop", -1, -1);
         .print("I FINISH MY DAAAAY!");
         .wait(1000000). // MAYBE NOT NEEDED IT HAS JUST FINIHES THE GOALS
@@ -53,10 +45,10 @@ target(_ ,_ , _). //creating the template
         .wait(1000);
         !goToPos(X,Y).
 
-
 // ---------------------------------------------------------------------- //
+
 /* These are the plans to have the pedestrian walk in the direction of X,Y.
- * They are used by the plans go_near and pos. It uses the internal action jia.get_direction which encodes a search algorithm.  */
+ It uses the internal action jia.get_direction which encodes a search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) 
    <- .print("NEXT STEP");
    jia.get_dir(AgX, AgY, X, Y, D);
@@ -84,31 +76,7 @@ target(_ ,_ , _). //creating the template
         !next_step(X,Y).
 
 // ---------------------------------------------------------------------- //
-/*
-+!walk_random <-
-    .println("..Walk randomly.");
-    ?pos(X,Y);
-    jia.random_walk(X,Y,D); //draw a different direction that is free
-    .wait(1000);
-    if (D==street_up) {
-        up;
-    }
-    if (D==street_down) {
-        down;
-    }
-    if (D==street_right) {
-        right;
-    }
-    if (D==street_left) {
-        left;
-    };
-    !live.
--!walk_random <-
-    .wait(500);
-    !walk_random.
-*/
 
-// ---------------------------------------------------------------------- //
 +success("up") <-
     .print("Went up!");
     //-+busy(0);

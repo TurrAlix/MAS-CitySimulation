@@ -22,10 +22,11 @@ public class get_dir extends DefaultInternalAction {
             int iagy = (int) ((NumberTerm) terms[1]).solve();
             int itox = (int) ((NumberTerm) terms[2]).solve();
             int itoy = (int) ((NumberTerm) terms[3]).solve();
+            System.out.println("GETDIR: itoy: " + itoy + " itox: " + itox);
 
             if (model.inGrid(itox, itoy)) {
                 sAction = AStarSearch.getDirection(iagx, iagy, itox, itoy);
-                System.out.println("GET DIR: action from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + ": " + sAction);
+                System.out.println("GET DIR: action from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + ": \t" + sAction);
                 if (sAction.equals("skip")) {
                     System.out.println("No route from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + "!");
                 }

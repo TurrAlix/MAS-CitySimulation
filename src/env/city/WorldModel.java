@@ -35,6 +35,8 @@ public class WorldModel extends GridWorldModel {
         return id;
     }
 
+    // -------------------------------------------------------------------- //
+
     /** Actions **/
     boolean move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
@@ -75,25 +77,25 @@ public class WorldModel extends GridWorldModel {
         switch (dir) {
             //check if in Grid, if in Building and if in zebra_crossing
             case UP:
-                if (inBuilding(l.x, l.y - 1)) { 
+                if (isWalkable(l.x, l.y - 1)) { 
                     setPedestrianPos(ag, l.x, l.y - 1);
                     moved=true;
                 }
                 break;
             case DOWN:
-                if (inBuilding(l.x, l.y + 1)) {
+                if (isWalkable(l.x, l.y + 1)) {
                     setPedestrianPos(ag, l.x, l.y + 1);
                     moved=true;
                 }
                 break;
             case RIGHT:
-                if (inBuilding(l.x + 1, l.y)) {
+                if (isWalkable(l.x + 1, l.y)) {
                     setPedestrianPos(ag, l.x + 1, l.y);
                     moved=true;
                 }
                 break;
             case LEFT:
-                if (inBuilding(l.x - 1, l.y)) {
+                if (isWalkable(l.x - 1, l.y)) {
                     setPedestrianPos(ag, l.x - 1, l.y);
                     moved=true;
                 }
@@ -102,6 +104,8 @@ public class WorldModel extends GridWorldModel {
         return moved;
     }
     
+    // -------------------------------------------------------------------- //
+
     /** Maps **/
     static WorldModel world1() throws Exception {
         WorldModel model = WorldModel.create(11, 11, 1);
@@ -223,6 +227,8 @@ public class WorldModel extends GridWorldModel {
         model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
         model.add(WorldModel.ZEBRA_CROSSING, 8, 5);
         model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 10);
+        model.add(WorldModel.ZEBRA_CROSSING, 6, 10);
 
         for (int y = 0; y < h; y++) {
             model.remove(WorldModel.BUILDING, 5, y);

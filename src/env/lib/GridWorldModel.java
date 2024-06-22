@@ -37,8 +37,6 @@ public class GridWorldModel {
     protected GridWorldModel(int w, int h, int nbAgs) {
         width  = w;
         height = h;
-
-        // int data
         data = new int[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -71,8 +69,7 @@ public class GridWorldModel {
         return y >= 0 && y < height && x >= 0 && x < width;
     }
 
-    public boolean inBuilding(int x, int y) {
-        System.out.println("IN BUILDING, DATA: " + data[x][y]);
+    public boolean isWalkable(int x, int y) {
         return inGrid(x, y) && ((data[x][y] & BUILDING) != 0 || ((data[x][y] & ZEBRA_CROSSING) != 0 && (data[x][y] & CAR) == 0));
     }
 
@@ -178,6 +175,8 @@ public class GridWorldModel {
         data[l.x][l.y] |= PEDESTRIAN;
         if (view != null) view.update(l.x, l.y, PEDESTRIAN); 
     }
+
+    // ----------------------------------------------------- //
     
     /** returns the agent at location l or -1 if there is not one there */
     public int getAgAtPos(Location l) {
@@ -203,6 +202,8 @@ public class GridWorldModel {
         return -1;
     }
 
+    // ----------------------------------------------------- //
+
     /**returns the types contained in a block at a specific position */
     public int getBlockTypeAtPos(Location l) {
         return getBlockTypeAtPos(l.x, l.y);
@@ -210,6 +211,8 @@ public class GridWorldModel {
     public int getBlockTypeAtPos(int x, int y) {
         return data[x][y];
     }
+
+    // ----------------------------------------------------- //
 
     /** returns true if the location l has no building neither agent */
     public boolean isFree(Location l) {
@@ -233,6 +236,9 @@ public class GridWorldModel {
     public boolean isFreeOfBuilding(int x, int y) {
         return isFree(BUILDING, x, y);
     }
+
+    // ----------------------------------------------------- //
+
     /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and buildings) */
     protected Location getFreePos() {
         for (int i=0; i<(getWidth()*getHeight()*5); i++) {

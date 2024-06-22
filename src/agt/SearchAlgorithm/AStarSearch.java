@@ -1,8 +1,16 @@
 package SearchAlgorithm;
 
 import java.util.*;
+import city.WorldModel;
+// import lib.GridWorldModel;
 
 public class AStarSearch {
+
+    private static WorldModel model = WorldModel.get();
+
+    public AStarSearch(WorldModel worldModel) {
+        AStarSearch.model = worldModel;
+    }    
 
     static class Location {
         int x, y;
@@ -16,8 +24,12 @@ public class AStarSearch {
             return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
         }
 
-        public int heuristic(Location other) {
-            return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+        private int heuristic(Location to) {
+            if (! model.isWalkable(this.x, this.y)) {
+                System.out.println("A*  Not walkable: " + this.x + ", " + this.y);
+                return Integer.MAX_VALUE;
+            }
+            return Math.abs(this.x - to.x) + Math.abs(this.y - to.y);
         }
 
         @Override
@@ -58,6 +70,16 @@ public class AStarSearch {
             return g + h;
         }
 
+        public Location getLocation() {
+            return state;
+        }
+        public int getX() {
+            return state.x;
+        }
+        public int getY() {
+            return state.y;
+        }
+
         @Override
         public String toString() {
             return "Node{" +
@@ -82,15 +104,22 @@ public class AStarSearch {
 
         public List<GridState> getSuccessors() {
             List<GridState> successors = new ArrayList<>();
-            successors.add(new GridState(new Location(pos.x - 1, pos.y), to, "left"));
-            successors.add(new GridState(new Location(pos.x + 1, pos.y), to, "right"));
-            successors.add(new GridState(new Location(pos.x, pos.y - 1), to, "up"));
-            successors.add(new GridState(new Location(pos.x, pos.y + 1), to, "down"));
+            addSuccessor(successors, new Location(pos.x - 1, pos.y), to, "left");
+            addSuccessor(successors, new Location(pos.x + 1, pos.y), to, "right");
+            addSuccessor(successors, new Location(pos.x, pos.y - 1), to, "up");
+            addSuccessor(successors, new Location(pos.x, pos.y + 1), to, "down");
             return successors;
         }
 
+        // just consider as successors the walkable cells
+        private void addSuccessor(List<GridState> successors, Location loc, Location to, String op) {
+            if (model.isWalkable(loc.x, loc.y)) {
+                successors.add(new GridState(loc, to, op));
+            }
+        }
+
         public int h() {
-            return pos.distance(to);
+            return pos.heuristic(to);
         }
 
         @Override
@@ -121,12 +150,11 @@ public class AStarSearch {
 
         Node startNode = new Node(startLocation, null, 0, startLocation.distance(goalLocation), null);
         openList.add(startNode);
-
+            
         while (!openList.isEmpty()) {
             Node currentNode = openList.poll();
-            System.out.println("A*  Current node: " + currentNode);
             Location currentState = currentNode.state;
-            
+
             if (currentState.equals(goalLocation)) {
                 while (currentNode.parent != null && currentNode.parent.parent != null) {
                     currentNode = currentNode.parent;
@@ -134,34 +162,20 @@ public class AStarSearch {
                 return currentNode.action;
             }
 
-            closedList.put(currentState, currentNode.g);
-
             GridState gridState = new GridState(currentState, goalLocation, currentNode.action);
-            System.out.println("A*  Grid state: " + gridState);
             for (GridState successor : gridState.getSuccessors()) {
-                // System.out.println("\tA*  Successor: " + successor);
                 int tentativeG = currentNode.g + 1;
 
                 if (closedList.containsKey(successor.pos) && tentativeG >= closedList.get(successor.pos)) {
-                    // System.out.println("\tA*  If that Skips");
                     continue;
                 }
-
                 Node successorNode = new Node(successor.pos, currentNode, tentativeG, successor.h(), successor.op);
                 if (!openList.contains(successorNode) || tentativeG < successorNode.g) {
                     openList.add(successorNode);
                 }
             }
         }
-        return "skip"; // No path found
+        System.out.println("No route found from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + "!");
+        return "skip"; 
     }
-
-    // public static void main(String[] args) {
-    //     int iagx = 0;
-    //     int iagy = 0;
-    //     int itox = 2;
-    //     int itoy = 3;
-    //     String direction = getDirection(iagx, iagy, itox, itoy);
-    //     System.out.println("Next direction: " + direction);
-    // }
 }

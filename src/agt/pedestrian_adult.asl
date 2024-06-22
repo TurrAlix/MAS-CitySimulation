@@ -6,10 +6,11 @@ target(_ ,_ , _). //creating the template
 !live.
 
 // ---------------------------------------------------------------------- //
+
 +!live <- 
-    ?school(X,Y);
-    .print("I'm going to school at ", school(X,Y), " now.");
-    -+target("school",X, Y);
+    ?office(X,Y);
+    .print("I'm going to the office at ", office(X,Y), " now.");
+    -+target("office",X, Y);
     !goToPos(X,Y).
 
 -!live <- 
@@ -18,22 +19,23 @@ target(_ ,_ , _). //creating the template
     !live.
 
 // ---------------------------------------------------------------------- //
+
 // i'm not in the target position yet
 +!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y))    
    <- !next_step(X,Y).
 
-// i'm in the school position
-+!goToPos(X,Y) : pos(X, Y) & school(X, Y)
-    <- .print("GOTOPOS: I'm at school!");
+// i'm in the office position
++!goToPos(X,Y) : pos(X, Y) & office(X, Y)
+    <- .print("GOTOPOS: I'm at the office!");
         .wait(4000);
-        ?park(PX, PY);
-        -+target("park", PX, PY);
-        .print("I'm going to park at ", park(PX,PY), " now.");
+        ?supermarket(PX, PY);
+        -+target("supermarket", PX, PY);
+        .print("I'm going to the supermarket at ", supermarket(PX,PY), " now.");
         !goToPos(PX, PY).
 
-// i'm in the park position
-+!goToPos(X,Y) : pos(X, Y) & park(X, Y)
-    <- .print("GOTOPOS: I'm at park!");
+// i'm in the supermarket position
++!goToPos(X,Y) : pos(X, Y) & supermarket(X, Y)
+    <- .print("GOTOPOS: I'm at the supermarket!");
         .wait(4000);
         -+target("stop", -1, -1);
         .print("I FINISH MY DAAAAY!");
@@ -52,7 +54,7 @@ target(_ ,_ , _). //creating the template
 +!next_step(X,Y) : pos(AgX, AgY) 
    <- .print("NEXT STEP");
    jia.get_dir(AgX, AgY, X, Y, D);
-    .wait(1000);
+    .wait(400);
     if (D==up) {
         .print("Attempting to go up.");
         up;

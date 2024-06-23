@@ -172,6 +172,20 @@ public class GridWorldModel {
         return -1;
     }
 
+
+    /** returns the localisation of the parking spot */
+    public Location getHelicopterParkingPos() {
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                if ((data[x][y] & PARKING_HELICOPTER) != 0) {
+                    return (new Location(x,y)); 
+                }
+            }
+        }
+        return (new Location(-1,-1));
+    }
+
+
     /**returns the types contained in a block at a specific position */
     public int getBlockTypeAtPos(Location l) {
         return getBlockTypeAtPos(l.x, l.y);

@@ -112,16 +112,21 @@ busy(0). //not turning or in the process of driving
         }
     }.
 
-
+//Movement completion percepts
 +success("up") <-
     .print("Went up!");
     -+busy(0);
     ?busy(B);
     !drive_random.
     
-+fail("up") <-
++fail("up") : state(works) <-
     .print("Cannot go up");
     !change_direction.
+
++fail("up") : state(broken_down) <-
+    ?pos(X,Y);
+    .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
+    .send(helicopter, achieve, fix_car(X,Y)).
 
 +success("down") <-
     .print("Went down!");
@@ -129,9 +134,14 @@ busy(0). //not turning or in the process of driving
     ?busy(B);
     !drive_random.
     
-+fail("down") <-
++fail("down") : state(works) <-
     .print("Cannot go down");
     !change_direction.
+
++fail("down") : state(broken_down) <-
+    ?pos(X,Y);
+    .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
+    .send(helicopter, achieve, fix_car(X,Y)).
 
 +success("right") <-
     .print("Went right!");
@@ -139,9 +149,14 @@ busy(0). //not turning or in the process of driving
     ?busy(B);
     !drive_random.
     
-+fail("right") <-
++fail("right") : state(works) <-
     .print("Cannot go right");
     !change_direction.
+
++fail("right") : state(broken_down) <-
+    ?pos(X,Y);
+    .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
+    .send(helicopter, achieve, fix_car(X,Y)).
 
 +success("left") <-
     .print("Went left!"); 
@@ -149,9 +164,14 @@ busy(0). //not turning or in the process of driving
     ?busy(B);
     !drive_random.
     
-+fail("left") <-
++fail("left") : state(works) <-
     .print("Cannot go left");
     !change_direction.
+
++fail("left") : state(broken_down) <-
+    ?pos(X,Y);
+    .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
+    .send(helicopter, achieve, fix_car(X,Y)).
 
 
 +!change_direction : success("up") <-
@@ -212,6 +232,14 @@ busy(0). //not turning or in the process of driving
 
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
+
++fixed[source(helicopter)] <- //message sent from the helicopter once it is done fixing the car
+    .print("I'm fixed!");
+    .wait(1000);
+    -+busy(0);
+    change_state;
+    !drive_random.
+
 
 /*+cellL(X,Y,D) <-
     .print("Left cell: x=", X, " & y=", Y, " ; ", D).

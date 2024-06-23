@@ -6,6 +6,7 @@ import lib.GridWorldModel;
 import lib.Location;
 
 import java.util.logging.Logger;
+import java.util.Random;
 
 import cartago.Artifact;
 import cartago.OPERATION;
@@ -43,14 +44,29 @@ public class City extends Artifact {
     @OPERATION void down() throws Exception {   move(Move.DOWN);  }
     @OPERATION void right() throws Exception {  move(Move.RIGHT); }
     @OPERATION void left() throws Exception {   move(Move.LEFT);  }
+
     
     void move(Move m) throws Exception {
         if (sleep > 0) {
             await_time(sleep);
         }
         boolean success=false;
-        if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0) { success = model.move(m, agId);};
-        if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) { success = model.walk(m, agId);};
+        if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0)
+        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){          
+            ObsProperty st = getObsProperty("state");
+            Random random = new Random();
+            int randomNumber = random.nextInt(30);
+            if (randomNumber == 0) { //1 chance out of 30 for the car to break down
+                st.updateValue(0, broken_down); //success stays false
+                System.out.println("success value: "+success);
+            } else { success = model.move(m, agId); }
+        } else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
+        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){
+            success = model.walk(m, agId);
+        } else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
+            success = model.fly(m, agId);
+        }
+        
         updateAgPercept();
         ObsProperty s = getObsProperty("success");
         ObsProperty ls = getObsProperty("fail");
@@ -63,7 +79,11 @@ public class City extends Artifact {
     }
 
 
-    
+    @OPERATION void change_state() {
+        ObsProperty st = getObsProperty("state");
+        st.updateValue(0, works); //success stays false       
+        updateAgPercept();
+    }
 
 
     @OPERATION void skip() {
@@ -95,6 +115,9 @@ public class City extends Artifact {
             defineObsProperty("gsize", simId, model.getWidth(), model.getHeight());
 
             defineObsProperty("pos", -1, -1);
+            defineObsProperty("state", works);
+            defineObsProperty("helicopterParkingPos", model.getHelicopterParkingPos().x, model.getHelicopterParkingPos().y);
+
             defineObsProperty("cellL", -1, -1, -1); //what type of infrastructure in the left cell?
             defineObsProperty("cellR", -1, -1, -1);
             defineObsProperty("cellC", -1, -1, -1);
@@ -165,6 +188,8 @@ public class City extends Artifact {
     private static Term pedestrian = new Atom("pedestrian");
     private static Term nobody = new Atom("nobody");
 
+    private static Term works = new Atom("works");
+    private static Term broken_down = new Atom("broken_down");
 
     private void updateAgPercept(int x, int y, ObsProperty obs1, ObsProperty obs2) {
         if (model == null || !model.inGrid(x,y)) {

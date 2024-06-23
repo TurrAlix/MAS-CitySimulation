@@ -101,6 +101,44 @@ public class WorldModel extends GridWorldModel {
         }
         return moved;
     }
+
+
+    //movement of the helicopter
+    boolean fly(Move dir, int ag) throws Exception {
+        Location l = getAgPos(ag);
+        boolean moved=false;
+        switch (dir) {
+            //check if in Grid
+            case UP:
+                if (inGrid(l.x, l.y - 1)) { 
+                    setHelicopterPos(ag, l.x, l.y - 1);
+                    moved=true;
+                }
+                break;
+            case DOWN:
+                if (inGrid(l.x, l.y + 1)) {
+                    setHelicopterPos(ag, l.x, l.y + 1);
+                    moved=true;
+                }
+                break;
+            case RIGHT:
+                if (inGrid(l.x + 1, l.y)) {
+                    setHelicopterPos(ag, l.x + 1, l.y);
+                    moved=true;
+                }
+                break;
+            case LEFT:
+                if (inGrid(l.x - 1, l.y)) {
+                    setHelicopterPos(ag, l.x - 1, l.y);
+                    moved=true;
+                }
+                break;
+        }
+        return moved;
+    }
+
+
+
     
     /** Maps **/
     static WorldModel world1() throws Exception {
@@ -193,7 +231,7 @@ public class WorldModel extends GridWorldModel {
         model.setPedestrianPos(2,0,0);
         model.setPedestrianPos(3,11,11);
         //Helicopter
-        model.setHelicopterPos(4, 6, 11);
+        model.setHelicopterPos(4, 7, 11);
 
         // Buildings
         for (int x = 0; x < w; x++) {

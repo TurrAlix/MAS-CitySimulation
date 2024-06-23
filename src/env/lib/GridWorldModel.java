@@ -220,7 +220,7 @@ public class GridWorldModel {
     }
     /** returns true if the location x,y has neither building nor agent */
     public boolean isFree(int x, int y) {
-        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0;
+        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0 && (data[x][y] & PEDESTRIAN) == 0;
     }
     /** returns true if the location l has not the object obj */
     public boolean isFree(int obj, Location l) {

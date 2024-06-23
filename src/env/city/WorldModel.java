@@ -192,8 +192,10 @@ public class WorldModel extends GridWorldModel {
         // Cars
         model.setCarPos(0, 0, 5);
         model.setCarPos(1, 11, 6);
-        // Pedestrians
+        // Pedestrians:
+        // Child
         model.setPedestrianPos(2,3,0);
+        // Adults
         model.setPedestrianPos(3,11,11);
 
         // Buildings

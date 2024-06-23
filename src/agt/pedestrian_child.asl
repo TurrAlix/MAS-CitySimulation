@@ -54,19 +54,15 @@ target(_ ,_ , _). //creating the template
    jia.get_dir(AgX, AgY, X, Y, D);
     .wait(400);
     if (D==up) {
-        .print("Attempting to go up.");
         up;
     }
     if (D==down) {
-        .print("Attempting to go down.");
         down;
     }
     if (D==right) {
-        .print("Attempting to go right.");
         right;
     }
     if (D==left) {
-        .print("Attempting to go left.");
         left;
     }.
 

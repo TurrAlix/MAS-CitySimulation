@@ -1,6 +1,5 @@
 package lib;
 
-
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -10,17 +9,10 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 
-import city.WorldView;
-import jason.stdlib.map.value;
-
-
 public class GridWorldView extends JFrame {
-
     private static final long serialVersionUID = 1L;
-
     protected int cellSizeW = 0;
     protected int cellSizeH = 0;
-
     protected GridCanvas     drawArea;
     protected GridWorldModel model;
 
@@ -82,7 +74,7 @@ public class GridWorldView extends JFrame {
     }
 
     /* because STREET id go from 32 to 256, each of them being the power of two of the previous one!*/
-    private int limit = 6000; 
+    private int limit = 10000; 
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             draw(g, x, y, GridWorldModel.BUILDING);
@@ -91,7 +83,6 @@ public class GridWorldView extends JFrame {
         int vl = 16;
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
-                // System.out.println("DISEGNO: " + model.data[x][y] + "(" + x + "," + y + ")");
                 draw(g, x, y, vl);
             }
             vl *= 2;
@@ -111,23 +102,42 @@ public class GridWorldView extends JFrame {
     }
 
     public void drawPedestrian(Graphics g, int x, int y, int id) {
+
+        System.out.println("AAAAAAAAAAA" + model.data[x][y]);
+
         // Background 
         g.setColor(Color.orange);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+
         // Draw the body (blue circle)
         g.setColor(Color.blue);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-        // Draw the head (yellow circle)
+
+        // child (?)
+        if(id==2){
         g.setColor(Color.yellow);
         int headSizeW = (cellSizeW - 4) / 2;
         int headSizeH = (cellSizeH - 4) / 2;
         int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
         int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
         g.fillOval(headX, headY, headSizeW, headSizeH);
-        if (id >= 0) { 
-            g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, String.valueOf(id + 1));
+        // text
+        g.setColor(Color.black);
+        drawString(g, x, y, defaultFont, "C");
         }
+        // Adult
+        if(id==3){
+            g.setColor(Color.magenta);
+            int headSizeW = (cellSizeW - 4) / 2;
+            int headSizeH = (cellSizeH - 4) / 2;
+            int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
+            int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
+            g.fillOval(headX, headY, headSizeW, headSizeH);
+            // text
+            g.setColor(Color.black);
+            drawString(g, x, y, defaultFont, "A");
+        }       
+
     }
 
     public void drawStreet(Graphics g, int x, int y, int id, String direction) {
@@ -158,15 +168,13 @@ public class GridWorldView extends JFrame {
         if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
             g.setColor(Color.white);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-            // System.out.println("Zebra crossing" + model.data[x][y]);
+            //TODO DELETE THIS IFs
             if((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0){
-                // System.out.println("Pedestrian on zebra crossing");
                 g.setColor(Color.white);
                 g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
                 // draw Pedestrian
                 g.setColor(Color.blue);
                 g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-
                 int headSizeW = (cellSizeW - 4) / 2;
                 int headSizeH = (cellSizeH - 4) / 2;
                 int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
@@ -179,7 +187,6 @@ public class GridWorldView extends JFrame {
                 }
             }
             if((model.data[x][y] & GridWorldModel.CAR) != 0){
-                // System.out.println("car on zebra crossing");
                 g.setColor(Color.white);
                 g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
                 // Draw the veicle 
@@ -237,8 +244,6 @@ public class GridWorldView extends JFrame {
     public void drawEmpty(Graphics g, int x, int y) {
         g.setColor(Color.white);
         g.fillRect(x * cellSizeW + 1, y * cellSizeH+1, cellSizeW-1, cellSizeH-1);
-        // g.setColor(Color.lightGray);
-        // g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
     }
 
     public Canvas getCanvas() {

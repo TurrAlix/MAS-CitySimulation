@@ -26,7 +26,7 @@ target(_ ,_ , _). //creating the template
 
 // i'm in the office position
 +!goToPos(X,Y) : pos(X, Y) & office(X, Y)
-    <- .print("GOTOPOS: I'm at the office!");
+    <- .print("I'm at the office!");
         .wait(4000);
         ?supermarket(PX, PY);
         -+target("supermarket", PX, PY);
@@ -35,7 +35,7 @@ target(_ ,_ , _). //creating the template
 
 // i'm in the supermarket position
 +!goToPos(X,Y) : pos(X, Y) & supermarket(X, Y)
-    <- .print("GOTOPOS: I'm at the supermarket!");
+    <- .print("I'm at the supermarket!");
         .wait(4000);
         -+target("stop", -1, -1);
         .print("I FINISH MY DAAAAY!");
@@ -52,23 +52,18 @@ target(_ ,_ , _). //creating the template
 /* These are the plans to have the pedestrian walk in the direction of X,Y.
  It uses the internal action jia.get_direction which encodes a search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) 
-   <- .print("NEXT STEP");
-   jia.get_dir(AgX, AgY, X, Y, D);
+   <- jia.get_dir(AgX, AgY, X, Y, D);
     .wait(400);
     if (D==up) {
-        .print("Attempting to go up.");
         up;
     }
     if (D==down) {
-        .print("Attempting to go down.");
         down;
     }
     if (D==right) {
-        .print("Attempting to go right.");
         right;
     }
     if (D==left) {
-        .print("Attempting to go left.");
         left;
     }.
 

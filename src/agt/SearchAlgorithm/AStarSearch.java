@@ -26,7 +26,6 @@ public class AStarSearch {
 
         private int heuristic(Location to) {
             if (! model.isWalkable(this.x, this.y)) {
-                System.out.println("A*  Not walkable: " + this.x + ", " + this.y);
                 return Integer.MAX_VALUE;
             }
             return Math.abs(this.x - to.x) + Math.abs(this.y - to.y);
@@ -175,7 +174,6 @@ public class AStarSearch {
                 }
             }
         }
-        System.out.println("No route found from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + "!");
         return "skip"; 
     }
 }

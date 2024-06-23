@@ -1,14 +1,10 @@
 package city;
 
-import lib.GridWorldModel;
 import lib.GridWorldView;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;

@@ -13,72 +13,64 @@ If the next block is a zebra-crossing and there is no other streets to take inst
 there are no pedestrians
 */
 
-
 /* Initial beliefs and rules */
-//gsize(_,W,H); Not so sure we need to use this here!
 busy(0). //not turning or in the process of driving
 
 /* Initial goals */
 !drive_random.
 
+// ------------------------------------------------------------- //
+
 /* Plans */
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up) & busy(0)  <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
-    .print("Attempting to go up...");
+    //.print("Attempting to go up...");
     up.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down) & busy(0) <-
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
-    .print("Attempting to go down...");
+    //.print("Attempting to go down...");
     down.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_left) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
-    .print("Attempting to go left...");
+    //.print("Attempting to go left...");
     left.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_right) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
-    .print("Attempting to go right...");
+    //.print("Attempting to go right...");
     right.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up_right) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
     !draw_random_direction(street_up, street_right).
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up_left) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
     !draw_random_direction(street_up, street_left).
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down_right) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
     !draw_random_direction(street_down, street_right).
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down_left) & busy(0) <- 
     -+busy(1);
     ?busy(B);
-    .print("Busy?", B);
     .wait(200);
     !draw_random_direction(street_down, street_left).
 
@@ -86,33 +78,28 @@ busy(0). //not turning or in the process of driving
     .wait(100);
     !drive_random.
 
-
 +!draw_random_direction(D1, D2) <- 
     ?pos(X,Y);
     jia.random_direction(X, Y, D);
-    //.print("New Direction Drawn: ", D);
     if (not(D == D1) & not(D == D2)) {
         !draw_random_direction(D1, D2);
     } else {
         if (D==street_up) {
-        .print("Attempting to go up...");
         up;
         }
         if (D==street_down) {
-        .print("Attempting to go down...");
         down;
         }
         if (D==street_right) {
-        .print("Attempting to go right...");
         right;
         }
         if (D==street_left) {
-        .print("Attempting to go left...");
         left;
         }
     }.
 
-//Movement completion percepts
+// ------------------------------------------------------------- //
+
 +success("up") <-
     .print("Went up!");
     -+busy(0);
@@ -173,42 +160,36 @@ busy(0). //not turning or in the process of driving
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
     .send(helicopter, achieve, fix_car(X,Y)).
 
+// ------------------------------------------------------------- //
 
 +!change_direction : success("up") <-
-    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    //.print("New Direction Drawn: ", NewD);
     !no_going_back(NewD,street_down).
 
 +!change_direction : success("down") <-
-    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    //.print("New Direction Drawn: ", NewD);
     !no_going_back(NewD,street_up).
 
 +!change_direction : success("right") <-
-    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    //.print("New Direction Drawn: ", NewD);    
     !no_going_back(NewD,street_left).
 
 +!change_direction : success("left") <-
-    //.print("Trying to change of direction");
     ?pos(X,Y);
     ?success(D); //last successful move
     jia.random_direction(X,Y,NewD); //draw a different direction that is free
-    //.print("New Direction Drawn: ", NewD);  
     !no_going_back(NewD,street_right).
 
 -!change_direction <- //car is blocked right from the start, so no last successful move to rely on yet
     .print("Please don't start a car in a blocking position from the start, it is not fair!!").
 
+// ------------------------------------------------------------- //
 
 +!no_going_back(NewD,D) <-
     if (not(NewD==D)) {
@@ -229,17 +210,17 @@ busy(0). //not turning or in the process of driving
         !change_direction; //need to draw another direction then
     }.
 
+// ------------------------------------------------------------- //
 
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
 +fixed[source(helicopter)] <- //message sent from the helicopter once it is done fixing the car
-    .print("I'm fixed!");
+    .print("I'm fixed! Thanks, helicopter!");
     .wait(1000);
     -+busy(0);
     change_state;
     !drive_random.
-
 
 /*+cellL(X,Y,D) <-
     .print("Left cell: x=", X, " & y=", Y, " ; ", D).

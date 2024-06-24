@@ -51,8 +51,9 @@ public class City extends Artifact {
             await_time(sleep);
         }
         boolean success=false;
+
         if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0)
-        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){          
+        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){    
             ObsProperty st = getObsProperty("state");
             Random random = new Random();
             int randomNumber = random.nextInt(30);
@@ -60,10 +61,12 @@ public class City extends Artifact {
                 st.updateValue(0, broken_down); //success stays false
                 System.out.println("success value: "+success);
             } else { success = model.move(m, agId); }
-        } else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
+        } 
+        else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
         && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){
             success = model.walk(m, agId);
-        } else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
+        } 
+        else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
             success = model.fly(m, agId);
         }
         

@@ -3,6 +3,7 @@
 /* Initial beliefs and rules */
 busy(0). //not fixing a car
 
+// ----------------------------------------------------------------------------------- //
 
 /* Plans */
 +!fix_car(X,Y)[source(Sender)] : busy(0) <-
@@ -17,14 +18,13 @@ busy(0). //not fixing a car
     ?helicopterParkingPos(A,B);  
     !return_to_the_parking(A,B).
 
-
-/*fails if another car breaks down
-while the helicopter is busy taking care of a first car*/
+/*fails if another car breaks down while the helicopter is busy taking care of a first car*/
 -!fix_car(X,Y)[source(Sender)] : busy(1) <-
     .print(Sender, " also seems to need my help, but I'm busy for now. Call again later!");
     .wait(1000);
     !fix_car(X,Y)[source(Sender)].
 
+// ----------------------------------------------------------------------------------- //
 
 +!go_to_carX(X,Y) : pos(W,Z) & W<=X <-
     if (not(W==X)) {
@@ -48,26 +48,25 @@ while the helicopter is busy taking care of a first car*/
     .print("Just reached the car to repair in (", X, ";", Y, ")! Car repair in progress...");
     .wait(1000).
 
+// ----------------------------------------------------------------------------------- //
+
 +!step_right <-
     .wait(200);
-    .print("Attempting to go right...");
     right.
 
 +!step_left <-
     .wait(200);
-    .print("Attempting to go left...");
     left.
 
 +!step_up <-
     .wait(200);
-    .print("Attempting to go up...");
     up.
 
 +!step_down <-
     .wait(200);
-    .print("Attempting to go down...");
     down.
     
+// ----------------------------------------------------------------------------------- //
 
 +!return_to_the_parking(X,Y) : busy(0) <-
     if(not(X==-1) & not(Y==-1)) {
@@ -81,7 +80,6 @@ while the helicopter is busy taking care of a first car*/
 +!return_to_the_parking(X,Y) : busy(1) <-
     .wait(100). //another car called for help, so the plan to return to the parking failed
 
-
 -!return_to_the_parking(X,Y) : busy(0) <- //in case of system bug
     .wait(100);
     !return_to_the_parking(X,Y).
@@ -89,6 +87,7 @@ while the helicopter is busy taking care of a first car*/
 -!return_to_the_parking(X,Y) : busy(1) <-
     .wait(100). //another car called for help, so the plan to return to the parking failed
 
+//  ----------------------------------------------------------------------------------- //
 
 +!go_to_parkingX(X,Y) : pos(W,Z) & W<=X & busy(0) <-
     if (not(W==X)) {
@@ -111,6 +110,7 @@ while the helicopter is busy taking care of a first car*/
 +!go_to_parkingY(X,Y) : pos(W,Z) & Z==Y & busy(0) <-
     .print("I'm parked!").
 
+//  ----------------------------------------------------------------------------------- //
 
 +success("up") <-
     .print("Went up!").
@@ -144,8 +144,6 @@ while the helicopter is busy taking care of a first car*/
     .wait(100);
     !step_left.
     
-
-
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 

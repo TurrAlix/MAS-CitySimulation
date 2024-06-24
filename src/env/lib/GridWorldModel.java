@@ -70,7 +70,7 @@ public class GridWorldModel {
     }
 
     public boolean isWalkable(int x, int y) {
-        return inGrid(x, y) && ((data[x][y] & BUILDING) != 0 || ((data[x][y] & ZEBRA_CROSSING) != 0 && (data[x][y] & CAR) == 0));
+        return inGrid(x, y) && ((data[x][y] & BUILDING) != 0 || (data[x][y] & ZEBRA_CROSSING) != 0);
     }
 
     public boolean hasObject(int obj, Location l) {

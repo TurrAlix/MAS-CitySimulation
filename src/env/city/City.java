@@ -59,18 +59,18 @@ public class City extends Artifact {
             int randomNumber = random.nextInt(30);
             if (randomNumber == 0) { //1 chance out of 30 for the car to break down
                 st.updateValue(0, broken_down); //success stays false
-                System.out.println("success value: "+success);
             } else {
-                success = model.move(m, agId)[0];
+                boolean[] result = new boolean[2];
+                result = model.move(m, agId);
+                success = result[0];
                 /*pedestrian=true if the movement failed because a pedestrian was standing
                 in front of the car (so on a zebra-crossing)*/
-                pedestrian = model.move(m, agId)[1]; 
+                pedestrian = result[1]; 
             }
         } else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
         && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){
             success = model.walk(m, agId);
-        } 
-        else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
+        } else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
             success = model.fly(m, agId);
         }
         
@@ -108,7 +108,7 @@ public class City extends Artifact {
                 case 2: model = WorldModel.world2(); break;
                 case 3: model = WorldModel.world3(); break;
                 case 4: model = WorldModel.world4(); break;
-                // case 5: model = WorldModel.world5(); break;
+                case 5: model = WorldModel.world5(); break;
                 // case 6: model = WorldModel.world6(); break;
                 default:
                     logger.info("Invalid index for the environment!");

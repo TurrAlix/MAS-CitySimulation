@@ -46,7 +46,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x, l.y - 1)) {
                     setCarPos(ag, l.x, l.y - 1);
                     moved=true;
-                } else if ((data[l.x][l.y-1] & PEDESTRIAN) != 0){
+                } else if (inGrid(l.x, l.y-1) && (data[l.x][l.y-1] & PEDESTRIAN) != 0){
                     pedestrian=true;
                 }
                 break;
@@ -54,7 +54,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x, l.y + 1)) {
                     setCarPos(ag, l.x, l.y + 1);
                     moved=true;
-                } else if ((data[l.x][l.y+1] & PEDESTRIAN) != 0){
+                } else if (inGrid(l.x, l.y+1) && (data[l.x][l.y+1] & PEDESTRIAN) != 0){
                     pedestrian=true;
                 }
                 break;
@@ -62,7 +62,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x + 1, l.y)) {
                     setCarPos(ag, l.x + 1, l.y);
                     moved=true;
-                } else if ((data[l.x+1][l.y] & PEDESTRIAN) != 0){
+                } else if (inGrid(l.x+1, l.y) && (data[l.x+1][l.y] & PEDESTRIAN) != 0){
                     pedestrian=true;
                 }
                 break;
@@ -70,7 +70,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x - 1, l.y)) {
                     setCarPos(ag, l.x - 1, l.y);
                     moved=true;
-                } else if ((data[l.x-1][l.y] & PEDESTRIAN) != 0){
+                } else if (inGrid(l.x-1, l.y) && (data[l.x-1][l.y] & PEDESTRIAN) != 0){
                     pedestrian=true;
                 }
                 break;
@@ -87,25 +87,25 @@ public class WorldModel extends GridWorldModel {
         switch (dir) {
             //check if in Grid, if in Building and if in zebra_crossing
             case UP:
-                if (inBuilding(l.x, l.y - 1)) { 
+                if (isFreeForPedestrian(l.x, l.y - 1)) { 
                     setPedestrianPos(ag, l.x, l.y - 1);
                     moved=true;
                 }
                 break;
             case DOWN:
-                if (inBuilding(l.x, l.y + 1)) {
+                if (isFreeForPedestrian(l.x, l.y + 1)) {
                     setPedestrianPos(ag, l.x, l.y + 1);
                     moved=true;
                 }
                 break;
             case RIGHT:
-                if (inBuilding(l.x + 1, l.y)) {
+                if (isFreeForPedestrian(l.x + 1, l.y)) {
                     setPedestrianPos(ag, l.x + 1, l.y);
                     moved=true;
                 }
                 break;
             case LEFT:
-                if (inBuilding(l.x - 1, l.y)) {
+                if (isFreeForPedestrian(l.x - 1, l.y)) {
                     setPedestrianPos(ag, l.x - 1, l.y);
                     moved=true;
                 }
@@ -288,56 +288,38 @@ public class WorldModel extends GridWorldModel {
 
     // Map to check the behaviour of cars at zebra-crossings
     static WorldModel world5() throws Exception {
-        int w = 3;
-        int h = 3;
-        WorldModel model = WorldModel.create(w, h, 5);
+        int w = 4;
+        int h = 4;
+        WorldModel model = WorldModel.create(w, h, 4);
         model.setId("Scenario 5");
         // Cars
         model.setCarPos(0, 0, 1);
-        model.setCarPos(1, 2, 2);
+        model.setCarPos(1, 3, 2);
         // Pedestrians
-        model.setPedestrianPos(2,0,0);
-        model.setPedestrianPos(3,0,11);
+        model.setPedestrianPos(2,1,0);
         //Helicopter
-        model.setHelicopterPos(4, 7, 11);
+        model.setHelicopterPos(3, 0, 3);
 
         // Buildings
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                model.add(WorldModel.BUILDING, x, y);
-            }
-        }
+        model.add(WorldModel.BUILDING, 1, 0);
+        model.add(WorldModel.BUILDING, 2, 0);
+        model.add(WorldModel.BUILDING, 2, 3);
+        model.add(WorldModel.BUILDING, 3, 3);
+        
 
         // Parking helicopter
-        model.remove(WorldModel.BUILDING, 7, 11);
-        model.add(WorldModel.PARKING_HELICOPTER, 7, 11);
-
-        // supermarket, a school, a park, and an office
-        model.add(WorldModel.SCHOOL, 0, 0);
-        model.add(WorldModel.OFFICE, 11, 0);
-        model.add(WorldModel.PARK, 0, 11);
-        model.add(WorldModel.SUPERMARKET, 11, 11);
+        model.add(WorldModel.PARKING_HELICOPTER, 0, 3);
 
         // Streets in the middle
         for (int x = 0; x < w; x++) {
-            model.remove(WorldModel.BUILDING, x, 5);
-            model.add(WorldModel.STREET_LEFT, x, 5);
-            model.remove(WorldModel.BUILDING, x, 6);
-            model.add(WorldModel.STREET_RIGHT, x, 6);    
+            model.add(WorldModel.STREET_RIGHT, x, 1);
+            model.add(WorldModel.STREET_LEFT, x, 2);
         }
 
         //zebra_crossing
-        model.add(WorldModel.ZEBRA_CROSSING, 3, 5);
-        model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
-        model.add(WorldModel.ZEBRA_CROSSING, 8, 5);
-        model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 2, 1);
+        model.add(WorldModel.ZEBRA_CROSSING, 2, 2);
 
-        for (int y = 0; y < h; y++) {
-            model.remove(WorldModel.BUILDING, 5, y);
-            model.add(WorldModel.STREET_DOWN, 5, y);
-            model.remove(WorldModel.BUILDING, 6, y);
-            model.add(WorldModel.STREET_UP,6, y);
-        }
         return model;
     }
 

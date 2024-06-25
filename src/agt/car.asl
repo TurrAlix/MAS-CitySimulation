@@ -24,53 +24,45 @@ busy(0). //not turning or in the process of driving
 /* Plans */
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up) & busy(0)  <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     //.print("Attempting to go up...");
     up.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down) & busy(0) <-
     -+busy(1);
-    ?busy(B);
     .wait(200);
     //.print("Attempting to go down...");
     down.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_left) & busy(0) <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     //.print("Attempting to go left...");
     left.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_right) & busy(0) <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     //.print("Attempting to go right...");
     right.
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up_right) & busy(0) <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     !draw_random_direction(street_up, street_right).
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_up_left) & busy(0) <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     !draw_random_direction(street_up, street_left).
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down_right) & busy(0) <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     !draw_random_direction(street_down, street_right).
 
 +!drive_random : pos(X,Y) & cellC(X,Y,street_down_left) & busy(0) <- 
     -+busy(1);
-    ?busy(B);
     .wait(200);
     !draw_random_direction(street_down, street_left).
 
@@ -103,7 +95,6 @@ busy(0). //not turning or in the process of driving
 +success("up") <-
     .print("Went up!");
     -+busy(0);
-    ?busy(B);
     !drive_random.
     
 +fail("up",P) : state(works) <-
@@ -113,7 +104,7 @@ busy(0). //not turning or in the process of driving
         up;
     } else {
         .print("Cannot go up.");
-        !change_direction
+        !change_direction;
     }.
 
 +fail("up",P) : state(broken_down) <-
@@ -124,19 +115,18 @@ busy(0). //not turning or in the process of driving
 +success("down") <-
     .print("Went down!");
     -+busy(0);
-    ?busy(B);
     !drive_random.
     
-+fail("down") : state(works) <-
++fail("down",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going down.");
         .wait(200);
         down;
     } else {
         .print("Cannot go down.");
-        !change_direction
+        !change_direction;
     }.
-+fail("down") : state(broken_down) <-
++fail("down",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
     .send(helicopter, achieve, fix_car(X,Y)).
@@ -144,20 +134,19 @@ busy(0). //not turning or in the process of driving
 +success("right") <-
     .print("Went right!");
     -+busy(0);
-    ?busy(B);
     !drive_random.
     
-+fail("right") : state(works) <-
++fail("right",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going right.");
         .wait(200);
         right;
     } else {
         .print("Cannot go right.");
-        !change_direction
+        !change_direction;
     }.
 
-+fail("right") : state(broken_down) <-
++fail("right",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
     .send(helicopter, achieve, fix_car(X,Y)).
@@ -165,20 +154,19 @@ busy(0). //not turning or in the process of driving
 +success("left") <-
     .print("Went left!"); 
     -+busy(0);
-    ?busy(B);
     !drive_random.
     
-+fail("left") : state(works) <-
++fail("left",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going left.");
         .wait(200);
         left;
     } else {
         .print("Cannot go left.");
-        !change_direction
+        !change_direction;
     }.
 
-+fail("left") : state(broken_down) <-
++fail("left",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
     .send(helicopter, achieve, fix_car(X,Y)).

@@ -63,6 +63,7 @@ public class GridWorldModel {
         return agPos.length;
     }
 
+
     public boolean inGrid(Location l) {
         return inGrid(l.x, l.y);
     }
@@ -70,10 +71,15 @@ public class GridWorldModel {
         return y >= 0 && y < height && x >= 0 && x < width;
     }
 
-    @SuppressWarnings("unused")
     public boolean inBuilding(int x, int y) {
-        return (((data[x][y] & BUILDING) != 0) && inGrid(x, y)) || ((data[x][y] & ZEBRA_CROSSING) != 0);
+        return (inGrid(x, y) && ((data[x][y] & BUILDING) != 0));
     }
+
+    public boolean freeZebraCrossing(int x, int y) {
+        return (inGrid(x, y) && ((data[x][y] & ZEBRA_CROSSING) != 0) && ((data[x][y] & CAR) == 0));
+    }
+
+
 
     public boolean hasObject(int obj, Location l) {
         return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) != 0;
@@ -210,12 +216,19 @@ public class GridWorldModel {
     public boolean isFree(int obj, int x, int y) {
         return inGrid(x, y) && (data[x][y] & obj) == 0;
     }
-    public boolean isFreeOfBuilding(Location l) {
-        return isFree(BUILDING, l);
+
+
+    /** returns true if the location l has no building neither agent */
+    public boolean isFreeForPedestrian(Location l) {
+        return isFreeForPedestrian(l.x, l.y);
     }
-    public boolean isFreeOfBuilding(int x, int y) {
-        return isFree(BUILDING, x, y);
+    /** returns true if the location x,y has neither building nor agent */
+    public boolean isFreeForPedestrian(int x, int y) {
+        return (inBuilding(x,y) || freeZebraCrossing(x, y));
     }
+
+
+
     /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and buildings) */
     protected Location getFreePos() {
         for (int i=0; i<(getWidth()*getHeight()*5); i++) {

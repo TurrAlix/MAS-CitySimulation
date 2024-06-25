@@ -115,7 +115,7 @@ busy(0). //not fixing a car
 +success("up") <-
     .print("Went up!").
     
-+fail("up") <-
++fail("up",P) <-
     .print("Cannot go up");
     .wait(100);
     !step_up.
@@ -123,7 +123,7 @@ busy(0). //not fixing a car
 +success("down") <-
     .print("Went down!").
     
-+fail("down") <-
++fail("down",P) <-
     .print("Cannot go down");
     .wait(100);
     !step_down.
@@ -131,7 +131,7 @@ busy(0). //not fixing a car
 +success("right") <-
     .print("Went right!").
     
-+fail("right") <-
++fail("right",P) <-
     .print("Cannot go right");
     .wait(100);
     !step_right.
@@ -139,7 +139,7 @@ busy(0). //not fixing a car
 +success("left") <-
     .print("Went left!").
     
-+fail("left") <-
++fail("left",P) <-
     .print("Cannot go left");
     .wait(100);
     !step_left.

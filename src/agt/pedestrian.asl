@@ -36,7 +36,7 @@
     .print("Went up!");
     !walk_random.
     
-+fail("up") <-
++fail("up",P) <-
     .print("Cannot go up");
     !walk_random.
 
@@ -44,7 +44,7 @@
     .print("Went down!");
     !walk_random.
     
-+fail("down") <-
++fail("down",P) <-
     .print("Cannot go down");
     !walk_random.
 
@@ -52,7 +52,7 @@
     .print("Went right!");
     !walk_random.
     
-+fail("right") <-
++fail("right",P) <-
     .print("Cannot go right");
     !walk_random.
 
@@ -60,7 +60,7 @@
     .print("Went left!"); 
     !walk_random.
     
-+fail("left") <-
++fail("left",P) <-
     .print("Cannot go left");
     !walk_random.
 

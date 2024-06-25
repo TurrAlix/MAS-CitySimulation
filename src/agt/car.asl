@@ -119,11 +119,17 @@ busy(0). //not turning or in the process of driving
     ?busy(B);
     !drive_random.
     
-+fail("up") : state(works) <-
-    .print("Cannot go up");
-    !change_direction.
++fail("up",P) : state(works) <-
+    if (P==true){ //wait at the zebra-crossing
+        .print("Letting the pedestrian(s) cross before going up.");
+        .wait(200);
+        up;
+    } else {
+        .print("Cannot go up.");
+        !change_direction
+    }.
 
-+fail("up") : state(broken_down) <-
++fail("up",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
     .send(helicopter, achieve, fix_car(X,Y)).
@@ -135,9 +141,14 @@ busy(0). //not turning or in the process of driving
     !drive_random.
     
 +fail("down") : state(works) <-
-    .print("Cannot go down");
-    !change_direction.
-
+    if (P==true){ //wait at the zebra-crossing
+        .print("Letting the pedestrian(s) cross before going down.");
+        .wait(200);
+        down;
+    } else {
+        .print("Cannot go down.");
+        !change_direction
+    }.
 +fail("down") : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
@@ -150,8 +161,14 @@ busy(0). //not turning or in the process of driving
     !drive_random.
     
 +fail("right") : state(works) <-
-    .print("Cannot go right");
-    !change_direction.
+    if (P==true){ //wait at the zebra-crossing
+        .print("Letting the pedestrian(s) cross before going right.");
+        .wait(200);
+        right;
+    } else {
+        .print("Cannot go right.");
+        !change_direction
+    }.
 
 +fail("right") : state(broken_down) <-
     ?pos(X,Y);
@@ -165,8 +182,14 @@ busy(0). //not turning or in the process of driving
     !drive_random.
     
 +fail("left") : state(works) <-
-    .print("Cannot go left");
-    !change_direction.
+    if (P==true){ //wait at the zebra-crossing
+        .print("Letting the pedestrian(s) cross before going left.");
+        .wait(200);
+        left;
+    } else {
+        .print("Cannot go left.");
+        !change_direction
+    }.
 
 +fail("left") : state(broken_down) <-
     ?pos(X,Y);

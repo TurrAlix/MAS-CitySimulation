@@ -51,6 +51,7 @@ public class City extends Artifact {
             await_time(sleep);
         }
         boolean success=false;
+        boolean pedestrian=false;
         if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0)
         && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){          
             ObsProperty st = getObsProperty("state");
@@ -59,7 +60,12 @@ public class City extends Artifact {
             if (randomNumber == 0) { //1 chance out of 30 for the car to break down
                 st.updateValue(0, broken_down); //success stays false
                 System.out.println("success value: "+success);
-            } else { success = model.move(m, agId); }
+            } else {
+                success = model.move(m, agId)[0];
+                /*pedestrian=true if the movement failed because a pedestrian was standing
+                in front of the car (so on a zebra-crossing)*/
+                pedestrian = model.move(m, agId)[1]; 
+            }
         } else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
         && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){
             success = model.walk(m, agId);
@@ -75,6 +81,7 @@ public class City extends Artifact {
             s.updateValue(0, m.toString().toLowerCase()); // Add percept for successful move
         } else {
             ls.updateValue(0, m.toString().toLowerCase()); // Add percept for failed move
+            ls.updateValue(1, pedestrian); // Add percept for reason of failed move (goal: know if it is because of a pedestrian (true) or not)
         }
     }
 
@@ -131,7 +138,7 @@ public class City extends Artifact {
             defineObsProperty("whoD", -1, -1, -1);
 
             defineObsProperty("success", ""); // success in <argument> direction
-            defineObsProperty("fail", ""); // fail in <argument> direction
+            defineObsProperty("fail", "", false); // fail in <argument> direction, true instead of false if it is because of a pedestrian
             
             
             updateAgPercept();

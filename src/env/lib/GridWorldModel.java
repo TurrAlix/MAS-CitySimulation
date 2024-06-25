@@ -9,7 +9,7 @@ public class GridWorldModel {
     // represents different objects. Other numbers represent combinations
     // of objects which are all located in the same cell of the grid.
     public static final int       CLEAN    = 0;
-    public static final int       ZEBRA_CROSSING = 1;
+    public static final int       ZEBRA_CROSSING = 16384;
     public static final int       CAR    = 2;
     public static final int       PEDESTRIAN    = 4;
 

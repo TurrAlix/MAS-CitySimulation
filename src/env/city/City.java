@@ -53,7 +53,7 @@ public class City extends Artifact {
         boolean success=false;
         boolean pedestrian=false;
         if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0)
-        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){          
+        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){    
             ObsProperty st = getObsProperty("state");
             Random random = new Random();
             int randomNumber = random.nextInt(30);
@@ -69,7 +69,8 @@ public class City extends Artifact {
         } else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
         && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){
             success = model.walk(m, agId);
-        } else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
+        } 
+        else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
             success = model.fly(m, agId);
         }
         

@@ -104,12 +104,11 @@ public class City extends Artifact {
         try {
             if (model == null) {
                 switch (w) {
-                case 1: model = WorldModel.world1(); break;
                 case 2: model = WorldModel.world2(); break;
                 case 3: model = WorldModel.world3(); break;
                 case 4: model = WorldModel.world4(); break;
-                case 5: model = WorldModel.world5(); break;
-                // case 6: model = WorldModel.world6(); break;
+                // case 5: model = WorldModel.world5(); break;
+                case 6: model = WorldModel.world6(); break;
                 default:
                     logger.info("Invalid index for the environment!");
                     return;

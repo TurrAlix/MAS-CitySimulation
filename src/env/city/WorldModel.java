@@ -155,13 +155,7 @@ public class WorldModel extends GridWorldModel {
 
 
     /** Maps **/
-    static WorldModel world1() throws Exception {
-        WorldModel model = WorldModel.create(11, 11, 1);
-        model.setId("Scenario 1");
-        model.setCarPos(0, 0, 0);
-        return model;
-    }
-    
+   
     /** Map with just one street*/
     static WorldModel world2() throws Exception {
         int w = 12;
@@ -248,18 +242,15 @@ public class WorldModel extends GridWorldModel {
         model.setPedestrianPos(3,11,11);
         //Helicopter
         model.setHelicopterPos(4, 7, 11);
-
         // Buildings
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 model.add(WorldModel.BUILDING, x, y);
             }
         }
-
         // Parking helicopter
         model.remove(WorldModel.BUILDING, 7, 11);
         model.add(WorldModel.PARKING_HELICOPTER, 7, 11);
-
         // supermarket, a school, a park, and an office
         model.add(WorldModel.OFFICE, 0, 0);
         model.setOfficePos(0, 0);
@@ -277,7 +268,12 @@ public class WorldModel extends GridWorldModel {
             model.remove(WorldModel.BUILDING, x, 6);
             model.add(WorldModel.STREET_RIGHT, x, 6);    
         }
-
+        for (int y = 0; y < h; y++) {
+            model.remove(WorldModel.BUILDING, 5, y);
+            model.add(WorldModel.STREET_DOWN, 5, y);
+            model.remove(WorldModel.BUILDING, 6, y);
+            model.add(WorldModel.STREET_UP,6, y);
+        }
         //zebra_crossing
         model.add(WorldModel.ZEBRA_CROSSING, 3, 5);
         model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
@@ -285,15 +281,75 @@ public class WorldModel extends GridWorldModel {
         model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
         model.add(WorldModel.ZEBRA_CROSSING, 5, 10);
         model.add(WorldModel.ZEBRA_CROSSING, 6, 10);
-
-        for (int y = 0; y < h; y++) {
-            model.remove(WorldModel.BUILDING, 5, y);
-            model.add(WorldModel.STREET_DOWN, 5, y);
-            model.remove(WorldModel.BUILDING, 6, y);
-            model.add(WorldModel.STREET_UP,6, y);
-        }
         return model;
     }
+
+    static WorldModel world6() throws Exception {
+        int w = 12;
+        int h = 12;
+        WorldModel model = WorldModel.create(w, h, 5);
+        model.setId("Scenario 6");
+        // Cars
+        model.setCarPos(0, 11, 11);
+        model.setCarPos(1, 0, 0);
+        // Pedestrians
+        model.setPedestrianPos(2,7,2);
+        model.setPedestrianPos(3,4,4);
+        //Helicopter
+        model.setHelicopterPos(4, 9, 9);
+
+        // Buildings:
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
+        }
+        // Parking helicopter
+        model.remove(WorldModel.BUILDING, 9, 9);
+        model.add(WorldModel.PARKING_HELICOPTER, 9, 9);
+        // supermarket, a school, a park, and an office
+        model.add(WorldModel.SCHOOL, 2, 2);
+        model.add(WorldModel.OFFICE, 4, 9);
+        model.add(WorldModel.PARK, 7, 9);
+        model.add(WorldModel.SUPERMARKET, 9, 2);
+
+        // Streets:
+        for (int x = 0; x < w; x++) {
+            model.remove(WorldModel.BUILDING, x, 0);
+            model.remove(WorldModel.BUILDING, x, 1);
+            model.remove(WorldModel.BUILDING, x, 6);
+            model.remove(WorldModel.BUILDING, x, 10);
+            model.remove(WorldModel.BUILDING, x, 11);
+
+            model.add(WorldModel.STREET_LEFT, x, 0);
+            model.add(WorldModel.STREET_RIGHT, x, 1);
+            model.add(WorldModel.STREET_LEFT, x, 10);
+            model.add(WorldModel.STREET_RIGHT, x, 6);    
+            model.add(WorldModel.STREET_RIGHT, x, 11); 
+        }
+        for (int y = 0; y < h; y++) {
+            model.remove(WorldModel.BUILDING, 11, y);
+            model.remove(WorldModel.BUILDING, 10, y);
+            model.remove(WorldModel.BUILDING, 1, y);
+            model.remove(WorldModel.BUILDING, 0, y);
+            model.remove(WorldModel.BUILDING, 6, y);
+            model.remove(WorldModel.BUILDING, 5, y);
+
+            model.add(WorldModel.STREET_UP, 11, y);
+            model.add(WorldModel.STREET_DOWN, 10, y);
+            model.add(WorldModel.STREET_UP, 1, y);
+            model.add(WorldModel.STREET_DOWN, 0, y);    
+            model.add(WorldModel.STREET_UP, 6, y);
+            model.add(WorldModel.STREET_DOWN, 5, y);
+        }
+        //zebra_crossing
+        model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 4);
+        model.add(WorldModel.ZEBRA_CROSSING, 6, 4);
+
+        return model;
+    }
+    
 
 
     // Map to check the behaviour of cars at zebra-crossings

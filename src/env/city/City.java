@@ -52,14 +52,8 @@ public class City extends Artifact {
         }
         boolean success=false;
         boolean pedestrian=false;
-        if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.CAR) != 0)
-        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){    
-            ObsProperty st = getObsProperty("state");
-            Random random = new Random();
-            int randomNumber = random.nextInt(30);
-            if (randomNumber == 0) { //1 chance out of 30 for the car to break down
-                st.updateValue(0, broken_down); //success stays false
-            } else {
+        if (WorldModel.getAgType(agId)==WorldModel.CAR){    
+            if (WorldModel.getHelicopter()==-1){ //no helicopter instantiated
                 boolean[] result = new boolean[2];
                 result = model.move(m, agId);
                 success = result[0];
@@ -67,10 +61,24 @@ public class City extends Artifact {
                 in front of the car (so on a zebra-crossing)*/
                 pedestrian = result[1]; 
             }
-        } else if (((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.PEDESTRIAN) != 0) 
-        && ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) == 0)){
+            else {
+                ObsProperty st = getObsProperty("state");
+                Random random = new Random();
+                int randomNumber = random.nextInt(50);
+                if (randomNumber == 0) { //1 chance out of 50 for the car to break down
+                    st.updateValue(0, broken_down); //success stays false
+                } else {
+                    boolean[] result = new boolean[2];
+                    result = model.move(m, agId);
+                    success = result[0];
+                    /*pedestrian=true if the movement failed because a pedestrian was standing
+                    in front of the car (so on a zebra-crossing)*/
+                    pedestrian = result[1]; 
+                }
+            }
+        } else if (WorldModel.getAgType(agId)==WorldModel.PEDESTRIAN){
             success = model.walk(m, agId);
-        } else if ((model.getBlockTypeAtPos(WorldModel.getAgPos(agId)) & WorldModel.HELICOPTER) != 0) {
+        } else if (WorldModel.getAgType(agId)==WorldModel.HELICOPTER) {
             success = model.fly(m, agId);
         }
         
@@ -217,10 +225,10 @@ public class City extends Artifact {
     private static Term car = new Atom("car");
     private static Term pedestrian = new Atom("pedestrian");
     private static Term nobody = new Atom("nobody");
-    private static Term school = new Atom("school");
+    /*private static Term school = new Atom("school");
     private static Term park = new Atom("park");
     private static Term office = new Atom("office");
-    private static Term supermarket = new Atom("supermarket");
+    private static Term supermarket = new Atom("supermarket");*/
 
     private static Term works = new Atom("works");
     private static Term broken_down = new Atom("broken_down");

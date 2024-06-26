@@ -30,6 +30,7 @@ public class GridWorldModel {
     protected int                 width, height;
     protected int[][]             data = null;
     protected static Location[]   agPos;
+    protected static int[]        agTypes;
     protected GridWorldView       view;
     protected Random              random = new Random();
     protected Location            school;
@@ -47,8 +48,10 @@ public class GridWorldModel {
             }
         }
         agPos = new Location[nbAgs];
+        agTypes = new int[nbAgs];
         for (int i = 0; i < agPos.length; i++) {
             agPos[i] = new Location(-1, -1);
+            agTypes[i] = -1;
         }
     }
 
@@ -77,8 +80,13 @@ public class GridWorldModel {
         return (inGrid(x, y) && ((data[x][y] & BUILDING) != 0));
     }
 
-    public boolean freeZebraCrossing(int x, int y) {
-        return (inGrid(x, y) && ((data[x][y] & ZEBRA_CROSSING) != 0) && ((data[x][y] & CAR) == 0));
+    //if the next block is a zebra-crossing (result =/= 0), says
+    //to the pedestrian if it is occupied by a car (result = 2) or not (result = 1)
+    public boolean busyZebraCrossing(int x, int y) {
+        if (inGrid(x,y) && ((data[x][y] & ZEBRA_CROSSING) != 0) && ((data[x][y] & CAR) != 0)) {
+            return true; //zebra-crossing occupied by a car at the moment
+        }
+        else { return false; }
     }
 
 
@@ -169,6 +177,7 @@ public class GridWorldModel {
             remove(CAR, oldLoc.x, oldLoc.y);
         };
         agPos[ag] = l;
+        agTypes[ag] = CAR;
         data[l.x][l.y] |= CAR;
         if (view != null) view.update(l.x, l.y, CAR);         
     }
@@ -182,6 +191,7 @@ public class GridWorldModel {
             remove(PEDESTRIAN, oldLoc.x, oldLoc.y);
         };
         agPos[ag] = l;
+        agTypes[ag] = PEDESTRIAN;
         data[l.x][l.y] |= PEDESTRIAN;
         if (view != null) view.update(l.x, l.y, PEDESTRIAN); 
     }
@@ -195,6 +205,7 @@ public class GridWorldModel {
             remove(HELICOPTER, oldLoc.x, oldLoc.y);
         };
         agPos[ag] = l;
+        agTypes[ag] = HELICOPTER;
         data[l.x][l.y] |= HELICOPTER;
         if (view != null) view.update(l.x, l.y, HELICOPTER);         
     }
@@ -215,6 +226,28 @@ public class GridWorldModel {
             return null;
         }
     }
+
+    public static int getAgType(int ag) {
+        try {
+            if (agTypes[ag] == -1)
+                return -1;
+            else
+                return (int)agTypes[ag];
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    public static int getHelicopter() {
+        int i=0;
+        while (agTypes[i]!=HELICOPTER && i<agTypes.length){
+            i++;
+        }
+        if (i==agTypes.length){ return -1; } // no helicopter found
+        else { return i; }
+    }
+
+
     /** returns the agent at x,y or -1 if there is not one there */
     public int getAgAtPos(int x, int y) {
         for (int i=0; i<agPos.length; i++) {
@@ -242,12 +275,12 @@ public class GridWorldModel {
 
 
     /**returns the types contained in a block at a specific position */
-    public int getBlockTypeAtPos(Location l) {
+    /*public int getBlockTypeAtPos(Location l) {
         return getBlockTypeAtPos(l.x, l.y);
     }
     public int getBlockTypeAtPos(int x, int y) {
         return data[x][y];
-    }
+    }*/
 
     // ----------------------------------------------------- //
 
@@ -272,9 +305,10 @@ public class GridWorldModel {
     public boolean isWalkable(Location l) {
         return isWalkable(l.x, l.y);
     }
-    /** returns true if the location x,y has neither building nor agent */
+
+    //used in tha AStar algorithm to check which path for pedestrians are valid
     public boolean isWalkable(int x, int y) {
-        return (inBuilding(x,y) || freeZebraCrossing(x, y));
+        return (inGrid(x,y) && (inBuilding(x,y) || ((data[x][y] & ZEBRA_CROSSING) != 0)));
     }
 
     // ----------------------------------------------------- //

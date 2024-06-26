@@ -90,26 +90,50 @@ public class WorldModel extends GridWorldModel {
             //check if in Grid, if in Building and if in zebra_crossing
             case UP:
                 if (isWalkable(l.x, l.y - 1)) { 
-                    setPedestrianPos(ag, l.x, l.y - 1);
-                    moved=true;
+                    if (busyZebraCrossing(l.x, l.y - 1)){
+                        Thread.sleep(500);
+                        moved=walk(dir, ag);
+                    }
+                    else{
+                        setPedestrianPos(ag, l.x, l.y - 1);
+                        moved=true;
+                    }
                 }
                 break;
             case DOWN:
                 if (isWalkable(l.x, l.y + 1)) {
+                    if (busyZebraCrossing(l.x, l.y + 1)){
+                        Thread.sleep(500);
+                        moved=walk(dir, ag);
+                    }
+                    else{
                     setPedestrianPos(ag, l.x, l.y + 1);
                     moved=true;
+                    }
                 }
                 break;
             case RIGHT:
                 if (isWalkable(l.x + 1, l.y)) {
+                    if (busyZebraCrossing(l.x + 1, l.y)){
+                        Thread.sleep(500);
+                        moved=walk(dir, ag);
+                    }
+                    else{
                     setPedestrianPos(ag, l.x + 1, l.y);
                     moved=true;
+                    }
                 }
                 break;
             case LEFT:
                 if (isWalkable(l.x - 1, l.y)) {
+                    if (busyZebraCrossing(l.x - 1, l.y)){
+                        Thread.sleep(500);
+                        moved=walk(dir, ag);
+                    }
+                    else{
                     setPedestrianPos(ag, l.x - 1, l.y);
                     moved=true;
+                    }
                 }
                 break;
         }

@@ -123,17 +123,15 @@ public class GridWorldView extends JFrame {
         }
     }
     public void drawCar(Graphics g, int x, int y, int id) {
-
         // Background 
         g.setColor(Color.lightGray);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-
         // on zebra crossing 
         if((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING)!=0){
-            g.setColor(Color.white);
-            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            // g.setColor(Color.white);
+            // g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawZebraCrossing(g, x, y);
         }
-        
         // Draw the vehicle 
         g.setColor(Color.yellow);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
@@ -145,18 +143,16 @@ public class GridWorldView extends JFrame {
 
 
     public void drawPedestrian(Graphics g, int x, int y, int id) {
-
         // Building Background 
         g.setColor(Color.orange);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
 
         // on zebra crossing 
         if((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING)!=0){
-            // on zebra crossing 
-            g.setColor(Color.white);
-            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            // g.setColor(Color.white);
+            // g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawZebraCrossing(g, x, y);
         }
-        
         // Draw the body (blue circle)
         g.setColor(Color.blue);
         g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
@@ -195,8 +191,7 @@ public class GridWorldView extends JFrame {
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
         }
         if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
-            g.setColor(Color.WHITE);
-            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawZebraCrossing(g, x, y);
         }
         if (((model.data[x][y] & GridWorldModel.STREET_UP) != 0) | ((model.data[x][y] & GridWorldModel.STREET_DOWN) != 0) | ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) | ((model.data[x][y] & GridWorldModel.STREET_RIGHT) != 0)){
             g.setColor(Color.lightGray);
@@ -251,50 +246,23 @@ public class GridWorldView extends JFrame {
                 drawHelicopter(g, x, y, id);
             }
         }
-        // zebra crossing
-        if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
-            g.setColor(Color.white);
-            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-            if((model.data[x][y] & GridWorldModel.PEDESTRIAN) != 0){
-                // TODO IT DOESN'T ENTER HERE
-                g.setColor(Color.white);
-                g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-                // draw Pedestrian
-                g.setColor(Color.blue);
-                g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-                int headSizeW = (cellSizeW - 4) / 2;
-                int headSizeH = (cellSizeH - 4) / 2;
-                int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
-                int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
-                g.setColor(Color.yellow);
-                g.fillOval(headX, headY, headSizeW, headSizeH);
-                if (id >= 0) { 
-                    g.setColor(Color.black);
-                    drawString(g, x, y, defaultFont, String.valueOf(id + 1));
-                }
-            }
-            if((model.data[x][y] & GridWorldModel.HELICOPTER) != 0){
-                /*TODO: how to do so that the helicopter appears on top of the car
-                and that the id doesn't take the value of the one of the car?*/
-                System.out.println("Helicopter on zebra crossing");
-                g.setColor(Color.white);
-                g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-                drawHelicopter(g, x, y, id);
-            }
-            if((model.data[x][y] & GridWorldModel.CAR) != 0){
-                g.setColor(Color.white);
-                g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-                // Draw the vehicle 
-                g.setColor(Color.yellow);
-                g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-                if (id >= 0) { 
-                    g.setColor(Color.black);
-                    drawString(g, x, y, defaultFont, String.valueOf(id+1));
-                }
-            }
-        }        
+        drawZebraCrossing(g, x, y);              
     }
 
+    public void drawZebraCrossing(Graphics g, int x, int y){
+        if ((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING) != 0){
+            int stripeHeight = cellSizeH / 4; // Height of each stripe
+            // Draw the zebra crossing stripes
+            for (int i = 0; i < 4; i++) {
+                if (i % 2 == 0) {
+                    g.setColor(Color.white);
+                } else {
+                    g.setColor(Color.black);
+                }
+                g.fillRect(x * cellSizeW, y * cellSizeH + i * stripeHeight, cellSizeW, stripeHeight);
+            }
+        } 
+    }
 
     public void drawSpecialBuilding(Graphics g, int x, int y, int id, String t) {
         g.setColor(Color.black);

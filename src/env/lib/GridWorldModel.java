@@ -32,12 +32,14 @@ public class GridWorldModel {
     protected static Location[]   agPos;
     protected GridWorldView       view;
     protected Random              random = new Random();
+    protected Location            school;
+    protected Location            park;
+    protected Location            office;
+    protected Location            supermarket;
 
     protected GridWorldModel(int w, int h, int nbAgs) {
         width  = w;
         height = h;
-
-        // int data
         data = new int[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -111,9 +113,52 @@ public class GridWorldModel {
     public void remove(int value, int x, int y) {
         data[x][y] &= ~value;
         if (view != null) view.update(x,y);     // put here: agents disappear after moving
-        // if (view != null) view.update(x,y, data[x][y]); 
-        // TODO CHOOSE WHICH ONE TO USE: we could pass directly in the update the data[x][y] value so later we don't have to do model.data[x][y] & obj
     }
+
+    // ----------------------------------------------------- //
+
+    public void setSchoolPos(int x, int y) {
+        setSchoolPos(new Location(x, y));
+    }
+    public void setSchoolPos(Location l) {
+        school = l;
+    }
+    public Location getSchoolPos() {
+        return school;
+    }
+
+    public void setParkPos(int x, int y) {
+        setParkPos(new Location(x, y));
+    }
+    public void setParkPos(Location l) {
+        park = l;
+    }
+    public Location getParkPos() {
+        return park;
+    }
+
+    public void setOfficePos(int x, int y) {
+        setOfficePos(new Location(x, y));
+    }
+    public void setOfficePos(Location l) {
+        office = l;
+    }
+    public Location getOfficePos() {
+        return office;
+    }
+
+    public void setSupermarketPos(int x, int y) {
+        setSupermarketPos(new Location(x, y));
+    }
+    public void setSupermarketPos(Location l) {
+        supermarket = l;
+    }
+    public Location getSupermarketPos() {
+        return supermarket;
+    }
+
+    // ----------------------------------------------------- //
+
 
     public void setCarPos(int ag, int x, int y) {
         setCarPos(ag, new Location(x, y));
@@ -153,6 +198,8 @@ public class GridWorldModel {
         data[l.x][l.y] |= HELICOPTER;
         if (view != null) view.update(l.x, l.y, HELICOPTER);         
     }
+
+    // ----------------------------------------------------- //
     
     /** returns the agent at location l or -1 if there is not one there */
     public int getAgAtPos(Location l) {
@@ -178,6 +225,8 @@ public class GridWorldModel {
         return -1;
     }
 
+    // ----------------------------------------------------- //
+
 
     /** returns the localisation of the parking spot */
     public Location getHelicopterParkingPos() {
@@ -200,6 +249,8 @@ public class GridWorldModel {
         return data[x][y];
     }
 
+    // ----------------------------------------------------- //
+
     /** returns true if the location l has no building neither agent */
     public boolean isFree(Location l) {
         return isFree(l.x, l.y);
@@ -217,17 +268,16 @@ public class GridWorldModel {
         return inGrid(x, y) && (data[x][y] & obj) == 0;
     }
 
-
     /** returns true if the location l has no building neither agent */
-    public boolean isFreeForPedestrian(Location l) {
-        return isFreeForPedestrian(l.x, l.y);
+    public boolean isWalkable(Location l) {
+        return isWalkable(l.x, l.y);
     }
     /** returns true if the location x,y has neither building nor agent */
-    public boolean isFreeForPedestrian(int x, int y) {
+    public boolean isWalkable(int x, int y) {
         return (inBuilding(x,y) || freeZebraCrossing(x, y));
     }
 
-
+    // ----------------------------------------------------- //
 
     /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and buildings) */
     protected Location getFreePos() {

@@ -35,6 +35,8 @@ public class WorldModel extends GridWorldModel {
         return id;
     }
 
+    // -------------------------------------------------------------------- //
+
     /** Actions **/
     boolean[] move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
@@ -87,25 +89,25 @@ public class WorldModel extends GridWorldModel {
         switch (dir) {
             //check if in Grid, if in Building and if in zebra_crossing
             case UP:
-                if (isFreeForPedestrian(l.x, l.y - 1)) { 
+                if (isWalkable(l.x, l.y - 1)) { 
                     setPedestrianPos(ag, l.x, l.y - 1);
                     moved=true;
                 }
                 break;
             case DOWN:
-                if (isFreeForPedestrian(l.x, l.y + 1)) {
+                if (isWalkable(l.x, l.y + 1)) {
                     setPedestrianPos(ag, l.x, l.y + 1);
                     moved=true;
                 }
                 break;
             case RIGHT:
-                if (isFreeForPedestrian(l.x + 1, l.y)) {
+                if (isWalkable(l.x + 1, l.y)) {
                     setPedestrianPos(ag, l.x + 1, l.y);
                     moved=true;
                 }
                 break;
             case LEFT:
-                if (isFreeForPedestrian(l.x - 1, l.y)) {
+                if (isWalkable(l.x - 1, l.y)) {
                     setPedestrianPos(ag, l.x - 1, l.y);
                     moved=true;
                 }
@@ -113,8 +115,7 @@ public class WorldModel extends GridWorldModel {
         }
         return moved;
     }
-
-
+    
     //movement of the helicopter
     boolean fly(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
@@ -150,8 +151,9 @@ public class WorldModel extends GridWorldModel {
     }
 
 
+    // -------------------------------------------------------------------- //
 
-    
+
     /** Maps **/
     static WorldModel world1() throws Exception {
         WorldModel model = WorldModel.create(11, 11, 1);
@@ -239,8 +241,10 @@ public class WorldModel extends GridWorldModel {
         // Cars
         model.setCarPos(0, 11, 5);
         model.setCarPos(1, 0, 6);
-        // Pedestrians
-        model.setPedestrianPos(2,0,0);
+        // Pedestrians:
+        // Child
+        model.setPedestrianPos(2,3,0);
+        // Adults
         model.setPedestrianPos(3,11,11);
         //Helicopter
         model.setHelicopterPos(4, 7, 11);
@@ -257,10 +261,14 @@ public class WorldModel extends GridWorldModel {
         model.add(WorldModel.PARKING_HELICOPTER, 7, 11);
 
         // supermarket, a school, a park, and an office
-        model.add(WorldModel.SCHOOL, 0, 0);
-        model.add(WorldModel.OFFICE, 11, 0);
-        model.add(WorldModel.PARK, 0, 11);
+        model.add(WorldModel.OFFICE, 0, 0);
+        model.setOfficePos(0, 0);
+        model.add(WorldModel.SCHOOL, 0, 11);
+        model.setSchoolPos(0, 11);
+        model.add(WorldModel.PARK, 11, 0);
+        model.setParkPos(11, 0);
         model.add(WorldModel.SUPERMARKET, 11, 11);
+        model.setSupermarketPos(11, 11);
 
         // Streets in the middle
         for (int x = 0; x < w; x++) {
@@ -275,6 +283,8 @@ public class WorldModel extends GridWorldModel {
         model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
         model.add(WorldModel.ZEBRA_CROSSING, 8, 5);
         model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 10);
+        model.add(WorldModel.ZEBRA_CROSSING, 6, 10);
 
         for (int y = 0; y < h; y++) {
             model.remove(WorldModel.BUILDING, 5, y);

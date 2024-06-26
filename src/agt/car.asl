@@ -96,7 +96,6 @@ busy(0). //not turning or in the process of driving
     .print("Went up!");
     -+busy(0);
     !drive_random.
-    
 +fail("up",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going up.");
@@ -106,7 +105,6 @@ busy(0). //not turning or in the process of driving
         .print("Cannot go up.");
         !change_direction;
     }.
-
 +fail("up",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
@@ -116,7 +114,6 @@ busy(0). //not turning or in the process of driving
     .print("Went down!");
     -+busy(0);
     !drive_random.
-    
 +fail("down",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going down.");
@@ -135,7 +132,6 @@ busy(0). //not turning or in the process of driving
     .print("Went right!");
     -+busy(0);
     !drive_random.
-    
 +fail("right",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going right.");
@@ -145,7 +141,6 @@ busy(0). //not turning or in the process of driving
         .print("Cannot go right.");
         !change_direction;
     }.
-
 +fail("right",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");
@@ -155,7 +150,6 @@ busy(0). //not turning or in the process of driving
     .print("Went left!"); 
     -+busy(0);
     !drive_random.
-    
 +fail("left",P) : state(works) <-
     if (P==true){ //wait at the zebra-crossing
         .print("Letting the pedestrian(s) cross before going left.");
@@ -165,7 +159,6 @@ busy(0). //not turning or in the process of driving
         .print("Cannot go left.");
         !change_direction;
     }.
-
 +fail("left",P) : state(broken_down) <-
     ?pos(X,Y);
     .print("I just broke down in ", pos(X,Y), ". Waiting for the helicopter to fix me!");

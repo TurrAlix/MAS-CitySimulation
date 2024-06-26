@@ -8,11 +8,11 @@ mas city_simulation {
         focus: city.view2
     }
 
-    agent pedestrian : pedestrian.asl  {
+    agent pedestrian_child: pedestrian_child.asl  {
         focus: city.view3
     }
 
-    agent pedestrian2 : pedestrian.asl  {
+    agent pedestrian_adult : pedestrian_adult.asl  {
         focus: city.view4
     }
 
@@ -21,8 +21,10 @@ mas city_simulation {
     }
 
     workspace city {
-        // first parameter is the id of the city 
-        // second parameter is the id of the agent in the scenario
+        /* Parameters: 
+        first =  id of the city 
+        second = id of the agent  */
+
         artifact view1: city.City(4, 0)
         artifact view2: city.City(4, 1)
         artifact view3: city.City(4, 2)

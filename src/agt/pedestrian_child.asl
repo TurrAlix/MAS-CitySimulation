@@ -50,7 +50,6 @@ target(_ ,_ , _). //creating the template
 /* These are the plans to have the pedestrian walk in the direction of X,Y.
  It uses the internal action jia.get_direction which encodes a search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) <-
-   .print("NEXT STEP");
    jia.get_dir(AgX, AgY, X, Y, D);
     .wait(400);
     if (D==up) {
@@ -134,17 +133,79 @@ target(_ ,_ , _). //creating the template
 
 +cellD(X,Y,D) <-
     .print("Down cell: x=", X, " & y=", Y, " ; ", D).
+*/
+
+//obs2
++whoL(X,Y, W, Id) : W == pedestrian
+    <-  
+    //?agent_name(Id, Name);
+    //.print("I'm near: " , Name);
+    //!sayHello(Name);
+    .wait(1000).
+
++whoR(X,Y, W, Id) : W == pedestrian 
+    <-  
+    //?agent_name(Id, Name);
+    //.print("I'm near: " , Name);
+    //!sayHello(Name);
+    .wait(1000).
+
++whoU(X,Y, W, Id) : W == pedestrian
+    <-  
+    //?agent_name(Id, Name);
+    //S.print("I'm near: " , Name);
+    //!sayHello(Name);
+    .wait(1000).
+
++whoD(X,Y, W, Id) : W == pedestrian
+    <-  
+    //?agent_name(Id, Name);
+    //.print("I'm near: " , Name);
+    //!sayHello(Name);
+    .wait(1000).
 
 
-+whoL(X,Y,W) <-
-    .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).
+//+!kqml_received(Sender, Performative, Content, MsgId)
++!kqml_received(pedestrian_adult, tell, "hello", MsgId) <-
+    .print("Received 'Hello' from ", pedestrian_adult, "!");
+    .send(pedestrian_adult, tell, "nice_to_meet_you");
+    .print("Sent 'Nice to meet you' to ", pedestrian_adult, "!").
 
-+whoR(X,Y,W) <-
-    .print("Agent on right cell?: x=", X, " & y=", Y, " ; ", W).
++!kqml_received(pedestrian_adult, tell, "nice_to_meet_you_too", MsgId) <-
+    .print("Received 'nice_to_meet_you_too' from ", pedestrian_adult, "!").
 
-+whoU(X,Y,W) <-
-    .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
 
-+whoD(X,Y,W) <-
-    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).
-    */
+// ---------------------------------------------------------------------- //
+//DOESN'T WORK
+/*
+-!sayHello(Name) <-
+    .print("Failed to say hello to ", Name);
+    .wait(1000).
++!sayHello(Name) <-
+    .print("Sending 'hello!' to ", Name);
+    .send(Name, tell, "hello").
+
++!received_hello[content(hello), sender(Sender)] <- 
+    .print("Received 'Hello' from ", Sender, "!");
+    .send(Sender, tell, nice_to_meet_you);
+    .print("Sent 'Nice to meet you' to ", Sender, "!").
+-!received_hello<-
+    .print("Failed to received hello");
+    .wait(1000).
+
++!received_nice_to_meet_you[content(nice_to_meet_you), sender(Sender)] <- 
+    .print("Received 'Nice to meet you' from ", Sender, "!").
+-!received_nice_to_meet_you<-
+    .print("Failed to received nice to meet you");
+    .wait(1000).
+
++hello[source(Sender)] <-
+    -hello[source(Sender)];
+    .print("Received 'Hello' from " + Sender);
+    .send(Sender, tell, "nice to meet you " + Sender). 
+
++nice to meet you[source(Sender)] <-
+    -nice to meet you[source(Sender)];
+    .print("Received 'Nice to meet you' from " + Sender).
+*/
+

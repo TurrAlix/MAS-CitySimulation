@@ -6,6 +6,8 @@ import lib.GridWorldModel;
 import lib.Location;
 
 import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import cartago.Artifact;
@@ -19,7 +21,7 @@ public class City extends Artifact {
     static WorldModel  model = null;
     static WorldView   view;
 
-    static int     simId    = 5;    // different type of environment
+    static int     simId    = 6;    // different type of environment
     static int     sleep    = 200;
     static boolean hasGUI   = true;
     int     agId     = -1;
@@ -115,7 +117,7 @@ public class City extends Artifact {
                 case 2: model = WorldModel.world2(); break;
                 case 3: model = WorldModel.world3(); break;
                 case 4: model = WorldModel.world4(); break;
-                // case 5: model = WorldModel.world5(); break;
+                case 5: model = WorldModel.world5(); break;
                 case 6: model = WorldModel.world6(); break;
                 default:
                     logger.info("Invalid index for the environment!");
@@ -143,14 +145,17 @@ public class City extends Artifact {
             defineObsProperty("cellU", -1, -1, -1);
             defineObsProperty("cellD", -1, -1, -1);
 
-            defineObsProperty("whoL", -1, -1, -1); //is there an agent on the left?
-            defineObsProperty("whoR", -1, -1, -1);
-            defineObsProperty("whoC", -1, -1, -1);
-            defineObsProperty("whoU", -1, -1, -1);
-            defineObsProperty("whoD", -1, -1, -1);
+            defineObsProperty("whoL", -1, -1, -1, -1); //is there an agent on the left?
+            defineObsProperty("whoR", -1, -1, -1, -1);
+            defineObsProperty("whoC", -1, -1, -1, -1);
+            defineObsProperty("whoU", -1, -1, -1, -1);
+            defineObsProperty("whoD", -1, -1, -1, -1);
 
             defineObsProperty("success", ""); // success in <argument> direction
             defineObsProperty("fail", "", false); // fail in <argument> direction, true instead of false if it is because of a pedestrian
+
+            // New observable property for agent names
+            defineObsProperty("agent_name", -1, "");
 
             updateAgPercept();
 
@@ -184,11 +189,18 @@ public class City extends Artifact {
         supermarket.updateValue(0, model.getSupermarketPos().x);
         supermarket.updateValue(1, model.getSupermarketPos().y);
         
-
         Location l = GridWorldModel.getAgPos(agId);
         ObsProperty p = getObsProperty("pos");
         p.updateValue(0, l.x);
         p.updateValue(1, l.y);
+
+        // Update agent name observable property
+        ObsProperty agentName = getObsProperty("agent_name");
+        // agentName.updateValues(getAgentNames()); // Update with all agent names and their IDs
+        agentName.updateValue(0, agId);
+        agentName.updateValue(1, getAgentNameById(agId));
+        // System.out.println("CITY Agent name: " + getAgentNameById(agId));
+
         ObsProperty cl = getObsProperty("cellL");
         ObsProperty cr = getObsProperty("cellR");
         ObsProperty cc = getObsProperty("cellC");
@@ -207,6 +219,22 @@ public class City extends Artifact {
         updateAgPercept(l.x, l.y, cc, whoc);
         updateAgPercept(l.x-1, l.y, cl, whol);
         updateAgPercept(l.x+1, l.y, cr, whor);
+    }
+   
+    // Method to get the agent's name by its ID
+    //TODO CHECK WHEN THIS METHOD SHOULD BE CALLED
+    private String getAgentNameById(int agId) {
+        // System.out.println("CITY Agent ID: " + agId);
+        switch (agId) {
+            case 0: return "car";
+            case 1: return "car2";
+            case 2: return "pedestrian_child";
+            case 3: return "pedestrian_adult";
+            case 4: return "helicopter";
+            case 5: return "car3";
+            case 6: return "car4";
+            default: return "unknown";
+        }
     }
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
@@ -288,9 +316,11 @@ public class City extends Artifact {
         }
         if (model.hasObject(WorldModel.CAR, x, y)) {
             obs2.updateValue(2, car);
+            obs2.updateValue(3, Integer.toString(WorldModel.getAgAtPos(x, y)));
         } 
         if (model.hasObject(WorldModel.PEDESTRIAN, x, y)) {
-            obs2.updateValue(2, pedestrian);;
+            obs2.updateValue(2, pedestrian);
+            obs2.updateValue(3, Integer.toString(WorldModel.getAgAtPos(x, y)));
         }
         if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN, x, y))) {
             obs2.updateValue(2, nobody);

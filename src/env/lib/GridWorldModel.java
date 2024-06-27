@@ -249,7 +249,7 @@ public class GridWorldModel {
 
 
     /** returns the agent at x,y or -1 if there is not one there */
-    public int getAgAtPos(int x, int y) {
+    public static int getAgAtPos(int x, int y) {
         for (int i=0; i<agPos.length; i++) {
             if (agPos[i].x == x && agPos[i].y == y) {
                 return i;

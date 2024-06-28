@@ -24,7 +24,7 @@ target(_ ,_ , _). //creating the template
 
 // I'm in the school position
 +!goToPos(X,Y) : pos(X, Y) & school(X, Y) <-
-    .print("GOTOPOS: I'm at school!");
+    .print("I'm at school!");
     .wait(4000);
     ?park(PX, PY);
     -+target("park", PX, PY);
@@ -33,7 +33,7 @@ target(_ ,_ , _). //creating the template
 
 // I'm in the park position
 +!goToPos(X,Y) : pos(X, Y) & park(X, Y) <-
-    .print("GOTOPOS: I'm at park!");
+    .print("I'm at park!");
     .wait(4000);
     -+target("stop", -1, -1);
     .print("I FINISH MY DAAAAY!");
@@ -136,76 +136,22 @@ target(_ ,_ , _). //creating the template
 */
 
 //obs2
-+whoL(X,Y, W, Id) : W == pedestrian
-    <-  
-    //?agent_name(Id, Name);
-    //.print("I'm near: " , Name);
-    //!sayHello(Name);
+/*+whoL(X,Y, W, P) : W == agPedestrian <-  
+    .wait(3000).
+
++whoR(X,Y, W, P) : W == agPedestrian <-
+    .wait(3000).
+
++whoU(X,Y, W, P) : W == agPedestrian <-  
+    .wait(3000).
+
++whoD(X,Y, W, P) : W == agPedestrian <-  
+    .wait(3000).*/
+
+
++greetings[source(Sender)] <-
+    .print(Sender, " just greeted me!");
+    .send(Sender, tell, greetings_back);
+    .print("Nice to meet you ", Sender, "!");
     .wait(1000).
-
-+whoR(X,Y, W, Id) : W == pedestrian 
-    <-  
-    //?agent_name(Id, Name);
-    //.print("I'm near: " , Name);
-    //!sayHello(Name);
-    .wait(1000).
-
-+whoU(X,Y, W, Id) : W == pedestrian
-    <-  
-    //?agent_name(Id, Name);
-    //S.print("I'm near: " , Name);
-    //!sayHello(Name);
-    .wait(1000).
-
-+whoD(X,Y, W, Id) : W == pedestrian
-    <-  
-    //?agent_name(Id, Name);
-    //.print("I'm near: " , Name);
-    //!sayHello(Name);
-    .wait(1000).
-
-
-//+!kqml_received(Sender, Performative, Content, MsgId)
-+!kqml_received(pedestrian_adult, tell, "hello", MsgId) <-
-    .print("Received 'Hello' from ", pedestrian_adult, "!");
-    .send(pedestrian_adult, tell, "nice_to_meet_you");
-    .print("Sent 'Nice to meet you' to ", pedestrian_adult, "!").
-
-+!kqml_received(pedestrian_adult, tell, "nice_to_meet_you_too", MsgId) <-
-    .print("Received 'nice_to_meet_you_too' from ", pedestrian_adult, "!").
-
-
-// ---------------------------------------------------------------------- //
-//DOESN'T WORK
-/*
--!sayHello(Name) <-
-    .print("Failed to say hello to ", Name);
-    .wait(1000).
-+!sayHello(Name) <-
-    .print("Sending 'hello!' to ", Name);
-    .send(Name, tell, "hello").
-
-+!received_hello[content(hello), sender(Sender)] <- 
-    .print("Received 'Hello' from ", Sender, "!");
-    .send(Sender, tell, nice_to_meet_you);
-    .print("Sent 'Nice to meet you' to ", Sender, "!").
--!received_hello<-
-    .print("Failed to received hello");
-    .wait(1000).
-
-+!received_nice_to_meet_you[content(nice_to_meet_you), sender(Sender)] <- 
-    .print("Received 'Nice to meet you' from ", Sender, "!").
--!received_nice_to_meet_you<-
-    .print("Failed to received nice to meet you");
-    .wait(1000).
-
-+hello[source(Sender)] <-
-    -hello[source(Sender)];
-    .print("Received 'Hello' from " + Sender);
-    .send(Sender, tell, "nice to meet you " + Sender). 
-
-+nice to meet you[source(Sender)] <-
-    -nice to meet you[source(Sender)];
-    .print("Received 'Nice to meet you' from " + Sender).
-*/
 

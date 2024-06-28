@@ -241,14 +241,14 @@ busy(0). //not turning or in the process of driving
 +cellD(X,Y,D) <-
     .print("Down cell: x=", X, " & y=", Y, " ; ", D).*/
 
-+whoL(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).
++whoL(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
+    .print("Agent ",P, " on left cell: x=", X, " & y=", Y).
 
-+whoR(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on right cell?: x=", X, " & y=", Y, " ; ", W).
++whoR(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
+    .print("Agent ",P, " on right cell: x=", X, " & y=", Y).
 
-+whoU(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
++whoU(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
+    .print("Agent ",P, " on up cell: x=", X, " & y=", Y).
 
-+whoD(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).
++whoD(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
+    .print("Agent ",P, " on down cell: x=", X, " & y=", Y).

@@ -6,8 +6,6 @@ import lib.GridWorldModel;
 import lib.Location;
 
 import java.util.logging.Logger;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import cartago.Artifact;
@@ -154,8 +152,6 @@ public class City extends Artifact {
             defineObsProperty("success", ""); // success in <argument> direction
             defineObsProperty("fail", "", false); // fail in <argument> direction, true instead of false if it is because of a pedestrian
 
-            // New observable property for agent names
-            defineObsProperty("agent_name", -1, "");
 
             updateAgPercept();
 
@@ -194,13 +190,7 @@ public class City extends Artifact {
         p.updateValue(0, l.x);
         p.updateValue(1, l.y);
 
-        // Update agent name observable property
-        ObsProperty agentName = getObsProperty("agent_name");
-        // agentName.updateValues(getAgentNames()); // Update with all agent names and their IDs
-        agentName.updateValue(0, agId);
-        agentName.updateValue(1, getAgentNameById(agId));
-        // System.out.println("CITY Agent name: " + getAgentNameById(agId));
-
+       
         ObsProperty cl = getObsProperty("cellL");
         ObsProperty cr = getObsProperty("cellR");
         ObsProperty cc = getObsProperty("cellC");
@@ -221,21 +211,7 @@ public class City extends Artifact {
         updateAgPercept(l.x+1, l.y, cr, whor);
     }
    
-    // Method to get the agent's name by its ID
-    //TODO CHECK WHEN THIS METHOD SHOULD BE CALLED
-    private String getAgentNameById(int agId) {
-        // System.out.println("CITY Agent ID: " + agId);
-        switch (agId) {
-            case 0: return "car";
-            case 1: return "car2";
-            case 2: return "pedestrian_child";
-            case 3: return "pedestrian_adult";
-            case 4: return "helicopter";
-            case 5: return "car3";
-            case 6: return "car4";
-            default: return "unknown";
-        }
-    }
+    
 
     //Term: Logical term, used to represent entities, Atom: indivisible entity in logic programming
     private static Term building = new Atom("building");
@@ -249,14 +225,10 @@ public class City extends Artifact {
     private static Term street_up_right = new Atom("street_up_right");
     private static Term street_down_right = new Atom("street_down_right");
 
-    private static Term car = new Atom("car");
-    private static Term pedestrian = new Atom("pedestrian");
+    private static Term agCar = new Atom("agCar");
+    private static Term agPedestrian = new Atom("agPedestrian");
     private static Term nobody = new Atom("nobody");
-    /*private static Term school = new Atom("school");
-    private static Term park = new Atom("park");
-    private static Term office = new Atom("office");
-    private static Term supermarket = new Atom("supermarket");*/
-
+   
     private static Term works = new Atom("works");
     private static Term broken_down = new Atom("broken_down");
 
@@ -315,20 +287,16 @@ public class City extends Artifact {
             }
         }
         if (model.hasObject(WorldModel.CAR, x, y)) {
-            obs2.updateValue(2, car);
-            obs2.updateValue(3, Integer.toString(WorldModel.getAgAtPos(x, y)));
+            obs2.updateValue(2, agCar);
+            obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         } 
         if (model.hasObject(WorldModel.PEDESTRIAN, x, y)) {
-            obs2.updateValue(2, pedestrian);
-            obs2.updateValue(3, Integer.toString(WorldModel.getAgAtPos(x, y)));
+            obs2.updateValue(2, agPedestrian);
+            obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         }
         if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN, x, y))) {
             obs2.updateValue(2, nobody);
         } 
     }
-
-    // private void addPercept(String percept) {
-    //     defineObsProperty(percept);
-    // }
 
 }

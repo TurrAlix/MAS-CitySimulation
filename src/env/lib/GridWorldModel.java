@@ -1,6 +1,8 @@
 package lib;
 
 import java.util.Random;
+import jason.asSyntax.Atom;
+import jason.asSyntax.Term;
 
 
 public class GridWorldModel {
@@ -30,7 +32,10 @@ public class GridWorldModel {
     protected int                 width, height;
     protected int[][]             data = null;
     protected static Location[]   agPos;
-    protected static int[]        agTypes;
+    protected static int[]        agTypes;          //contains the types of each agent, ordered by id
+    protected static int[]        agCars;           //contains the id of the cars
+    protected static int[]        agPedestrians;    //contains the id of the pedestrians
+    protected static Term[]       agNames;          //contains the names of each agent, ordered by id
     protected GridWorldView       view;
     protected Random              random = new Random();
     protected Location            school;
@@ -49,9 +54,15 @@ public class GridWorldModel {
         }
         agPos = new Location[nbAgs];
         agTypes = new int[nbAgs];
+        agCars = new int[nbAgs];
+        agPedestrians = new int[nbAgs];
+        agNames = new Term[nbAgs];
         for (int i = 0; i < agPos.length; i++) {
             agPos[i] = new Location(-1, -1);
             agTypes[i] = -1;
+            agCars[i] = -1;
+            agPedestrians[i] = -1;
+            agNames[i] = null;
         }
     }
 
@@ -175,9 +186,19 @@ public class GridWorldModel {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) { //clear the previous position
             remove(CAR, oldLoc.x, oldLoc.y);
+        } else { //first time we instantiate the car since the previous position was null
+            if (agCars[0]==-1) { //first car agent to be instantiated
+                agCars[0]=ag;
+                agNames[ag] = new Atom("car");
+            } else {
+                int i=0;
+                while (agCars[i]!=-1){i++;}
+                agCars[i]=ag;
+                agNames[ag] = new Atom("car"+(i+1));
+            }
+            agTypes[ag] = CAR;
         };
         agPos[ag] = l;
-        agTypes[ag] = CAR;
         data[l.x][l.y] |= CAR;
         if (view != null) view.update(l.x, l.y, CAR);         
     }
@@ -189,9 +210,19 @@ public class GridWorldModel {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) { //clear the previous position
             remove(PEDESTRIAN, oldLoc.x, oldLoc.y);
+        } else { //first time we instantiate the pedestrian since the previous position was null
+            if (agPedestrians[0]==-1) { //first pedestrian agent to be instantiated
+                agPedestrians[0]=ag;
+                agNames[ag] = new Atom("pedestrian");
+            } else {
+                int i=0;
+                while (agPedestrians[i]!=-1){i++;}
+                agPedestrians[i]=ag;
+                agNames[ag] = new Atom("pedestrian"+(i+1));
+            }
+            agTypes[ag] = PEDESTRIAN;
         };
         agPos[ag] = l;
-        agTypes[ag] = PEDESTRIAN;
         data[l.x][l.y] |= PEDESTRIAN;
         if (view != null) view.update(l.x, l.y, PEDESTRIAN); 
     }
@@ -203,9 +234,11 @@ public class GridWorldModel {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) { //clear the previous position
             remove(HELICOPTER, oldLoc.x, oldLoc.y);
+        } else { //first time we instantiate the helicopter since the previous position was null
+            agNames[ag] = new Atom("helicopter");
+            agTypes[ag] = HELICOPTER;
         };
         agPos[ag] = l;
-        agTypes[ag] = HELICOPTER;
         data[l.x][l.y] |= HELICOPTER;
         if (view != null) view.update(l.x, l.y, HELICOPTER);         
     }
@@ -226,6 +259,21 @@ public class GridWorldModel {
             return null;
         }
     }
+
+    /** returns the agent name at location l or -1 if there is not one there */
+    public Term getAgNameAtPos(Location l) {
+        return getAgNameAtPos(l.x, l.y);
+    }
+    /** returns the agent at x,y or null if there is not one there */
+    public static Term getAgNameAtPos(int x, int y) {
+        for (int i=0; i<agPos.length; i++) {
+            if (agPos[i].x == x && agPos[i].y == y) {
+                return agNames[i];
+            }
+        }
+        return null;
+    }
+
 
     public static int getAgType(int ag) {
         try {

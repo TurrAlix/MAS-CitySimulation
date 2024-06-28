@@ -25,9 +25,9 @@ public class get_dir extends DefaultInternalAction {
 
             if (model.inGrid(itox, itoy)) {
                 sAction = AStarSearch.getDirection(iagx, iagy, itox, itoy);
-                System.out.println("Action from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + ": \t" + sAction);
+                //System.out.println("Action from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + ": \t" + sAction);
                 if (sAction.equals("skip")) {
-                    System.out.println("No route from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + "!");
+                    //System.out.println("No route from " + iagx + "x" + iagy + " to " + itox + "x" + itoy + "!");
                 }
             }
             return un.unifies(terms[4], new Atom(sAction));

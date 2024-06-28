@@ -13,7 +13,8 @@ public class GridWorldModel {
     public static final int       CLEAN    = 0;
     public static final int       ZEBRA_CROSSING = 16384;
     public static final int       CAR    = 2;
-    public static final int       PEDESTRIAN    = 4;
+    public static final int       PEDESTRIAN_CHILD    = 524287;
+    public static final int       PEDESTRIAN_ADULT    = 1048575;
 
     public static final int       BUILDING = 8;
     public static final int       SUPERMARKET = 256;
@@ -26,6 +27,11 @@ public class GridWorldModel {
     public static final int       STREET_RIGHT = 64;
     public static final int       STREET_LEFT = 128;
 
+    public static final int       PRECEDENCE_UP = 32768;
+    public static final int       PRECEDENCE_DOWN = 65536;
+    public static final int       PRECEDENCE_RIGHT = 131072;
+    public static final int       PRECEDENCE_LEFT = 262144;
+
     public static final int       PARKING_HELICOPTER = 4096;
     public static final int       HELICOPTER = 8192;
 
@@ -34,7 +40,8 @@ public class GridWorldModel {
     protected static Location[]   agPos;
     protected static int[]        agTypes;          //contains the types of each agent, ordered by id
     protected static int[]        agCars;           //contains the id of the cars
-    protected static int[]        agPedestrians;    //contains the id of the pedestrians
+    protected static int[]        agChildPedestrians;    //contains the id of the child pedestrians
+    protected static int[]        agAdultPedestrians;    //contains the id of the adult pedestrians
     protected static Term[]       agNames;          //contains the names of each agent, ordered by id
     protected GridWorldView       view;
     protected Random              random = new Random();
@@ -55,13 +62,15 @@ public class GridWorldModel {
         agPos = new Location[nbAgs];
         agTypes = new int[nbAgs];
         agCars = new int[nbAgs];
-        agPedestrians = new int[nbAgs];
+        agChildPedestrians = new int[nbAgs];
+        agAdultPedestrians = new int[nbAgs];
         agNames = new Term[nbAgs];
         for (int i = 0; i < agPos.length; i++) {
             agPos[i] = new Location(-1, -1);
             agTypes[i] = -1;
             agCars[i] = -1;
-            agPedestrians[i] = -1;
+            agChildPedestrians[i] = -1;
+            agAdultPedestrians[i] = -1;
             agNames[i] = null;
         }
     }
@@ -203,28 +212,42 @@ public class GridWorldModel {
         if (view != null) view.update(l.x, l.y, CAR);         
     }
 
-    public void setPedestrianPos(int ag, int x, int y) {
-        setPedestrianPos(ag, new Location(x, y));
+    public void setChildPedestrianPos(int ag, int x, int y) {
+        setChildPedestrianPos(ag, new Location(x, y));
     }
-    public void setPedestrianPos(int ag, Location l) {
+    public void setChildPedestrianPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) { //clear the previous position
-            remove(PEDESTRIAN, oldLoc.x, oldLoc.y);
+            remove(PEDESTRIAN_CHILD, oldLoc.x, oldLoc.y);
         } else { //first time we instantiate the pedestrian since the previous position was null
-            if (agPedestrians[0]==-1) { //first pedestrian agent to be instantiated
-                agPedestrians[0]=ag;
-                agNames[ag] = new Atom("pedestrian");
-            } else {
-                int i=0;
-                while (agPedestrians[i]!=-1){i++;}
-                agPedestrians[i]=ag;
-                agNames[ag] = new Atom("pedestrian"+(i+1));
-            }
-            agTypes[ag] = PEDESTRIAN;
-        };
+            int i=0;
+            while (agChildPedestrians[i]!=-1){i++;}
+            agChildPedestrians[i]=ag;
+            agNames[ag] = new Atom("pedestrian_child"+(i+1));
+            agTypes[ag] = PEDESTRIAN_CHILD;
+        }
         agPos[ag] = l;
-        data[l.x][l.y] |= PEDESTRIAN;
-        if (view != null) view.update(l.x, l.y, PEDESTRIAN); 
+        data[l.x][l.y] |= PEDESTRIAN_CHILD;
+        if (view != null) view.update(l.x, l.y, PEDESTRIAN_CHILD); 
+    }
+
+    public void setAdultPedestrianPos(int ag, int x, int y) {
+        setAdultPedestrianPos(ag, new Location(x, y));
+    }
+    public void setAdultPedestrianPos(int ag, Location l) {
+        Location oldLoc = getAgPos(ag);
+        if (oldLoc != null) { //clear the previous position
+            remove(PEDESTRIAN_ADULT, oldLoc.x, oldLoc.y);
+        } else { //first time we instantiate the pedestrian since the previous position was null
+            int i=0;
+            while (agAdultPedestrians[i]!=-1){i++;}
+            agAdultPedestrians[i]=ag;
+            agNames[ag] = new Atom("pedestrian_adult"+(i+1));
+            agTypes[ag] = PEDESTRIAN_ADULT;
+        }
+        agPos[ag] = l;
+        data[l.x][l.y] |= PEDESTRIAN_ADULT;
+        if (view != null) view.update(l.x, l.y, PEDESTRIAN_ADULT); 
     }
 
     public void setHelicopterPos(int ag, int x, int y) {
@@ -336,9 +359,9 @@ public class GridWorldModel {
     public boolean isFree(Location l) {
         return isFree(l.x, l.y);
     }
-    /** returns true if the location x,y has neither building nor agent */
+    /** returns true if the location x,y has neither building nor agent ; used by cars */
     public boolean isFree(int x, int y) {
-        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0 && (data[x][y] & PEDESTRIAN) == 0 && (data[x][y] & PARKING_HELICOPTER) == 0;
+        return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0 && (data[x][y] & PEDESTRIAN_CHILD) == 0 && (data[x][y] & PEDESTRIAN_ADULT) == 0 && (data[x][y] & PARKING_HELICOPTER) == 0;
     }
     /** returns true if the location l has not the object obj */
     public boolean isFree(int obj, Location l) {

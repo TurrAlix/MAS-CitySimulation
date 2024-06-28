@@ -136,22 +136,26 @@ target(_ ,_ , _). //creating the template
 */
 
 //obs2
-/*+whoL(X,Y, W, P) : W == agPedestrian <-  
-    .wait(3000).
++whoL(X,Y, W, P) : W == adultPedestrian <- 
+    .print("I'm waiting for an hi!");
+    .wait ({+greetings[source(Sender)]}).
 
-+whoR(X,Y, W, P) : W == agPedestrian <-
-    .wait(3000).
++whoR(X,Y, W, P) : W == adultPedestrian <-
+    .print("I'm waiting for an hi!");
+    .wait ({+greetings[source(Sender)]}).
 
-+whoU(X,Y, W, P) : W == agPedestrian <-  
-    .wait(3000).
++whoU(X,Y, W, P) : W == adultPedestrian <-  
+    .print("I'm waiting for an hi!");
+    .wait ({+greetings[source(Sender)]}).
 
-+whoD(X,Y, W, P) : W == agPedestrian <-  
-    .wait(3000).*/
++whoD(X,Y, W, P) : W == adultPedestrian <-  
+    .print("I'm waiting for an hi!");
+    .wait ({+greetings[source(Sender)]}).
 
 
 +greetings[source(Sender)] <-
     .print(Sender, " just greeted me!");
     .send(Sender, tell, greetings_back);
     .print("Nice to meet you ", Sender, "!");
-    .wait(1000).
+    .wait(500).
 

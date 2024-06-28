@@ -140,32 +140,33 @@ target(_ ,_ , _). //creating the template
 */
 
 //obs2
-+whoL(X,Y, W, P) : W == agPedestrian <-  
++whoL(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the left cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait(1000).
+    .wait ({+greetings_back[source(Sender)]}).
 
-+whoR(X,Y, W, P) : W == agPedestrian <-  
++whoR(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the right cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait(1000).
+    .wait ({+greetings_back[source(Sender)]}).
 
-+whoU(X,Y, W, P) : W == agPedestrian <-  
++whoU(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the upper cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait(1000).
+    .wait ({+greetings_back[source(Sender)]}).
 
-+whoD(X,Y, W, P) : W == agPedestrian <-  
++whoD(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the down cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait(1000).
+    .wait ({+greetings_back[source(Sender)]}).
+
 
 
 +greetings[source(Sender)] <-
     .print(Sender, " just greeted me!");
     .send(Sender, tell, greetings_back);
     .print("Nice to meet you ", Sender, "!");
-    .wait(1000).
+    .wait ({+greetings_back[source(Sender)]}).
 
 +greetings_back[source(Sender)] <-
     .print(Sender, " greeted me back!").

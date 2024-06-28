@@ -76,7 +76,7 @@ public class City extends Artifact {
                     pedestrian = result[1]; 
                 }
             }
-        } else if (WorldModel.getAgType(agId)==WorldModel.PEDESTRIAN){
+        } else if ((WorldModel.getAgType(agId)==WorldModel.PEDESTRIAN_CHILD) || (WorldModel.getAgType(agId)==WorldModel.PEDESTRIAN_ADULT)){
             success = model.walk(m, agId);
         } else if (WorldModel.getAgType(agId)==WorldModel.HELICOPTER) {
             success = model.fly(m, agId);
@@ -226,7 +226,8 @@ public class City extends Artifact {
     private static Term street_down_right = new Atom("street_down_right");
 
     private static Term agCar = new Atom("agCar");
-    private static Term agPedestrian = new Atom("agPedestrian");
+    private static Term childPedestrian = new Atom("childPedestrian");
+    private static Term adultPedestrian = new Atom("adultPedestrian");
     private static Term nobody = new Atom("nobody");
    
     private static Term works = new Atom("works");
@@ -290,11 +291,15 @@ public class City extends Artifact {
             obs2.updateValue(2, agCar);
             obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         } 
-        if (model.hasObject(WorldModel.PEDESTRIAN, x, y)) {
-            obs2.updateValue(2, agPedestrian);
+        if (model.hasObject(WorldModel.PEDESTRIAN_CHILD, x, y)) {
+            obs2.updateValue(2, childPedestrian);
             obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         }
-        if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN, x, y))) {
+        if (model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y)) {
+            obs2.updateValue(2, adultPedestrian);
+            obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
+        }
+        if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y) || model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y))) {
             obs2.updateValue(2, nobody);
         } 
     }

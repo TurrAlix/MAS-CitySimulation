@@ -61,54 +61,137 @@ public class GridWorldView extends JFrame {
         switch (object) {
             case GridWorldModel.STREET_UP :
                 if ((model.data[x][y] & GridWorldModel.STREET_RIGHT) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "^>");
-                } else if ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<^");
-                } else {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "^");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^->");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    }
+                }
+                else if ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) {
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<-^");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<^");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<^");
+                    }
+                }
+                else {
+                    drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^");
                 }
                 break;
+
             case GridWorldModel.STREET_DOWN:
                 if ((model.data[x][y] & GridWorldModel.STREET_RIGHT) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "v>");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "V>");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v->");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v>");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v>");
+                    }
                 } else if ((model.data[x][y] & GridWorldModel.STREET_LEFT) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<v");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<V");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<-v");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<v");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<v");
+                    }
                 } else {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "v");
+                    drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v");
                 }
                 break;
             case GridWorldModel.STREET_RIGHT:
                 if ((model.data[x][y] & GridWorldModel.STREET_UP) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "^>");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^->");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "^>");
+                    }
                 } else if ((model.data[x][y] & GridWorldModel.STREET_DOWN) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "v>");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v->");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "V>");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_RIGHT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v>");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "v>");
+                    }
                 } else {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), ">");
+                    drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), ">");
                 }
                 break;
             case GridWorldModel.STREET_LEFT:
                 if ((model.data[x][y] & GridWorldModel.STREET_UP) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<^");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<-^");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<^");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_UP) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<^");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<^");
+                    }
                 } else if ((model.data[x][y] & GridWorldModel.STREET_DOWN) != 0) {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<v");
+                    if (((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<-v");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) == 0)) {
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<V");
+                    } else if (((model.data[x][y] & GridWorldModel.PRECEDENCE_LEFT) != 0) && ((model.data[x][y] & GridWorldModel.PRECEDENCE_DOWN) != 0)) {
+                        System.out.println("[Warning] Two contradictory precedences have been asserted in block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<v");
+                    } else {
+                        System.out.println("[Warning] No precedence has been asserted to bidirectional block in "+x+","+y+".");
+                        drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<v");
+                    }
                 } else {
-                    drawStreet(g, x, y, model.getAgAtPos(x,y), "<");
+                    drawStreet(g, x, y, GridWorldModel.getAgAtPos(x,y), "<");
                 }
                 break;
-            case GridWorldModel.SCHOOL:             drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "School");   break;
-            case GridWorldModel.SUPERMARKET:        drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Market");   break;
-            case GridWorldModel.OFFICE:             drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Office");   break;
-            case GridWorldModel.PARK:               drawSpecialBuilding(g, x, y, model.getAgAtPos(x,y), "Park");     break;
-            case GridWorldModel.BUILDING:           drawBuilding(g, x, y, model.getAgAtPos(x,y));                      break;
-            case GridWorldModel.CAR:                drawCar(g, x, y, model.getAgAtPos(x,y));                           break;
-            case GridWorldModel.PEDESTRIAN:         drawPedestrian(g, x, y, model.getAgAtPos(x,y));                    break;
-            case GridWorldModel.HELICOPTER:         drawHelicopter(g, x, y, model.getAgAtPos(x,y));                    break;
-            case GridWorldModel.PARKING_HELICOPTER: drawParkingHelicopter(g, x, y, model.getAgAtPos(x,y));             break;
+            case GridWorldModel.SCHOOL:             drawSpecialBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y), "School");   break;
+            case GridWorldModel.SUPERMARKET:        drawSpecialBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y), "Market");   break;
+            case GridWorldModel.OFFICE:             drawSpecialBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y), "Office");   break;
+            case GridWorldModel.PARK:               drawSpecialBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y), "Park");     break;
+            case GridWorldModel.BUILDING:           drawBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y));                      break;
+            case GridWorldModel.CAR:                drawCar(g, x, y, GridWorldModel.getAgAtPos(x,y));                           break;
+            case GridWorldModel.PEDESTRIAN:         drawPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));                    break;
+            case GridWorldModel.HELICOPTER:         drawHelicopter(g, x, y, GridWorldModel.getAgAtPos(x,y));                    break;
+            case GridWorldModel.PARKING_HELICOPTER: drawParkingHelicopter(g, x, y, GridWorldModel.getAgAtPos(x,y));             break;
         }
     }
 
     /* because of the int used to represent the infrastructures and agents, each of them being the power of two of the previous one!*/
-    private int limit = 10000; 
+    private int limit = 10000000; 
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             draw(g, x, y, GridWorldModel.BUILDING);
@@ -291,8 +374,6 @@ public class GridWorldView extends JFrame {
             g.setColor(Color.orange);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
         }else{
-            /*g.setColor(Color.orange);
-            g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);*/
             drawPedestrian(g, x, y, id);
         }
     }  

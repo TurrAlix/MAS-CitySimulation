@@ -353,8 +353,8 @@ public class WorldModel extends GridWorldModel {
         // Cars
         model.setCarPos(0, 11, 11);
         model.setCarPos(1, 0, 0);
-        model.setCarPos(5, 11, 0);
-        model.setCarPos(6, 0, 11);
+        model.setCarPos(5, 5, 7);
+        model.setCarPos(6, 7, 10);
         
         // Pedestrians
         model.setPedestrianPos(2,9,7);
@@ -410,6 +410,28 @@ public class WorldModel extends GridWorldModel {
             model.add(WorldModel.STREET_DOWN, 10, y);
             model.add(WorldModel.STREET_UP, 11, y);
         }
+
+        //Precedence
+        model.add(WorldModel.PRECEDENCE_UP, 11, 10);
+        model.add(WorldModel.PRECEDENCE_UP, 1, 6);
+        model.add(WorldModel.PRECEDENCE_UP, 1, 10);
+        model.add(WorldModel.PRECEDENCE_UP, 6, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 0, 1);
+        model.add(WorldModel.PRECEDENCE_DOWN, 0, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 5, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 10, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 10, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 5, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 6, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 1, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 1, 11);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 6, 11);
+        model.add(WorldModel.PRECEDENCE_LEFT, 5, 0);
+        model.add(WorldModel.PRECEDENCE_LEFT, 5, 10);
+        model.add(WorldModel.PRECEDENCE_LEFT, 6, 10);
+        model.add(WorldModel.PRECEDENCE_LEFT, 10, 0);
+        model.add(WorldModel.PRECEDENCE_LEFT, 10, 10);
+
         //zebra_crossing
         model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
         model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
@@ -419,11 +441,13 @@ public class WorldModel extends GridWorldModel {
         //refinements
         model.remove(WorldModel.STREET_UP, 11, 0);
         model.remove(WorldModel.STREET_RIGHT, 11, 1);
+        model.remove(WorldModel.STREET_RIGHT, 11, 11);
         model.remove(WorldModel.STREET_RIGHT, 11, 6);
         model.remove(WorldModel.STREET_DOWN, 10, 11);
         model.remove(WorldModel.STREET_DOWN, 5, 11);
         model.remove(WorldModel.STREET_LEFT, 0, 11);
         model.remove(WorldModel.STREET_DOWN,0,11);
+        model.remove(WorldModel.STREET_LEFT, 0, 10);
         model.remove(WorldModel.STREET_LEFT, 0, 0);
         model.remove(WorldModel.STREET_UP, 1, 0);
         model.remove(WorldModel.STREET_UP, 6, 0);

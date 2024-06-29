@@ -26,6 +26,12 @@ public class GridWorldModel {
     public static final int       STREET_RIGHT = 64;
     public static final int       STREET_LEFT = 128;
 
+    public static final int       PRECEDENCE_UP = 32768;
+    public static final int       PRECEDENCE_DOWN = 65536;
+    public static final int       PRECEDENCE_RIGHT = 131072;
+    public static final int       PRECEDENCE_LEFT = 262144;
+
+
     public static final int       PARKING_HELICOPTER = 4096;
     public static final int       HELICOPTER = 8192;
 

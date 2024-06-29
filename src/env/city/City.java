@@ -126,32 +126,58 @@ public class City extends Artifact {
                     view.setEnv(this);
                 }
             }
-            // Observable properties of Cartago
-            defineObsProperty("gsize", simId, model.getWidth(), model.getHeight());
+            
+            //----------------------------------------------------------------------------------------------------//
+            // OBSERVABLE PROPERTIES OF CARTAGO
+
+            /*
+             * PERCEPTS REGARDING THE AGENT CURRENT SITUATION
+             */
+            defineObsProperty("pos", -1, -1); //current position of the agent
+            defineObsProperty("state", works); //if the agent is a car, it can break down from time to time
+
+            /*
+             * PERCEPTS REGARDING THE LOCATION OF FIXED INFRASTRUCTURES
+             */
             defineObsProperty("school", model.getSchoolPos().x, model.getSchoolPos().y);
             defineObsProperty("park", model.getParkPos().x, model.getParkPos().y);
             defineObsProperty("office", model.getOfficePos().x, model.getOfficePos().y);
             defineObsProperty("supermarket", model.getSupermarketPos().x, model.getSupermarketPos().y);
-
-            defineObsProperty("pos", -1, -1);
-            defineObsProperty("state", works);
             defineObsProperty("helicopterParkingPos", model.getHelicopterParkingPos().x, model.getHelicopterParkingPos().y);
 
-            defineObsProperty("cellL", -1, -1, -1); //what type of infrastructure in the left cell?
-            defineObsProperty("cellR", -1, -1, -1);
-            defineObsProperty("cellC", -1, -1, -1);
-            defineObsProperty("cellU", -1, -1, -1);
-            defineObsProperty("cellD", -1, -1, -1);
+            
+            /*
+             * SURROUNDING PERCEPTS REGARDING THE INFRASTRUCTURE
+             * Arguments: positionX, positionY, type(building, or direction of the street), precedence)
+             * Every agent has access to the four blocks around it and to the current block it occupies
+             */
+            defineObsProperty("cellL", -1, -1, -1, -1); //left
+            defineObsProperty("cellR", -1, -1, -1, -1); //right
+            defineObsProperty("cellC", -1, -1, -1, -1); //current
+            defineObsProperty("cellU", -1, -1, -1, -1); //up
+            defineObsProperty("cellD", -1, -1, -1, -1); //down
 
+            /*
+             * SURROUNDING PERCEPTS REGARDING THE AGENTS
+             * Arguments: positionX, positionY, type(car, pedestrian (adult or child) or nobody),
+             * name of the agen if any)
+             */
             defineObsProperty("whoL", -1, -1, -1, -1); //is there an agent on the left?
             defineObsProperty("whoR", -1, -1, -1, -1);
             defineObsProperty("whoC", -1, -1, -1, -1);
             defineObsProperty("whoU", -1, -1, -1, -1);
             defineObsProperty("whoD", -1, -1, -1, -1);
 
-            defineObsProperty("success", ""); // success in <argument> direction
-            defineObsProperty("fail", "", false); // fail in <argument> direction, true instead of false if it is because of a pedestrian
+            /*
+             * PERCEPTS TO KEEP TRACK OF MOVEMENTS
+             */
+            defineObsProperty("success", ""); // last successful move in <argument> direction
+            // last failed move in <argument> direction, true instead of false for 2d <argument>
+            //if the reason of the failure was because of a pedestrian's presence
+            //(useful for cars to wait at zebra-crossings)
+            defineObsProperty("fail", "", false); 
 
+            //----------------------------------------------------------------------------------------------------//
 
             updateAgPercept();
 
@@ -225,6 +251,8 @@ public class City extends Artifact {
     private static Term street_up_right = new Atom("street_up_right");
     private static Term street_down_right = new Atom("street_down_right");
 
+    private static Term no_precedence = new Atom("no_precedence");
+
     private static Term agCar = new Atom("agCar");
     private static Term agPedestrian = new Atom("agPedestrian");
     private static Term nobody = new Atom("nobody");
@@ -232,7 +260,7 @@ public class City extends Artifact {
     private static Term works = new Atom("works");
     private static Term broken_down = new Atom("broken_down");
 
-    // obs1: infrastructure, obs2: agent
+    // obs1: infrastructure property, obs2: agent property
     private void updateAgPercept(int x, int y, ObsProperty obs1, ObsProperty obs2) {
         if (model == null || !model.inGrid(x,y)) {
             return;
@@ -286,6 +314,16 @@ public class City extends Artifact {
                 obs1.updateValue(2, street_left);
             }
         }
+        if (model.hasObject(WorldModel.PRECEDENCE_UP, x, y)) {
+            obs1.updateValue(3, street_up);
+        } else if (model.hasObject(WorldModel.PRECEDENCE_DOWN, x, y)) {
+            obs1.updateValue(3, street_down);
+        } else if (model.hasObject(WorldModel.PRECEDENCE_RIGHT, x, y)) {
+            obs1.updateValue(3, street_right);
+        } else if (model.hasObject(WorldModel.PRECEDENCE_LEFT, x, y)) {
+            obs1.updateValue(3, street_left);
+        } else { obs1.updateValue(3, no_precedence); }
+
         if (model.hasObject(WorldModel.CAR, x, y)) {
             obs2.updateValue(2, agCar);
             obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));

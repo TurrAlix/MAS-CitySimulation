@@ -147,20 +147,20 @@ busy(0). //not fixing a car
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
-/*+cellL(X,Y,D) <-
-    .print("Left cell: x=", X, " & y=", Y, " ; ", D).
+/*+cellL(X,Y,D,P) <-
+    .print("Left cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
-+cellR(X,Y,D) <-
-    .print("Right cell: x=", X, " & y=", Y, " ; ", D).
++cellR(X,Y,D,P) <-
+    .print("Right cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
-+cellC(X,Y,D) <-
-    .print("Current cell: x=", X, " & y=", Y, " ; ", D).
++cellC(X,Y,D,P) <-
+    .print("Current cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
-+cellU(X,Y,D) <-
-    .print("Up cell: x=", X, " & y=", Y, " ; ", D).
++cellU(X,Y,D,P) <-
+    .print("Up cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
-+cellD(X,Y,D) <-
-    .print("Down cell: x=", X, " & y=", Y, " ; ", D).
++cellD(X,Y,D,P) <-
+    .print("Down cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
 +whoL(X,Y,W) : (W==car) | (W==pedestrian) <-
     .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).

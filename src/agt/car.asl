@@ -1,16 +1,21 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 
 /*
-Things to consider for the movement-very simple one:
-before moving, the car has to: retrieve the direction of the block on which it is, check if the next block is
-free of obstacles (in our case, building or other cars), and retrieve its own position, then move forward of one block
-Let's assume the car will be represented as circles, so no need to define an orientation. 
+Cars are simple circles, they don't have orientation.
+Directions are absolute: up, down, right, left.
+Cars cannot go on top of each other, nor can they kill pedestrians.
+They can only drive on streets block (whether it is a zebra-crossing or not).
 
-Then-more complex:
-according to the percepts of the directions surrounding the agent, choose which street to take (in that case,
-turn towards the direction of the guiding block if the car turns, not the block on which it is currently)
-If the next block is a zebra-crossing and there is no other streets to take instead, stop and wait until
-there are no pedestrians
+Before moving, the car retrieves the direction of the block it currently occupies.
+2 options for street blocks:
+1) unidirectional: the car follows this direction if the block targeted is free. If it is not free (another agent occupies it, 
+or it is a building), then the car randomly chooses another direction so as to turn (but it cannot go back).
+2) bidirectional: if a precedence has been asserted to one of the direction, the car follows it in priority
+and the other cars following blocks with no precedence must let it pass first
+If there has not been any precedence asserted to this block, the car chooses randomly between both directions.
+
+If the car arrives at a zebra-crossing and there is a pedestrian crossing in front of the vehicle, it waits for the pedestrian
+to free the way instead of trying to change of direction directly.
 */
 
 /* Initial beliefs and rules */
@@ -22,73 +27,138 @@ busy(0). //not turning or in the process of driving
 // ------------------------------------------------------------- //
 
 /* Plans */
-+!drive_random : pos(X,Y) & cellC(X,Y,street_up) & busy(0)  <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_up,P) & busy(0) <- 
     -+busy(1);
     .wait(200);
     //.print("Attempting to go up...");
-    up.
+    !up(X,Y).
 
-+!drive_random : pos(X,Y) & cellC(X,Y,street_down) & busy(0) <-
++!drive_random : pos(X,Y) & cellC(X,Y,street_down,P) & busy(0) <-
     -+busy(1);
     .wait(200);
     //.print("Attempting to go down...");
-    down.
+    !down(X,Y).
 
-+!drive_random : pos(X,Y) & cellC(X,Y,street_left) & busy(0) <- 
-    -+busy(1);
-    .wait(200);
-    //.print("Attempting to go left...");
-    left.
-
-+!drive_random : pos(X,Y) & cellC(X,Y,street_right) & busy(0) <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_right,P) & busy(0) <- 
     -+busy(1);
     .wait(200);
     //.print("Attempting to go right...");
-    right.
+    !right(X,Y).
 
-+!drive_random : pos(X,Y) & cellC(X,Y,street_up_right) & busy(0) <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_left,P) & busy(0) <- 
     -+busy(1);
     .wait(200);
-    !draw_random_direction(street_up, street_right).
+    //.print("Attempting to go left...");
+    !left(X,Y).
 
-+!drive_random : pos(X,Y) & cellC(X,Y,street_up_left) & busy(0) <- 
+
++!drive_random : pos(X,Y) & cellC(X,Y,street_up_right,P) & busy(0) <- 
     -+busy(1);
     .wait(200);
-    !draw_random_direction(street_up, street_left).
+    !draw_random_direction(street_up, street_right, P).
 
-+!drive_random : pos(X,Y) & cellC(X,Y,street_down_right) & busy(0) <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_up_left,P) & busy(0) <- 
     -+busy(1);
     .wait(200);
-    !draw_random_direction(street_down, street_right).
+    !draw_random_direction(street_up, street_left,P).
 
-+!drive_random : pos(X,Y) & cellC(X,Y,street_down_left) & busy(0) <- 
++!drive_random : pos(X,Y) & cellC(X,Y,street_down_right,P) & busy(0) <- 
     -+busy(1);
     .wait(200);
-    !draw_random_direction(street_down, street_left).
+    !draw_random_direction(street_down, street_right,P).
+
++!drive_random : pos(X,Y) & cellC(X,Y,street_down_left,P) & busy(0) <- 
+    -+busy(1);
+    .wait(200);
+    !draw_random_direction(street_down, street_left,P).
 
 -!drive_random <-
     .wait(100);
     !drive_random.
 
-+!draw_random_direction(D1, D2) <- 
++!draw_random_direction(D1, D2, P) <- 
     ?pos(X,Y);
     jia.random_direction(X, Y, D);
     if (not(D == D1) & not(D == D2)) {
-        !draw_random_direction(D1, D2);
+        !draw_random_direction(D1, D2, P);
     } else {
-        if (D==street_up) {
-        up;
+        if (D==street_up & P==street_up) {
+            .print("I have the priority to go on ", X, ",", Y-1, "!");
+            .broadcast(tell, priority(X,Y-1));
+            up;
+            .broadcast(untell, priority(X,Y-1));
+            //.print("I don't have the priority to go on ", X, ",", Y-1, " anymore!");
         }
-        if (D==street_down) {
-        down;
+        if (D==street_up & not(P==street_up)) {
+            !up(X,Y);
         }
-        if (D==street_right) {
-        right;
+
+        if (D==street_down & P==street_down) {
+            .print("I have the priority to go on ", X, ",", Y+1, "!");
+            .broadcast(tell, priority(X,Y+1));
+            down;
+            .broadcast(untell, priority(X,Y+1));
+            //.print("I don't have the priority to go on ", X, ",", Y+1, " anymore!");
         }
-        if (D==street_left) {
-        left;
+        if (D==street_down & not(P==street_down)) {
+            !down(X,Y);
+        }
+
+        if (D==street_right & P==street_right) {
+            .print("I have the priority to go on ", X+1, ",", Y, "!");
+            .broadcast(tell, priority(X+1,Y));
+            right;
+            .broadcast(untell, priority(X+1,Y));
+            //.print("I don't have the priority to go on ", X+1, ",", Y, " anymore!");
+        }
+        if (D==street_right & not(P==street_right)) {
+            !right(X,Y);
+        }
+
+        if (D==street_left & P==street_left) {
+            .print("I have the priority to go on ", X-1, ",", Y, "!");
+            .broadcast(tell, priority(X-1,Y));
+            left;
+            .broadcast(untell, priority(X-1,Y));
+            //.print("I don't have the priority to go on ", X-1, ",", Y, " anymore!");
+        }
+        if (D==street_left & not(P==street_left)) {
+            !left(X,Y);
         }
     }.
+
+//Checks of the priority before actually moving!
++!up(X,Y) : priority(X,Y-1)[source(Sender)] <-
+    .print("I let ", Sender, " pass first!");
+    .wait({-priority(X,Y-1)[source(Sender)]});
+    //.print("All clear!");
+    up.
++!up(X,Y) : not(priority(X,Y-1)[source(Sender)]) <-
+    up.
+
++!down(X,Y) : priority(X,Y+1)[source(Sender)] <-
+    .print("I let ", Sender, " pass first!");
+    .wait({-priority(X,Y+1)[source(Sender)]});
+    //.print("All clear!");
+    down.
++!down(X,Y) : not(priority(X,Y+1)[source(Sender)]) <-
+    down.
+
++!right(X,Y) : priority(X+1,Y)[source(Sender)] <-
+    .print("I let ", Sender, " pass first!");
+    .wait({-priority(X+1,Y)[source(Sender)]});
+    //.print("All clear!");
+    right.
++!right(X,Y) : not(priority(X+1,Y)[source(Sender)]) <-
+    right.
+
++!left(X,Y) : priority(X-1,Y)[source(Sender)] <-
+    .print("I let ", Sender, " pass first!");
+    .wait({-priority(X-1,Y)[source(Sender)]});
+    //.print("All clear!");
+    left.
++!left(X,Y) : not(priority(X-1,Y)[source(Sender)]) <-
+    left.
 
 // ------------------------------------------------------------- //
 
@@ -196,19 +266,20 @@ busy(0). //not turning or in the process of driving
 // ------------------------------------------------------------- //
 
 +!no_going_back(NewD,D) <-
+    ?pos(X,Y);
     if (not(NewD==D)) {
         .print("Attempting to turn...");
         if (NewD==street_up) {
-        up;
+            !up(X,Y);
         }
         if (NewD==street_down) {
-        down;
+            !down(X,Y);
         }
         if (NewD==street_right) {
-        right;
+            !right(X,Y);
         }
         if (NewD==street_left) {
-        left;
+            !left(X,Y);
         }
     } else {
         !change_direction; //need to draw another direction then
@@ -226,19 +297,25 @@ busy(0). //not turning or in the process of driving
     change_state;
     !drive_random.
 
-/*+cellL(X,Y,D) <-
-    .print("Left cell: x=", X, " & y=", Y, " ; ", D).
++priority(X,Y)[source(Sender)] <-
+    -+priority(X,Y)[source(Sender)].
 
-+cellR(X,Y,D) <-
-    .print("Right cell: x=", X, " & y=", Y, " ; ", D).
+-priority(X,Y)[source(Sender)] <-
+    -priority(X,Y)[source(Sender)].
 
-+cellC(X,Y,D) <-
-    .print("Current cell: x=", X, " & y=", Y, " ; ", D).
+/*+cellL(X,Y,D,P) <-
+    .print("Left cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
-+cellU(X,Y,D) <-
-    .print("Up cell: x=", X, " & y=", Y, " ; ", D).
++cellR(X,Y,D,P) <-
+    .print("Right cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 
-+cellD(X,Y,D) <-
++cellC(X,Y,D,P) <-
+    .print("Current cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
+
++cellU(X,Y,D,P) <-
+    .print("Up cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
+
++cellD(X,Y,D,P) <-
     .print("Down cell: x=", X, " & y=", Y, " ; ", D).*/
 
 +whoL(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-

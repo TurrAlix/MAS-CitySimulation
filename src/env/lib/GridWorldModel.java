@@ -115,7 +115,7 @@ public class GridWorldModel {
         return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) != 0;
     }
     public boolean hasObject(int obj, int x, int y) {
-        return inGrid(x, y) && (data[x][y] & obj) != 0;
+        return inGrid(x, y) && ((data[x][y] & obj) != 0);
     }
 
     public void set(int value, int x, int y) {

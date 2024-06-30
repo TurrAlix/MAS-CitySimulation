@@ -112,7 +112,7 @@ public class GridWorldView extends JFrame {
     }
 
     /* because of the int used to represent the infrastructures and agents, each of them being the power of two of the previous one!*/
-    private int limit = 10000000; 
+    private int limit = 100000000; 
     private void draw(Graphics g, int x, int y) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0) {
             draw(g, x, y, GridWorldModel.BUILDING);
@@ -145,6 +145,57 @@ public class GridWorldView extends JFrame {
         }
     }
 
+    public void drawAdultPedestrian(Graphics g, int x, int y, int id){
+        // Building Background 
+        g.setColor(Color.orange);
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+
+        // on zebra crossing 
+        if((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING)!=0){
+            // g.setColor(Color.white);
+            // g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawZebraCrossing(g, x, y);
+        }
+        // Draw the body (blue circle)
+        g.setColor(Color.blue);
+        g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
+
+        g.setColor(Color.magenta);
+        int headSizeW = (cellSizeW - 4) / 2;
+        int headSizeH = (cellSizeH - 4) / 2;
+        int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
+        int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
+        g.fillOval(headX, headY, headSizeW, headSizeH);
+        // text
+        g.setColor(Color.black);
+        drawString(g, x, y, defaultFont, "A");
+    }
+
+    public void drawChildPedestrian(Graphics g, int x, int y, int id){
+        // Building Background 
+        g.setColor(Color.orange);
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+
+        // on zebra crossing 
+        if((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING)!=0){
+            // g.setColor(Color.white);
+            // g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+            drawZebraCrossing(g, x, y);
+        }
+        // Draw the body (blue circle)
+        g.setColor(Color.blue);
+        g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
+
+        g.setColor(Color.yellow);
+        int headSizeW = (cellSizeW - 4) / 2;
+        int headSizeH = (cellSizeH - 4) / 2;
+        int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
+        int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
+        g.fillOval(headX, headY, headSizeW, headSizeH);
+        // text
+        g.setColor(Color.black);
+        drawString(g, x, y, defaultFont, "C");
+    }
 
     public void drawPedestrian(Graphics g, int x, int y, int id) {
         // Building Background 
@@ -163,15 +214,15 @@ public class GridWorldView extends JFrame {
 
         // Child
         if(GridWorldModel.getAgType(id)==GridWorldModel.PEDESTRIAN_CHILD){
-        g.setColor(Color.yellow);
-        int headSizeW = (cellSizeW - 4) / 2;
-        int headSizeH = (cellSizeH - 4) / 2;
-        int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
-        int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
-        g.fillOval(headX, headY, headSizeW, headSizeH);
-        // text
-        g.setColor(Color.black);
-        drawString(g, x, y, defaultFont, "C");
+            g.setColor(Color.yellow);
+            int headSizeW = (cellSizeW - 4) / 2;
+            int headSizeH = (cellSizeH - 4) / 2;
+            int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
+            int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
+            g.fillOval(headX, headY, headSizeW, headSizeH);
+            // text
+            g.setColor(Color.black);
+            drawString(g, x, y, defaultFont, "C");
         }
         // Adult
         if(GridWorldModel.getAgType(id)==GridWorldModel.PEDESTRIAN_ADULT){
@@ -187,7 +238,6 @@ public class GridWorldView extends JFrame {
         }       
 
     }
-
 
     public void drawHelicopter(Graphics g, int x, int y, int id) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0){
@@ -223,7 +273,9 @@ public class GridWorldView extends JFrame {
     public void drawStreet(Graphics g, int x, int y, int id, String direction) {
         g.setColor(Color.lightGray);
         g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH); //we draw the outline
-        if (((model.data[x][y] & GridWorldModel.CAR) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) == 0)
+        if (((model.data[x][y] & GridWorldModel.CAR) == 0) 
+        //    && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) == 0) 
+        //    && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) == 0)
            && ((model.data[x][y] & GridWorldModel.HELICOPTER) == 0)) {
             //means no agent has been spotted on the street block (cf. getAgAtPos)
             g.setColor(Color.lightGray);
@@ -240,10 +292,10 @@ public class GridWorldView extends JFrame {
             g.setColor(Color.lightGray);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             if ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) != 0) { //pedestrians can be on streets too (zebra-crossings)
-                drawPedestrian(g, x, y, id);
+                drawChildPedestrian(g, x, y, id);
             }
             if ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) != 0) { //pedestrians can be on streets too (zebra-crossings)
-                drawPedestrian(g, x, y, id);
+                drawAdultPedestrian(g, x, y, id);
             }
             if ((model.data[x][y] & GridWorldModel.CAR) != 0) {
                 drawCar(g, x, y, id);
@@ -289,20 +341,24 @@ public class GridWorldView extends JFrame {
             g.drawString(text, centerX, centerY);
         }else{ //if there is an agent on the block, we must make sure that it is drawn on top of the block
             if ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) != 0) { //pedestrians can be on streets too (zebra-crossings)
-                drawPedestrian(g, x, y, id);
+                drawChildPedestrian(g, x, y, id);
             }
             if ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) != 0) { //pedestrians can be on streets too (zebra-crossings)
-                drawPedestrian(g, x, y, id);
+                drawAdultPedestrian(g, x, y, id);
             }
         }
     }
     
     public void drawBuilding(Graphics g, int x, int y, int id) {
+        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) != 0){
+            drawChildPedestrian(g, x, y, id);   
+        }
+        if ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) != 0){
+                drawAdultPedestrian(g, x, y, id);   
+        }
         if (((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) == 0) && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) == 0)){
             g.setColor(Color.orange);
             g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        }else{
-            drawPedestrian(g, x, y, id);
         }
     }  
     

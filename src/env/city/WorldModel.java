@@ -95,6 +95,7 @@ public class WorldModel extends GridWorldModel {
                         moved=walk(dir, ag);
                     }
                     else {
+                        System.out.println("SWITCH IN WALK: "+GridWorldModel.getAgType(ag));
                         switch (GridWorldModel.getAgType(ag)) {
                             case PEDESTRIAN_CHILD:
                                 setChildPedestrianPos(ag, l.x, l.y - 1);

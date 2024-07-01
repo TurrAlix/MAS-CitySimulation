@@ -1,10 +1,10 @@
 mas city_simulation {
 
     //naming convention to always be respected:
-    //<type of agent (please simply indicate pedestrian without reference to if it is a child or an adult)>
-    //<n° of the instance (except if it is the first)> ; example: car, car2, pedestrian, helicopter
+    //<type of agent (car/pedestrian_child/pedestrian_adult/helicopter)>
+    //<n° of the instance> ; example: car1, car2, pedestrian_child1, helicopter
 
-    agent car : car.asl  {
+    agent car1 : car.asl  {
         focus: city.view1
     }
     
@@ -12,11 +12,11 @@ mas city_simulation {
         focus: city.view2
     }
 
-    agent pedestrian: pedestrian_child.asl  {
+    agent pedestrian_child1: pedestrian_child.asl  {
         focus: city.view3
     }
 
-    agent pedestrian2 : pedestrian_adult.asl  {
+    agent pedestrian_adult1 : pedestrian_adult.asl  {
         focus: city.view4
     }
 
@@ -37,7 +37,7 @@ mas city_simulation {
         // word2: One horizontal street (with 2 lanes) --> TODO doesn't work 
         // word3: Big Cross in the middle (no spcific buildings, no zebra crossing, no helicopter)
         // word4: Big Cross in the middle with Specific Buildings and Zebra crossing and helicopter
-        // word5: (maud) Testing world
+        // word5: (maud) Testing world (very ugly)
         // word6: A ring of streets all around and a cross in the middle, specific buildings and zebra crossing and helicopter
         artifact view1: city.City(6, 0)
         artifact view2: city.City(6, 1)

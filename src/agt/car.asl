@@ -318,14 +318,14 @@ busy(0). //not turning or in the process of driving
 +cellD(X,Y,D,P) <-
     .print("Down cell: x=", X, " & y=", Y, " ; ", D).*/
 
-+whoL(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
++whoL(X,Y,W,P) : (W==agCar) | (W == adultPedestrian) | (W == childPedestrian) <-
     .print("Agent ",P, " on left cell: x=", X, " & y=", Y).
 
-+whoR(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
++whoR(X,Y,W,P) : (W==agCar) | (W == adultPedestrian) | (W == childPedestrian) <-
     .print("Agent ",P, " on right cell: x=", X, " & y=", Y).
 
-+whoU(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
++whoU(X,Y,W,P) : (W==agCar) | (W == adultPedestrian) | (W == childPedestrian) <-
     .print("Agent ",P, " on up cell: x=", X, " & y=", Y).
 
-+whoD(X,Y,W,P) : (W==agCar) | (W==agPedestrian) <-
++whoD(X,Y,W,P) : (W==agCar) | (W == adultPedestrian) | (W == childPedestrian) <-
     .print("Agent ",P, " on down cell: x=", X, " & y=", Y).

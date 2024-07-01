@@ -7,6 +7,7 @@ target(_ ,_ , _). //creating the template
 
 // ---------------------------------------------------------------------- //
 +!live <- 
+    .wait(3000);
     ?school(X,Y);
     .print("I'm going to school at ", school(X,Y), " now.");
     -+target("school",X, Y);
@@ -51,7 +52,7 @@ target(_ ,_ , _). //creating the template
  It uses the internal action jia.get_direction which encodes a search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) <-
    jia.get_dir(AgX, AgY, X, Y, D);
-    .wait(400);
+    .wait(500);
     if (D==up) {
         up;
     }
@@ -136,22 +137,30 @@ target(_ ,_ , _). //creating the template
 */
 
 //obs2
-/*+whoL(X,Y, W, P) : W == agPedestrian <-  
-    .wait(3000).
++whoL(X,Y, W, P) : W == adultPedestrian <- 
+    !!neighbours(P, "left").
 
-+whoR(X,Y, W, P) : W == agPedestrian <-
-    .wait(3000).
++whoR(X,Y, W, P) : W == adultPedestrian <-
+    !!neighbours(P, "right").
 
-+whoU(X,Y, W, P) : W == agPedestrian <-  
-    .wait(3000).
++whoU(X,Y, W, P) : W == adultPedestrian <-  
+    !!neighbours(P, "upper").
 
-+whoD(X,Y, W, P) : W == agPedestrian <-  
-    .wait(3000).*/
++whoD(X,Y, W, P) : W == adultPedestrian <-  
+    !!neighbours(P, "down").
+
++!neighbours(P, Position) <-  
+    .print("I'm waiting for an hi....");
+    .wait({+greetings[source(Sender)]});
+    .wait(2000).
+
 
 
 +greetings[source(Sender)] <-
+    !!handle_greeting(Sender).
+
++!handle_greeting(Sender) <-
     .print(Sender, " just greeted me!");
     .send(Sender, tell, greetings_back);
-    .print("Nice to meet you ", Sender, "!");
-    .wait(1000).
-
+    .print("Nice to meet you ", Sender, "! I'll continue my day..");
+    .wait(3000).

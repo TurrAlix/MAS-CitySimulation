@@ -95,16 +95,18 @@ public class WorldModel extends GridWorldModel {
                         moved=walk(dir, ag);
                     }
                     else {
-                        System.out.println("SWITCH IN WALK: "+GridWorldModel.getAgType(ag));
                         switch (GridWorldModel.getAgType(ag)) {
                             case PEDESTRIAN_CHILD:
                                 setChildPedestrianPos(ag, l.x, l.y - 1);
                                 moved=true;
-                            break;
+                                break;
                             case PEDESTRIAN_ADULT:
-                            setAdultPedestrianPos(ag, l.x, l.y - 1);
-                            moved=true;
-                            break;
+                                setAdultPedestrianPos(ag, l.x, l.y - 1);
+                                moved=true;
+                                break;
+                            default:
+                                System.out.println("Error: Invalid agent type");
+                                break;
                         }
                     }
                 }
@@ -122,9 +124,12 @@ public class WorldModel extends GridWorldModel {
                                 moved=true;
                             break;
                             case PEDESTRIAN_ADULT:
-                            setAdultPedestrianPos(ag, l.x, l.y + 1);
-                            moved=true;
-                            break;
+                                setAdultPedestrianPos(ag, l.x, l.y + 1);
+                                moved=true;
+                                break;
+                            default:
+                                System.out.println("Error: Invalid agent type");
+                                break;
                         }
                     }
                 }
@@ -142,9 +147,12 @@ public class WorldModel extends GridWorldModel {
                                 moved=true;
                             break;
                             case PEDESTRIAN_ADULT:
-                            setAdultPedestrianPos(ag, l.x + 1, l.y);
-                            moved=true;
-                            break;
+                                setAdultPedestrianPos(ag, l.x + 1, l.y);
+                                moved=true;
+                                break;
+                            default:
+                                System.out.println("Error: Invalid agent type");
+                                break;
                         }
                     }
                 }
@@ -162,9 +170,12 @@ public class WorldModel extends GridWorldModel {
                                 moved=true;
                             break;
                             case PEDESTRIAN_ADULT:
-                            setAdultPedestrianPos(ag, l.x - 1, l.y);
-                            moved=true;
-                            break;
+                                setAdultPedestrianPos(ag, l.x - 1, l.y);
+                                moved=true;
+                                break;
+                            default:
+                                System.out.println("Error: Invalid agent type");
+                                break;
                         }
                     }
                 }

@@ -53,7 +53,7 @@ target(_ ,_ , _). //creating the template
  It uses the internal action jia.get_direction which encodes a search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) <-
     jia.get_dir(AgX, AgY, X, Y, D);
-    .wait(400);
+    .wait(300);
     if (D==up) {
         up;
     }
@@ -143,22 +143,26 @@ target(_ ,_ , _). //creating the template
 +whoL(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the left cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]}).
+    .wait ({+greetings_back[source(Sender)]});
+    .wait(100).
 
 +whoR(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the right cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]}).
+    .wait ({+greetings_back[source(Sender)]});
+    .wait(100).
 
 +whoU(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the upper cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]}).
+    .wait ({+greetings_back[source(Sender)]});
+    .wait(100).
 
 +whoD(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the down cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]}).
+    .wait ({+greetings_back[source(Sender)]});
+    .wait(100).
 
 
 
@@ -166,7 +170,9 @@ target(_ ,_ , _). //creating the template
     .print(Sender, " just greeted me!");
     .send(Sender, tell, greetings_back);
     .print("Nice to meet you ", Sender, "!");
-    .wait ({+greetings_back[source(Sender)]}).
+    .wait ({+greetings_back[source(Sender)]});
+    .wait(200).
 
 +greetings_back[source(Sender)] <-
-    .print(Sender, " greeted me back!").
+    .print(Sender, " greeted me back! I'll continue my day now!");
+    .wait(100).

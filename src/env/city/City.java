@@ -19,7 +19,7 @@ public class City extends Artifact {
     static WorldModel  model = null;
     static WorldView   view;
 
-    static int     simId    = 6;    // different type of environment
+    static int     simId    = 7;    // different type of environment
     static int     sleep    = 200;
     static boolean hasGUI   = true;
     int     agId     = -1;
@@ -117,6 +117,8 @@ public class City extends Artifact {
                 case 4: model = WorldModel.world4(); break;
                 case 5: model = WorldModel.world5(); break;
                 case 6: model = WorldModel.world6(); break;
+                case 7: model = WorldModel.world7(); break;
+                // case 8: model = WorldModel.world8(); break;
                 default:
                     logger.info("Invalid index for the environment!");
                     return;

@@ -252,7 +252,8 @@ public class GridWorldView extends JFrame {
         g.fillOval(headX, headY, headSizeW, headSizeH);
         // text
         g.setColor(Color.black);
-        drawString(g, x, y, defaultFont, "A");
+        String text = "A" + id;
+        drawString(g, x, y, defaultFont, text);
     }
 
     public void drawChildPedestrian(Graphics g, int x, int y, int id){
@@ -276,7 +277,8 @@ public class GridWorldView extends JFrame {
         g.fillOval(headX, headY, headSizeW, headSizeH);
         // text
         g.setColor(Color.black);
-        drawString(g, x, y, defaultFont, "C");
+        String text = "C" + id;
+        drawString(g, x, y, defaultFont, text);
     }
 
 

@@ -499,4 +499,119 @@ public class WorldModel extends GridWorldModel {
         return model;
     }
     
+    
+    static WorldModel world7() throws Exception {
+        int w = 12;
+        int h = 12;
+        WorldModel model = WorldModel.create(w, h, 9);
+        model.setId("Scenario 7");
+        // Cars
+        model.setCarPos(0, 11, 11);
+        model.setCarPos(1, 0, 0);
+        model.setCarPos(2, 5, 7);
+        model.setCarPos(3, 7, 10);
+        
+        //Helicopter
+        model.setHelicopterPos(4, 9, 9);
+        
+        // Pedestrians
+        model.setChildPedestrianPos(5,9,7);
+        model.setAdultPedestrianPos(6,9 ,2);
+
+        model.setChildPedestrianPos(7,7,5);
+        model.setAdultPedestrianPos(8,9 ,8);
+
+        // Buildings:
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
+        }
+        // Parking helicopter
+        model.remove(WorldModel.BUILDING, 9, 9);
+        model.add(WorldModel.PARKING_HELICOPTER, 9, 9);
+
+        model.add(WorldModel.SCHOOL, 2, 2);
+        model.setSchoolPos(2, 2);
+        model.add(WorldModel.OFFICE, 4, 9);
+        model.setOfficePos(4, 9);
+        model.add(WorldModel.PARK, 7, 9);
+        model.setParkPos(7, 9);
+        model.add(WorldModel.SUPERMARKET, 9, 2);
+        model.setSupermarketPos(9, 2);
+
+        // Streets:
+        for (int x = 0; x < w; x++) {
+            model.remove(WorldModel.BUILDING, x, 0);
+            model.remove(WorldModel.BUILDING, x, 1);
+            model.remove(WorldModel.BUILDING, x, 6);
+            model.remove(WorldModel.BUILDING, x, 10);
+            model.remove(WorldModel.BUILDING, x, 11);
+
+            model.add(WorldModel.STREET_LEFT, x, 0);
+            model.add(WorldModel.STREET_RIGHT, x, 1);
+            model.add(WorldModel.STREET_RIGHT, x, 6);    
+            model.add(WorldModel.STREET_LEFT, x, 10);
+            model.add(WorldModel.STREET_RIGHT, x, 11); 
+        }
+        for (int y = 0; y < h; y++) {
+            model.remove(WorldModel.BUILDING, 0, y);
+            model.remove(WorldModel.BUILDING, 1, y);
+            model.remove(WorldModel.BUILDING, 5, y);
+            model.remove(WorldModel.BUILDING, 6, y);
+            model.remove(WorldModel.BUILDING, 10, y);
+            model.remove(WorldModel.BUILDING, 11, y);
+
+            model.add(WorldModel.STREET_DOWN, 0, y);    
+            model.add(WorldModel.STREET_UP, 1, y);
+            model.add(WorldModel.STREET_DOWN, 5, y);
+            model.add(WorldModel.STREET_UP, 6, y);
+            model.add(WorldModel.STREET_DOWN, 10, y);
+            model.add(WorldModel.STREET_UP, 11, y);
+        }
+
+        //Precedence
+        model.add(WorldModel.PRECEDENCE_UP, 11, 10);
+        model.add(WorldModel.PRECEDENCE_UP, 1, 6);
+        model.add(WorldModel.PRECEDENCE_UP, 1, 10);
+        model.add(WorldModel.PRECEDENCE_UP, 6, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 0, 1);
+        model.add(WorldModel.PRECEDENCE_DOWN, 0, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 5, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 10, 6);
+        model.add(WorldModel.PRECEDENCE_DOWN, 10, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 5, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 6, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 1, 1);
+        model.add(WorldModel.PRECEDENCE_RIGHT, 6, 11);
+        model.add(WorldModel.PRECEDENCE_LEFT, 5, 0);
+        model.add(WorldModel.PRECEDENCE_LEFT, 5, 10);
+        model.add(WorldModel.PRECEDENCE_LEFT, 6, 10);
+        model.add(WorldModel.PRECEDENCE_LEFT, 10, 10);
+
+
+        //zebra_crossing
+        model.add(WorldModel.ZEBRA_CROSSING, 3, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 4);
+        model.add(WorldModel.ZEBRA_CROSSING, 6, 4);
+
+        //refinements
+        model.remove(WorldModel.STREET_UP, 11, 0);
+        model.remove(WorldModel.STREET_RIGHT, 11, 1);
+        model.remove(WorldModel.STREET_RIGHT, 11, 11);
+        model.remove(WorldModel.STREET_RIGHT, 11, 6);
+        model.remove(WorldModel.STREET_DOWN, 10, 11);
+        model.remove(WorldModel.STREET_DOWN, 5, 11);
+        model.remove(WorldModel.STREET_LEFT, 0, 10);
+        model.remove(WorldModel.STREET_LEFT, 0, 11);
+        model.remove(WorldModel.STREET_DOWN,0,11);
+        model.remove(WorldModel.STREET_LEFT, 0, 10);
+        model.remove(WorldModel.STREET_LEFT, 0, 0);
+        model.remove(WorldModel.STREET_UP, 1, 0);
+        model.remove(WorldModel.STREET_UP, 6, 0);
+        
+        return model;
+    }
+    
 }

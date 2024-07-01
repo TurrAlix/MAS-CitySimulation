@@ -139,31 +139,31 @@ target(_ ,_ , _). //creating the template
     .print("Down cell: x=", X, " & y=", Y, " ; ", D).
 */
 
+/*
 //obs2
 +whoL(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the left cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]});
+    .wait({+greetings_back[source(Sender)]});
     .wait(100).
 
 +whoR(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the right cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]});
+    .wait({+greetings_back[source(Sender)]});
     .wait(100).
 
 +whoU(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the upper cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]});
+    .wait({+greetings_back[source(Sender)]});
     .wait(100).
 
 +whoD(X,Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
     .print("Oh, ", P, " is on the down cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .wait ({+greetings_back[source(Sender)]});
+    .wait({+greetings_back[source(Sender)]});
     .wait(100).
-
 
 
 +greetings[source(Sender)] <-
@@ -176,3 +176,44 @@ target(_ ,_ , _). //creating the template
 +greetings_back[source(Sender)] <-
     .print(Sender, " greeted me back! I'll continue my day now!");
     .wait(100).
+*/
+
+
++!greet(P, Position) <-  
+    .print("Oh, ", P, " is on the ", Position, " cell! Hello ", P, "!");
+    .send(P, tell, greetings);
+    .print("I'll wait for greetings back....");
+    .wait({+greetings_back[source(P)]});
+    .wait(100).
+
++whoL(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
+    !!greet(P, "left").
+
++whoR(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
+    !!greet(P, "right").
+
++whoU(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
+    !!greet(P, "upper").
+
++whoD(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
+    !!greet(P, "down").
+
+
+// Other Adults could greet other Adults
++greetings[source(Sender)] <-
+    !!handle_initial_greeting(Sender).
+
++!handle_initial_greeting(Sender) <-
+    .print(Sender, " just greeted me!");
+    .send(Sender, tell, greetings_back);
+    .print("Nice to meet you ", Sender, "! I'll continue my day..");
+    .wait(200).
+
++greetings_back[source(Sender)] <-
+    !!handle_greeting_back(Sender).
+
++!handle_greeting_back(Sender) <-
+    .print(Sender, " greeted me back! I'll continue my day now!");
+    .wait(100).
+
+

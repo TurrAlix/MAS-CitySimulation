@@ -391,7 +391,7 @@ public class WorldModel extends GridWorldModel {
         
         // Pedestrians
         model.setChildPedestrianPos(2,9,7);
-        model.setAdultPedestrianPos(3,4 ,8);
+        model.setAdultPedestrianPos(3,9 ,8);
         //Helicopter
         model.setHelicopterPos(4, 9, 9);
 

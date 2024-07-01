@@ -289,20 +289,17 @@ public class City extends Artifact {
         }
         if (model.hasObject(WorldModel.CAR, x, y)) {
             obs2.updateValue(2, agCar);
-            System.out.println("obs2 3 car " + WorldModel.getAgNameAtPos(x, y));
             obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         } 
         if (model.hasObject(WorldModel.PEDESTRIAN_CHILD, x, y)) {
             obs2.updateValue(2, childPedestrian);
-            System.out.println("obs2 3 child " + WorldModel.getAgNameAtPos(x, y));
             obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         }
         if (model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y)) {
             obs2.updateValue(2, adultPedestrian);
-            System.out.println("obs2 3 adult " + WorldModel.getAgNameAtPos(x, y));
             obs2.updateValue(3, WorldModel.getAgNameAtPos(x, y));
         }
-        if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y) || model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y))) {
+        if (!(model.hasObject(WorldModel.CAR, x, y) || model.hasObject(WorldModel.PEDESTRIAN_CHILD, x, y) || model.hasObject(WorldModel.PEDESTRIAN_ADULT, x, y))) {
             obs2.updateValue(2, nobody);
         } 
     }

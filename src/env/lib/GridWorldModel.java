@@ -13,8 +13,8 @@ public class GridWorldModel {
     public static final int       CLEAN    = 0;
     public static final int       ZEBRA_CROSSING = 16384;
     public static final int       CAR    = 2;
-    public static final int       PEDESTRIAN_CHILD    = 524287;
-    public static final int       PEDESTRIAN_ADULT    = 1048575;
+    public static final int       PEDESTRIAN_CHILD    = 524288;
+    public static final int       PEDESTRIAN_ADULT    = 1048576;
 
     public static final int       BUILDING = 8;
     public static final int       SUPERMARKET = 256;

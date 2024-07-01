@@ -104,8 +104,8 @@ public class GridWorldView extends JFrame {
             case GridWorldModel.PARK:               drawSpecialBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y), "Park");     break;
             case GridWorldModel.BUILDING:           drawBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y));                      break;
             case GridWorldModel.CAR:                drawCar(g, x, y, GridWorldModel.getAgAtPos(x,y));                           break;
-            case GridWorldModel.PEDESTRIAN_ADULT:   drawPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));                    break;
-            case GridWorldModel.PEDESTRIAN_CHILD:   drawPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));   
+            case GridWorldModel.PEDESTRIAN_ADULT:   drawAdultPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));               break;
+            case GridWorldModel.PEDESTRIAN_CHILD:   drawChildPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));               break;
             case GridWorldModel.HELICOPTER:         drawHelicopter(g, x, y, GridWorldModel.getAgAtPos(x,y));                    break;
             case GridWorldModel.PARKING_HELICOPTER: drawParkingHelicopter(g, x, y, GridWorldModel.getAgAtPos(x,y));             break;
         }
@@ -178,8 +178,6 @@ public class GridWorldView extends JFrame {
 
         // on zebra crossing 
         if((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING)!=0){
-            // g.setColor(Color.white);
-            // g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
             drawZebraCrossing(g, x, y);
         }
         // Draw the body (blue circle)
@@ -197,47 +195,6 @@ public class GridWorldView extends JFrame {
         drawString(g, x, y, defaultFont, "C");
     }
 
-    public void drawPedestrian(Graphics g, int x, int y, int id) {
-        // Building Background 
-        g.setColor(Color.orange);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-
-        // on zebra crossing 
-        if((model.data[x][y] & GridWorldModel.ZEBRA_CROSSING)!=0){
-            // g.setColor(Color.white);
-            // g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-            drawZebraCrossing(g, x, y);
-        }
-        // Draw the body (blue circle)
-        g.setColor(Color.blue);
-        g.fillOval(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
-
-        // Child
-        if(GridWorldModel.getAgType(id)==GridWorldModel.PEDESTRIAN_CHILD){
-            g.setColor(Color.yellow);
-            int headSizeW = (cellSizeW - 4) / 2;
-            int headSizeH = (cellSizeH - 4) / 2;
-            int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
-            int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
-            g.fillOval(headX, headY, headSizeW, headSizeH);
-            // text
-            g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, "C");
-        }
-        // Adult
-        if(GridWorldModel.getAgType(id)==GridWorldModel.PEDESTRIAN_ADULT){
-            g.setColor(Color.magenta);
-            int headSizeW = (cellSizeW - 4) / 2;
-            int headSizeH = (cellSizeH - 4) / 2;
-            int headX = x * cellSizeW + 2 + (cellSizeW - 4) / 4;
-            int headY = y * cellSizeH + 2 + (cellSizeH - 4) / 4;
-            g.fillOval(headX, headY, headSizeW, headSizeH);
-            // text
-            g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, "A");
-        }       
-
-    }
 
     public void drawHelicopter(Graphics g, int x, int y, int id) {
         if ((model.data[x][y] & GridWorldModel.BUILDING) != 0){
@@ -274,8 +231,8 @@ public class GridWorldView extends JFrame {
         g.setColor(Color.lightGray);
         g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH); //we draw the outline
         if (((model.data[x][y] & GridWorldModel.CAR) == 0) 
-        //    && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) == 0) 
-        //    && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) == 0)
+           && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_CHILD) == 0) 
+           && ((model.data[x][y] & GridWorldModel.PEDESTRIAN_ADULT) == 0)
            && ((model.data[x][y] & GridWorldModel.HELICOPTER) == 0)) {
             //means no agent has been spotted on the street block (cf. getAgAtPos)
             g.setColor(Color.lightGray);

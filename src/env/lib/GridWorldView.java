@@ -188,6 +188,7 @@ public class GridWorldView extends JFrame {
             case GridWorldModel.PARK:               drawSpecialBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y), "Park");     break;
             case GridWorldModel.BUILDING:           drawBuilding(g, x, y, GridWorldModel.getAgAtPos(x,y));                      break;
             case GridWorldModel.CAR:                drawCar(g, x, y, GridWorldModel.getAgAtPos(x,y));                           break;
+            
             case GridWorldModel.PEDESTRIAN_ADULT:   drawAdultPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));               break;
             case GridWorldModel.PEDESTRIAN_CHILD:   drawChildPedestrian(g, x, y, GridWorldModel.getAgAtPos(x,y));               break;
             case GridWorldModel.HELICOPTER:         drawHelicopter(g, x, y, GridWorldModel.getAgAtPos(x,y));                    break;
@@ -252,7 +253,9 @@ public class GridWorldView extends JFrame {
         g.fillOval(headX, headY, headSizeW, headSizeH);
         // text
         g.setColor(Color.black);
-        String text = "A" + id;
+        String name = GridWorldModel.getNameFromId(id); 
+        String nameNumber = name.charAt(name.length()-1) + "";
+        String text = "A" + nameNumber;
         drawString(g, x, y, defaultFont, text);
     }
 
@@ -277,7 +280,9 @@ public class GridWorldView extends JFrame {
         g.fillOval(headX, headY, headSizeW, headSizeH);
         // text
         g.setColor(Color.black);
-        String text = "C" + id;
+        String name = GridWorldModel.getNameFromId(id); 
+        String nameNumber = name.charAt(name.length()-1) + "";
+        String text = "C" + nameNumber;
         drawString(g, x, y, defaultFont, text);
     }
 

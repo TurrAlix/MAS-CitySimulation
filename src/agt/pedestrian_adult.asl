@@ -1,6 +1,10 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 
+
+/* Initial beliefs and rules */
 target(_ ,_ , _). //creating the template
+//last_greeted(_).  //creating the template
+waiting(0).       // if 1 it means it's waiting for a response
 
 /* Initial goals */
 !live.
@@ -21,12 +25,12 @@ target(_ ,_ , _). //creating the template
 // ---------------------------------------------------------------------- //
 
 // I'm not in the target position yet
-+!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) <-
-    !next_step(X,Y).
++!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) & waiting(0)
+    <- !next_step(X,Y).
 
 // I'm in the office position
-+!goToPos(X,Y) : pos(X, Y) & office(X, Y) <-
-    .print("I'm at the office!");
++!goToPos(X,Y) : pos(X, Y) & office(X, Y) & waiting(0)
+    <- .print("I'm at the office!");
     .wait(4000);
     ?supermarket(PX, PY);
     -+target("supermarket", PX, PY);
@@ -34,16 +38,22 @@ target(_ ,_ , _). //creating the template
     !goToPos(PX, PY).
 
 // I'm in the supermarket position
-+!goToPos(X,Y) : pos(X, Y) & supermarket(X, Y) <-
-    .print("I'm at the supermarket!");
++!goToPos(X,Y) : pos(X, Y) & supermarket(X, Y) & waiting(0)
+    <- .print("I'm at the supermarket!");
     .wait(4000);
     -+target("stop", -1, -1);
     .print("I FINISH MY DAAAAY!");
     .wait(1000000). // MAYBE NOT NEEDED IT HAS JUST FINIHED THE GOALS
 
 // Failure handling for pos goal
--!goToPos(X,Y)
+-!goToPos(X,Y) : waiting(0)
     <- .print("Failed to move to position: ", X, ", ", Y);
+        .wait(1000);
+        !goToPos(X,Y).
+
+// Failure handling for pos goal
+-!goToPos(X,Y) : waiting(1)
+    <- .print("...I'm waiting..");
         .wait(1000);
         !goToPos(X,Y).
 
@@ -53,7 +63,7 @@ target(_ ,_ , _). //creating the template
  It uses the internal action jia.get_direction which encodes a search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) <-
     jia.get_dir(AgX, AgY, X, Y, D);
-    .wait(300);
+    .wait(200);
     if (D==up) {
         up;
     }
@@ -76,8 +86,6 @@ target(_ ,_ , _). //creating the template
 
 +success("up") <-
     .print("Went up!");
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y).
 +fail("up",P) <-
@@ -87,8 +95,6 @@ target(_ ,_ , _). //creating the template
 
 +success("down") <-
     .print("Went down!");
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y).
 +fail("down",P) <-
@@ -98,8 +104,6 @@ target(_ ,_ , _). //creating the template
 
 +success("right") <-
     .print("Went right!");
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y). 
 +fail("right",P) <-
@@ -109,8 +113,6 @@ target(_ ,_ , _). //creating the template
 
 +success("left") <-
     .print("Went left!"); 
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y).   
 +fail("left",P) <-
@@ -179,41 +181,45 @@ target(_ ,_ , _). //creating the template
 */
 
 
-+!greet(P, Position) <-  
++!greet(P, Position) : not(last_greeted(P)) 
+    <- -+waiting(1);
+    -+last_greeted(P);
     .print("Oh, ", P, " is on the ", Position, " cell! Hello ", P, "!");
     .send(P, tell, greetings);
-    .print("I'll wait for greetings back....");
-    .wait({+greetings_back[source(P)]});
-    .wait(100).
+    .print("I'll wait for greetings back....").
 
-+whoL(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !!greet(P, "left").
+-!greet(P, Position) // Last person greeted was P, so no need to greet again now
+    <-  -+waiting(0);
+    .print("I already greeted ", P, "! I'll continue my day now.").
+
++whoL(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <- 
+    !greet(P, "left").
 
 +whoR(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !!greet(P, "right").
+    !greet(P, "right").
 
 +whoU(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !!greet(P, "upper").
+    !greet(P, "upper").
 
 +whoD(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !!greet(P, "down").
+    !greet(P, "down").
 
 
 // Other Adults could greet other Adults
 +greetings[source(Sender)] <-
-    !!handle_initial_greeting(Sender).
+    !handle_initial_greeting(Sender).
 
 +!handle_initial_greeting(Sender) <-
     .print(Sender, " just greeted me!");
     .send(Sender, tell, greetings_back);
     .print("Nice to meet you ", Sender, "! I'll continue my day..");
-    .wait(200).
+    .wait(3000);
+    -+waiting(0).
 
-+greetings_back[source(Sender)] <-
-    !!handle_greeting_back(Sender).
++greetings_back[source(Sender1)] <-
+    !handle_greeting_back(Sender1).
 
-+!handle_greeting_back(Sender) <-
-    .print(Sender, " greeted me back! I'll continue my day now!");
-    .wait(100).
-
-
++!handle_greeting_back(Sender1) <-
+    .print(Sender1, " greeted me back! I'll continue my day now!");
+    .wait(3000);
+    -+waiting(0).

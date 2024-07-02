@@ -1,6 +1,9 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 
+
+/* Initial beliefs and rules */
 target(_ ,_ , _). //creating the template
+waiting(0).       // if 1 it means it's waiting for a response
 
 /* Initial goals */
 !live.
@@ -20,12 +23,12 @@ target(_ ,_ , _). //creating the template
 
 // ---------------------------------------------------------------------- //
 // I'm not in the target position yet
-+!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) <-
-   !next_step(X,Y).
++!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) & waiting(0) 
+    <- !next_step(X,Y).
 
 // I'm in the school position
-+!goToPos(X,Y) : pos(X, Y) & school(X, Y) <-
-    .print("I'm at school!");
++!goToPos(X,Y) : pos(X, Y) & school(X, Y) & waiting(0)
+    <- .print("I'm at school!");
     .wait(4000);
     ?park(PX, PY);
     -+target("park", PX, PY);
@@ -33,7 +36,7 @@ target(_ ,_ , _). //creating the template
     !goToPos(PX, PY).
 
 // I'm in the park position
-+!goToPos(X,Y) : pos(X, Y) & park(X, Y) <-
++!goToPos(X,Y) : pos(X, Y) & park(X, Y) & waiting(0) <-
     .print("I'm at park!");
     .wait(4000);
     -+target("stop", -1, -1);
@@ -41,10 +44,17 @@ target(_ ,_ , _). //creating the template
     .wait(1000000). // MAYBE NOT NEEDED IT HAS JUST FINIHES THE GOALS
 
 // Failure handling for pos goal
--!goToPos(X,Y) <-
-    .print("Failed to move to position: ", X, ", ", Y);
-    .wait(1000);
-    !goToPos(X,Y).
+-!goToPos(X,Y) : waiting(0)
+    <- .print("Failed to move to position: ", X, ", ", Y);
+        .wait(1000);
+        !goToPos(X,Y).
+
+// Failure handling for pos goal
+-!goToPos(X,Y) : waiting(1)
+    <- .print("...I'm waiting..");
+        .wait(1000);
+        !goToPos(X,Y).
+
 
 // ---------------------------------------------------------------------- //
 
@@ -84,8 +94,6 @@ target(_ ,_ , _). //creating the template
 
 +success("down") <-
     .print("Went down!");
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y).
 +fail("down",P) <-
@@ -95,8 +103,6 @@ target(_ ,_ , _). //creating the template
 
 +success("right") <-
     .print("Went right!");
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y). 
 +fail("right",P) <-
@@ -106,15 +112,12 @@ target(_ ,_ , _). //creating the template
 
 +success("left") <-
     .print("Went left!"); 
-    //-+busy(0);
-    //?busy(B);
     ?target(_, X, Y);
     !goToPos(X, Y).   
 +fail("left",P) <-
     .print("Cannot go left");
     ?target(_, X, Y);
     !next_step(X, Y).
-
 
 
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
@@ -136,31 +139,37 @@ target(_ ,_ , _). //creating the template
     .print("Down cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
 */
 
+/*
 //obs2
 +whoL(X,Y, W, P) : W == adultPedestrian <- 
-    !!neighbours(P, "left").
+    !neighbours(P, "left").
 
 +whoR(X,Y, W, P) : W == adultPedestrian <-
-    !!neighbours(P, "right").
+    !neighbours(P, "right").
 
 +whoU(X,Y, W, P) : W == adultPedestrian <-  
-    !!neighbours(P, "upper").
+    !neighbours(P, "upper").
 
 +whoD(X,Y, W, P) : W == adultPedestrian <-  
-    !!neighbours(P, "down").
+    !neighbours(P, "down").
 
 +!neighbours(P, Position) <-  
-    .print("I'm waiting for an hi....");
-    .wait({+greetings[source(Sender)]});
-    .wait(2000).
+    -+waiting(1);
+    .print("I'm waiting for an hi from ",P," ...");
+    .wait(3000).
 
-
+-!neighbours(P, Position)
+    <-  -+waiting(0);
+    .print("I already greeted ", P, "! I'll continue my day now.").
+*/
 
 +greetings[source(Sender)] <-
-    !!handle_greeting(Sender).
+    !handle_greeting(Sender).
 
 +!handle_greeting(Sender) <-
+    -+waiting(1);
     .print(Sender, " just greeted me!");
+    .wait(3000);
     .send(Sender, tell, greetings_back);
     .print("Nice to meet you ", Sender, "! I'll continue my day..");
-    .wait(3000).
+    -+waiting(0).

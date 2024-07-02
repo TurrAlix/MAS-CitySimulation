@@ -87,6 +87,9 @@ public class GridWorldModel {
     public int getNbOfAgs() {
         return agPos.length;
     }
+    public static String getNameFromId(int id) {
+        return agNames[id].toString();
+    }
 
 
     public boolean inGrid(Location l) {
@@ -196,15 +199,10 @@ public class GridWorldModel {
         if (oldLoc != null) { //clear the previous position
             remove(CAR, oldLoc.x, oldLoc.y);
         } else { //first time we instantiate the car since the previous position was null
-            if (agCars[0]==-1) { //first car agent to be instantiated
-                agCars[0]=ag;
-                agNames[ag] = new Atom("car");
-            } else {
-                int i=0;
-                while (agCars[i]!=-1){i++;}
-                agCars[i]=ag;
-                agNames[ag] = new Atom("car"+(i+1));
-            }
+            int i=0;
+            while (agCars[i]!=-1){i++;}
+            agCars[i]=ag;
+            agNames[ag] = new Atom("car"+(i+1));
             agTypes[ag] = CAR;
         };
         agPos[ag] = l;
@@ -224,6 +222,7 @@ public class GridWorldModel {
             while (agChildPedestrians[i]!=-1){i++;}
             agChildPedestrians[i]=ag;
             agNames[ag] = new Atom("pedestrian_child"+(i+1));
+            System.out.println("pedestrian_child"+(i+1));
             agTypes[ag] = PEDESTRIAN_CHILD;
         }
         agPos[ag] = l;
@@ -243,6 +242,7 @@ public class GridWorldModel {
             while (agAdultPedestrians[i]!=-1){i++;}
             agAdultPedestrians[i]=ag;
             agNames[ag] = new Atom("pedestrian_adult"+(i+1));
+            System.out.println("pedestrian_adult"+(i+1));
             agTypes[ag] = PEDESTRIAN_ADULT;
         }
         agPos[ag] = l;
@@ -272,6 +272,16 @@ public class GridWorldModel {
     public int getAgAtPos(Location l) {
         return getAgAtPos(l.x, l.y);
     }
+    /** returns the agent at x,y or -1 if there is not one there */
+    public static int getAgAtPos(int x, int y) {
+        for (int i=0; i<agPos.length; i++) {
+            if (agPos[i].x == x && agPos[i].y == y) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static Location getAgPos(int ag) {
         try {
             if (agPos[ag].x == -1)
@@ -316,17 +326,6 @@ public class GridWorldModel {
         }
         if (i==agTypes.length){ return -1; } // no helicopter found
         else { return i; }
-    }
-
-
-    /** returns the agent at x,y or -1 if there is not one there */
-    public static int getAgAtPos(int x, int y) {
-        for (int i=0; i<agPos.length; i++) {
-            if (agPos[i].x == x && agPos[i].y == y) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     // ----------------------------------------------------- //

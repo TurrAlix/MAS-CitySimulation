@@ -321,12 +321,18 @@ public class GridWorldModel {
 
     public static int getHelicopter() {
         int i=0;
-        while (agTypes[i]!=HELICOPTER && i<agTypes.length){
+        // System.out.println(agTypes.length);
+        while (agTypes[i]!=HELICOPTER && i<agTypes.length-1){
             i++;
+            // System.out.println(i);
+            // System.out.println(agTypes[i]);
         }
-        if (i==agTypes.length){ return -1; } // no helicopter found
+        if (i==agTypes.length-1){ 
+            return -1; 
+        } // no helicopter found
         else { return i; }
     }
+
 
     // ----------------------------------------------------- //
 

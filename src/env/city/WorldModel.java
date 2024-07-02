@@ -617,7 +617,7 @@ public class WorldModel extends GridWorldModel {
     static WorldModel world8() throws Exception {
         int w = 12;
         int h = 12;
-        WorldModel model = WorldModel.create(w, h, 9);
+        WorldModel model = WorldModel.create(w, h, 8);
         model.setId("Scenario 8");
 
         // Cars
@@ -627,13 +627,13 @@ public class WorldModel extends GridWorldModel {
         model.setCarPos(3, 11, 5);
 
         // Pedestrians
-        model.setChildPedestrianPos(5,10,11);
-        model.setAdultPedestrianPos(6,11,1);
-        model.setChildPedestrianPos(7,1,11);
-        model.setAdultPedestrianPos(8,1,0);    
+        model.setChildPedestrianPos(4,10,11);
+        model.setAdultPedestrianPos(5,11,1);
+        model.setChildPedestrianPos(6,1,11);
+        model.setAdultPedestrianPos(7,1,0);    
 
         // Helicopter
-        model.setHelicopterPos(4, 11, 7);
+        //model.setHelicopterPos(8, 11, 7);
 
         // Buildings
         for (int x = 0; x < w; x++) {
@@ -642,9 +642,9 @@ public class WorldModel extends GridWorldModel {
             }
         }
 
-        // Parking helicopter
-        model.remove(WorldModel.BUILDING, 11, 7);
-        model.add(WorldModel.PARKING_HELICOPTER, 11, 7);
+        // // Parking helicopter
+        // model.remove(WorldModel.BUILDING, 11, 7);
+        // model.add(WorldModel.PARKING_HELICOPTER, 11, 7);
 
         // streets in the middle
         for (int x = 0; x < w; x++) {

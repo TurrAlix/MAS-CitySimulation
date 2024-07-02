@@ -222,7 +222,6 @@ public class GridWorldModel {
             while (agChildPedestrians[i]!=-1){i++;}
             agChildPedestrians[i]=ag;
             agNames[ag] = new Atom("pedestrian_child"+(i+1));
-            System.out.println("pedestrian_child"+(i+1));
             agTypes[ag] = PEDESTRIAN_CHILD;
         }
         agPos[ag] = l;
@@ -242,7 +241,6 @@ public class GridWorldModel {
             while (agAdultPedestrians[i]!=-1){i++;}
             agAdultPedestrians[i]=ag;
             agNames[ag] = new Atom("pedestrian_adult"+(i+1));
-            System.out.println("pedestrian_adult"+(i+1));
             agTypes[ag] = PEDESTRIAN_ADULT;
         }
         agPos[ag] = l;

@@ -397,14 +397,14 @@ public class WorldModel extends GridWorldModel {
         // Cars
         model.setCarPos(0, 11, 11);
         model.setCarPos(1, 0, 0);
-        model.setCarPos(5, 5, 7);
-        model.setCarPos(6, 7, 10);
+        model.setCarPos(2, 5, 7);
+        model.setCarPos(3, 7, 10);
         
         // Pedestrians
-        model.setChildPedestrianPos(2,9,7);
-        model.setAdultPedestrianPos(3,9 ,8);
+        model.setChildPedestrianPos(4,9,7);
+        model.setAdultPedestrianPos(5,9 ,8);
         //Helicopter
-        model.setHelicopterPos(4, 9, 9);
+        model.setHelicopterPos(6, 9, 9);
 
         // Buildings:
         for (int x = 0; x < w; x++) {

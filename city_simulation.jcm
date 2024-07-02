@@ -17,9 +17,9 @@ mas city_simulation {
         focus: city.view4
     }
 
-    // agent helicopter : helicopter.asl  {
-    //     focus: city.view5
-    // }
+    agent helicopter : helicopter.asl  {
+        focus: city.view5
+    }
 
     agent pedestrian_child1: pedestrian_child.asl  {
         focus: city.view6
@@ -44,16 +44,16 @@ mas city_simulation {
         // wordl6: A ring of streets all around and a cross in the middle, specific buildings and zebra crossing and helicopter
         // world7: wordl6 + 2 pedestrians
         // world8: world for zebra crossing interactions
-        artifact view1: city.City(8, 0) //car1
-        artifact view2: city.City(8, 1) //car2
-        artifact view3: city.City(8, 2) //car3 
-        artifact view4: city.City(8, 3) //car4
+        artifact view1: city.City(6, 0) //car1
+        artifact view2: city.City(6, 1) //car2
+        artifact view3: city.City(6, 2) //car3 
+        artifact view4: city.City(6, 3) //car4
 
-        artifact view6: city.City(8, 4) //child1
-        artifact view7: city.City(8, 5) //adult1
-        artifact view8: city.City(8, 6) //child2
-        artifact view9: city.City(8, 7) //adult2
-        //artifact view5: city.City(8, 8) //helicopter
+        artifact view6: city.City(6, 4) //child1
+        artifact view7: city.City(6, 5) //adult1
+        // artifact view8: city.City(6, 6) //child2
+        // artifact view9: city.City(6, 7) //adult2
+        artifact view5: city.City(6, 6) //helicopter
     }
 }
 

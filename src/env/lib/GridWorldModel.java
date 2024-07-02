@@ -6,34 +6,36 @@ import jason.asSyntax.Term;
 
 
 public class GridWorldModel {
-    // each different object is represented by having a single bit
-    // set (a bit mask is used in the model), so any power of two
-    // represents different objects. Other numbers represent combinations
-    // of objects which are all located in the same cell of the grid.
-    public static final int       CLEAN    = 0;
-    public static final int       ZEBRA_CROSSING = 16384;
-    public static final int       CAR    = 2;
-    public static final int       PEDESTRIAN_CHILD    = 524288;
-    public static final int       PEDESTRIAN_ADULT    = 1048576;
 
-    public static final int       BUILDING = 8;
-    public static final int       SUPERMARKET = 256;
-    public static final int       PARK = 512;
-    public static final int       OFFICE = 1024;
-    public static final int       SCHOOL = 2048;
+    // each different object is represented by having a single bit set, 
+    // a bit mask is used in the model, so any power of 2 represents different objects
+    // Other numbers represent combinations of objects which are all located in the same cell of the grid.
 
-    public static final int       STREET_UP = 16;
-    public static final int       STREET_DOWN = 32;
-    public static final int       STREET_RIGHT = 64;
-    public static final int       STREET_LEFT = 128;
+    public static final int       CLEAN             = 0;
+    public static final int       CAR               = 2;
+    public static final int       PEDESTRIAN_CHILD  = 4;
+    public static final int       PEDESTRIAN_ADULT  = 8;
 
-    public static final int       PRECEDENCE_UP = 32768;
-    public static final int       PRECEDENCE_DOWN = 65536;
-    public static final int       PRECEDENCE_RIGHT = 131072;
-    public static final int       PRECEDENCE_LEFT = 262144;
+    public static final int       STREET_UP         = 16;
+    public static final int       STREET_DOWN       = 32;
+    public static final int       STREET_RIGHT      = 64;
+    public static final int       STREET_LEFT       = 128;
+    
+    public static final int       BUILDING          = 256;
+    public static final int       SUPERMARKET       = 512;
+    public static final int       PARK              = 1024;
+    public static final int       OFFICE            = 2048;
+    public static final int       SCHOOL            = 4096;
+    
+    public static final int       PARKING_HELICOPTER= 8192;
+    public static final int       HELICOPTER        = 16384;
+    public static final int       ZEBRA_CROSSING    = 32768;
 
-    public static final int       PARKING_HELICOPTER = 4096;
-    public static final int       HELICOPTER = 8192;
+    public static final int       PRECEDENCE_UP     = 65536;
+    public static final int       PRECEDENCE_DOWN   = 131072;
+    public static final int       PRECEDENCE_RIGHT  = 262144;
+    public static final int       PRECEDENCE_LEFT   = 524288;
+
 
     protected int                 width, height;
     protected int[][]             data = null;
@@ -91,7 +93,6 @@ public class GridWorldModel {
         return agNames[id].toString();
     }
 
-
     public boolean inGrid(Location l) {
         return inGrid(l.x, l.y);
     }
@@ -103,16 +104,13 @@ public class GridWorldModel {
         return (inGrid(x, y) && ((data[x][y] & BUILDING) != 0));
     }
 
-    //if the next block is a zebra-crossing (result =/= 0), says
-    //to the pedestrian if it is occupied by a car (result = 2) or not (result = 1)
+    /* Function for knowing if zebra crossing are occupied */
     public boolean busyZebraCrossing(int x, int y) {
         if (inGrid(x,y) && ((data[x][y] & ZEBRA_CROSSING) != 0) && ((data[x][y] & CAR) != 0)) {
             return true; //zebra-crossing occupied by a car at the moment
         }
         else { return false; }
     }
-
-
 
     public boolean hasObject(int obj, Location l) {
         return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) != 0;
@@ -121,13 +119,13 @@ public class GridWorldModel {
         return inGrid(x, y) && ((data[x][y] & obj) != 0);
     }
 
+    // Setting/Adding a value in a cell means to put an agent or infrastructure in the enviroment! It calls the view to update the view each time
     public void set(int value, int x, int y) {
         data[x][y] = value;
         if (view != null){
             view.update(x,y);
         }
     }
-
     public void add(int value, Location l) {
         add(value, l.x, l.y);
     }
@@ -137,7 +135,6 @@ public class GridWorldModel {
             view.update(x,y);
         }
     }
-
     public void remove(int value, Location l) {
         remove(value, l.x, l.y);
     }
@@ -145,9 +142,9 @@ public class GridWorldModel {
         data[x][y] &= ~value;
         if (view != null) view.update(x,y);     // put here: agents disappear after moving
     }
-
     // ----------------------------------------------------- //
 
+    /* SETTING THE POSITIONS OF IMPORTANT STRUCTURE IN THE ENVIROMENT */
     public void setSchoolPos(int x, int y) {
         setSchoolPos(new Location(x, y));
     }
@@ -189,7 +186,7 @@ public class GridWorldModel {
     }
 
     // ----------------------------------------------------- //
-
+    /* SETTING AGENTS POSITION IN THE ENVIROMENT */
 
     public void setCarPos(int ag, int x, int y) {
         setCarPos(ag, new Location(x, y));
@@ -265,12 +262,12 @@ public class GridWorldModel {
     }
 
     // ----------------------------------------------------- //
-    
-    /** returns the agent at location l or -1 if there is not one there */
+    /* FUNCTION TO HELP ACCESSING AGENTS FROM OUTSIDE THIS LIBRARY */
+
+    // From a Location it returns the agent ID, or -1 if there is not one there
     public int getAgAtPos(Location l, int type) {
         return getAgAtPos(l.x, l.y, type);
     }
-    /** returns the agent at x,y or -1 if there is not one there */
     public static int getAgAtPos(int x, int y, int type) {
         if (type == CAR) {
             for (int i=0; i<agPos.length; i++) {
@@ -296,7 +293,6 @@ public class GridWorldModel {
         }
         return -1;
     }
-
     public static Location getAgPos(int ag) {
         try {
             if (agPos[ag].x == -1)
@@ -308,11 +304,10 @@ public class GridWorldModel {
         }
     }
 
-    /** returns the agent name at location l or -1 if there is not one there */
+    /* From a Location it returns the agent name, or -1 if there is not one there */
     public Term getAgNameAtPos(Location l) {
         return getAgNameAtPos(l.x, l.y);
     }
-    /** returns the agent at x,y or null if there is not one there */
     public static Term getAgNameAtPos(int x, int y) {
         for (int i=0; i<agPos.length; i++) {
             if (agPos[i].x == x && agPos[i].y == y) {
@@ -322,7 +317,7 @@ public class GridWorldModel {
         return null;
     }
 
-
+    /* From an agent ID it gets the agent type */
     public static int getAgType(int ag) {
         try {
             if (agTypes[ag] == -1)
@@ -335,24 +330,19 @@ public class GridWorldModel {
     }
 
     public static int getHelicopter() {
-        int i=0;
-        // System.out.println(agTypes.length);
-        while (agTypes[i]!=HELICOPTER && i<agTypes.length-1){
-            i++;
-            // System.out.println(i);
-            // System.out.println(agTypes[i]);
+        int i;
+        for (i = 0; i < agTypes.length; i++) {
+            if (agTypes[i] == HELICOPTER) {
+                return i;
+            }
         }
-        if (i==agTypes.length-1){ 
-            return -1; 
-        } // no helicopter found
-        else { return i; }
+        // If we exit the loop without finding a helicopter
+        System.out.println("[INFO] In this world there is no Helicopter");
+        return -1;
     }
+    
 
-
-    // ----------------------------------------------------- //
-
-
-    /** returns the localisation of the parking spot */
+    /* It returns the localition of the parking spot of the Helicopter */
     public Location getHelicopterParkingPos() {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
@@ -364,26 +354,17 @@ public class GridWorldModel {
         return (new Location(-1,-1));
     }
 
-
-    /**returns the types contained in a block at a specific position */
-    /*public int getBlockTypeAtPos(Location l) {
-        return getBlockTypeAtPos(l.x, l.y);
-    }
-    public int getBlockTypeAtPos(int x, int y) {
-        return data[x][y];
-    }*/
-
     // ----------------------------------------------------- //
+    /*  SUPPORTING FUNCTIONS  */
 
-    /** returns true if the location l has no building neither agent */
     public boolean isFree(Location l) {
         return isFree(l.x, l.y);
     }
-    /** returns true if the location x,y has neither building nor agent ; used by cars */
+    /** returns true if the location x,y has neither building nor agent or used by cars */
     public boolean isFree(int x, int y) {
         return inGrid(x, y) && (data[x][y] & BUILDING) == 0 && (data[x][y] & CAR) == 0 && (data[x][y] & PEDESTRIAN_CHILD) == 0 && (data[x][y] & PEDESTRIAN_ADULT) == 0 && (data[x][y] & PARKING_HELICOPTER) == 0;
     }
-    /** returns true if the location l has not the object obj */
+
     public boolean isFree(int obj, Location l) {
         return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) == 0;
     }
@@ -392,17 +373,14 @@ public class GridWorldModel {
         return inGrid(x, y) && (data[x][y] & obj) == 0;
     }
 
-    /** returns true if the location l has no building neither agent */
+    /** It returns true if the location l has no building neither agent, 
+     * used in the AStar algorithm to check which path for pedestrians are valid */
     public boolean isWalkable(Location l) {
         return isWalkable(l.x, l.y);
     }
-
-    //used in tha AStar algorithm to check which path for pedestrians are valid
     public boolean isWalkable(int x, int y) {
         return (inGrid(x,y) && (inBuilding(x,y) || ((data[x][y] & ZEBRA_CROSSING) != 0)));
     }
-
-    // ----------------------------------------------------- //
 
     /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and buildings) */
     protected Location getFreePos() {

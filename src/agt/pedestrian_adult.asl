@@ -1,16 +1,17 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 
+// ---------------------------------------------------------------------- //
 
 /* Initial beliefs and rules */
 target(_ ,_ , _). //creating the template
-//last_greeted(_).  //creating the template
-waiting(0).       // if 1 it means it's waiting for a response
+waiting(0).       // if it's 1 it means it's waiting for a response
 
 /* Initial goals */
 !live.
 
 // ---------------------------------------------------------------------- //
 
+//Starting of the Adults life is to go to the office
 +!live <- 
     ?office(X,Y);
     .print("I'm going to the office at ", office(X,Y), " now.");
@@ -24,11 +25,11 @@ waiting(0).       // if 1 it means it's waiting for a response
 
 // ---------------------------------------------------------------------- //
 
-// I'm not in the target position yet
+// Movements toward the target position, it's going but not yet arrived
 +!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) & waiting(0)
     <- !next_step(X,Y).
 
-// I'm in the office position
+// Arrived in the office position, after that Adults go to the supermarket!
 +!goToPos(X,Y) : pos(X, Y) & office(X, Y) & waiting(0)
     <- .print("I'm at the office!");
     .wait(4000);
@@ -37,21 +38,18 @@ waiting(0).       // if 1 it means it's waiting for a response
     .print("I'm going to the supermarket at ", supermarket(PX,PY), " now.");
     !goToPos(PX, PY).
 
-// I'm in the supermarket position
+// It's in the supermarket position
 +!goToPos(X,Y) : pos(X, Y) & supermarket(X, Y) & waiting(0)
     <- .print("I'm at the supermarket!");
     .wait(4000);
     -+target("stop", -1, -1);
-    .print("I FINISH MY DAAAAY!");
-    .wait(1000000). // MAYBE NOT NEEDED IT HAS JUST FINIHED THE GOALS
+    .print("I FINISH MY DAAAAY!").
 
-// Failure handling for pos goal
 -!goToPos(X,Y) : waiting(0)
     <- .print("Failed to move to position: ", X, ", ", Y);
         .wait(1000);
         !goToPos(X,Y).
 
-// Failure handling for pos goal
 -!goToPos(X,Y) : waiting(1)
     <- .print("...I'm waiting..");
         .wait(1000);
@@ -60,10 +58,10 @@ waiting(0).       // if 1 it means it's waiting for a response
 // ---------------------------------------------------------------------- //
 
 /* These are the plans to have the pedestrian walk in the direction of X,Y.
- It uses the internal action jia.get_direction which encodes a search algorithm.  */
+ It uses the internal action jia.get_dir which encodes an A star search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) <-
     jia.get_dir(AgX, AgY, X, Y, D);
-    .wait(200);
+    .wait(250);
     if (D==up) {
         up;
     }
@@ -83,6 +81,7 @@ waiting(0).       // if 1 it means it's waiting for a response
         !next_step(X,Y).
 
 // ---------------------------------------------------------------------- //
+/*  PERCEPTS */
 
 +success("up") <-
     .print("Went up!");
@@ -119,7 +118,6 @@ waiting(0).       // if 1 it means it's waiting for a response
     .print("Cannot go left");
     ?target(_, X, Y);
     !next_step(X, Y).
-
 
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
@@ -166,7 +164,6 @@ waiting(0).       // if 1 it means it's waiting for a response
     .send(P, tell, greetings);
     .wait({+greetings_back[source(Sender)]});
     .wait(100).
-
 
 +greetings[source(Sender)] <-
     .print(Sender, " just greeted me!");

@@ -1,11 +1,16 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 
+// ----------------------------------------------------------------------------------- //
+
+
 /* Initial beliefs and rules */
 busy(0). //not fixing a car
 
-// ----------------------------------------------------------------------------------- //
 
-/* Plans */
+// ----------------------------------------------------------------------------------- //
+/* PLANS */
+
+/* It receives a call from a car, it's not busy so it goes to fix */
 +!fix_car(X,Y)[source(Sender)] : busy(0) <-
     -+busy(1);
     .print("I'm on my way to fix the ", Sender, " at (", X, ";", Y, ")!");
@@ -18,13 +23,14 @@ busy(0). //not fixing a car
     ?helicopterParkingPos(A,B);  
     !return_to_the_parking(A,B).
 
-/*fails if another car breaks down while the helicopter is busy taking care of a first car*/
+/* It fails if another car breaks down while the helicopter is busy taking care of a first car*/
 -!fix_car(X,Y)[source(Sender)] : busy(1) <-
     .print(Sender, " also seems to need my help, but I'm busy for now. Call again later!");
     .wait(1000);
     !fix_car(X,Y)[source(Sender)].
 
 // ----------------------------------------------------------------------------------- //
+/* Movements of the agents */
 
 +!go_to_carX(X,Y) : pos(W,Z) & W<=X <-
     if (not(W==X)) {
@@ -48,8 +54,6 @@ busy(0). //not fixing a car
     .print("Just reached the car to repair in (", X, ";", Y, ")! Car repair in progress...");
     .wait(1000).
 
-// ----------------------------------------------------------------------------------- //
-
 +!step_right <-
     .wait(200);
     right.
@@ -68,6 +72,7 @@ busy(0). //not fixing a car
     
 // ----------------------------------------------------------------------------------- //
 
+/* It finish to fix and it's not again busy, so it goes back to the parking slot */
 +!return_to_the_parking(X,Y) : busy(0) <-
     if(not(X==-1) & not(Y==-1)) {
         .print("Going back to my parking in (", X, ";", Y, ")");
@@ -77,18 +82,23 @@ busy(0). //not fixing a car
         .print("I can't find my parking...");
     }.  
 
+//another car called for help, so the plan to return to the parking failed
 +!return_to_the_parking(X,Y) : busy(1) <-
-    .wait(100). //another car called for help, so the plan to return to the parking failed
+    .wait(100).
+ 
+//another car called for help, so the plan to return to the parking failed
+-!return_to_the_parking(X,Y) : busy(1) <-
+    .wait(100). 
 
--!return_to_the_parking(X,Y) : busy(0) <- //in case of system bug
+//in case of system bug
+-!return_to_the_parking(X,Y) : busy(0) <- 
     .wait(100);
     !return_to_the_parking(X,Y).
 
--!return_to_the_parking(X,Y) : busy(1) <-
-    .wait(100). //another car called for help, so the plan to return to the parking failed
 
 //  ----------------------------------------------------------------------------------- //
 
+// Movements to go back
 +!go_to_parkingX(X,Y) : pos(W,Z) & W<=X & busy(0) <-
     if (not(W==X)) {
         !step_right;
@@ -111,6 +121,7 @@ busy(0). //not fixing a car
     .print("I'm parked!").
 
 //  ----------------------------------------------------------------------------------- //
+/* PERCEPTS */
 
 +success("up") <-
     .print("Went up!").
@@ -146,30 +157,3 @@ busy(0). //not fixing a car
     
 //Logs for percepts
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
-
-/*+cellL(X,Y,D,P) <-
-    .print("Left cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
-
-+cellR(X,Y,D,P) <-
-    .print("Right cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
-
-+cellC(X,Y,D,P) <-
-    .print("Current cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
-
-+cellU(X,Y,D,P) <-
-    .print("Up cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
-
-+cellD(X,Y,D,P) <-
-    .print("Down cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
-
-+whoL(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on left cell?: x=", X, " & y=", Y, " ; ", W).
-
-+whoR(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on right cell?: x=", X, " & y=", Y, " ; ", W).
-
-+whoU(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on up cell?: x=", X, " & y=", Y, " ; ", W).
-
-+whoD(X,Y,W) : (W==car) | (W==pedestrian) <-
-    .print("Agent on down cell?: x=", X, " & y=", Y, " ; ", W).*/

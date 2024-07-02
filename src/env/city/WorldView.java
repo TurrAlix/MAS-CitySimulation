@@ -20,18 +20,16 @@ import javax.swing.event.ChangeListener;
 public class WorldView extends GridWorldView {
 
     City env = null;
+    JSlider   jSpeed;
 
     public WorldView(WorldModel model) {
         super(model, "City simulation", 600);
         setVisible(true);
         repaint();
     }
-
     public void setEnv(City env) {
         this.env = env;
     }
-
-    JSlider   jSpeed;
 
     @Override
     public void initComponents(int width) {
@@ -48,21 +46,18 @@ public class WorldView extends GridWorldView {
         jSpeed.setMajorTickSpacing(500);
         jSpeed.setMinorTickSpacing(200);
         jSpeed.setInverted(true);
-
         Hashtable<Integer,Component> labelTable = new Hashtable<Integer,Component>();
         labelTable.put( 0, new JLabel("max") );
         labelTable.put( 1000, new JLabel("speed") );
         labelTable.put( 2000, new JLabel("min") );
         jSpeed.setLabelTable( labelTable );
-
         JPanel p = new JPanel(new FlowLayout());
         p.setBorder(BorderFactory.createEtchedBorder());
         p.add(jSpeed);
-
         args.add(p);
 
-        // Events handling
-        //This method adjusts the speed of the agents based on the slider’s value.
+        // Events handling, 
+        // --> This method adjusts the speed of the agents based on the slider’s value.
         jSpeed.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if (env != null) {
@@ -71,11 +66,8 @@ public class WorldView extends GridWorldView {
             }
         });
 
-
-
         JPanel s = new JPanel(new BorderLayout());
         s.add(BorderLayout.WEST, args);
         getContentPane().add(BorderLayout.SOUTH, s);
-
     }
 }

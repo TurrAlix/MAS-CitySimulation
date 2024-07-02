@@ -22,11 +22,12 @@ waiting(0).       // if 1 it means it's waiting for a response
     !live.
 
 // ---------------------------------------------------------------------- //
-// I'm not in the target position yet
+
+// Movements toward the target position, it's going but not yet arrived
 +!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) & waiting(0) 
     <- !next_step(X,Y).
 
-// I'm in the school position
+// Arrived at school position, Child will go to Park after that!
 +!goToPos(X,Y) : pos(X, Y) & school(X, Y) & waiting(0)
     <- .print("I'm at school!");
     .wait(4000);
@@ -35,21 +36,18 @@ waiting(0).       // if 1 it means it's waiting for a response
     .print("I'm going to park at ", park(PX,PY), " now.");
     !goToPos(PX, PY).
 
-// I'm in the park position
+// It's in the park position
 +!goToPos(X,Y) : pos(X, Y) & park(X, Y) & waiting(0) <-
     .print("I'm at park!");
     .wait(4000);
     -+target("stop", -1, -1);
-    .print("I FINISH MY DAAAAY!");
-    .wait(1000000). // MAYBE NOT NEEDED IT HAS JUST FINIHES THE GOALS
+    .print("I FINISH MY DAAAAY!").
 
-// Failure handling for pos goal
 -!goToPos(X,Y) : waiting(0)
     <- .print("Failed to move to position: ", X, ", ", Y);
         .wait(1000);
         !goToPos(X,Y).
 
-// Failure handling for pos goal
 -!goToPos(X,Y) : waiting(1)
     <- .print("...I'm waiting..");
         .wait(1000);
@@ -59,10 +57,10 @@ waiting(0).       // if 1 it means it's waiting for a response
 // ---------------------------------------------------------------------- //
 
 /* These are the plans to have the pedestrian walk in the direction of X,Y.
- It uses the internal action jia.get_direction which encodes a search algorithm.  */
+ It uses the internal action jia.get_direction which encodes an A star search algorithm.  */
 +!next_step(X,Y) : pos(AgX, AgY) <-
    jia.get_dir(AgX, AgY, X, Y, D);
-    .wait(500);
+    .wait(450);
     if (D==up) {
         up;
     }
@@ -82,6 +80,7 @@ waiting(0).       // if 1 it means it's waiting for a response
     !next_step(X,Y).
 
 // ---------------------------------------------------------------------- //
+/*  PERCEPTS */
 
 +success("up") <-
     .print("Went up!");
@@ -119,7 +118,6 @@ waiting(0).       // if 1 it means it's waiting for a response
     ?target(_, X, Y);
     !next_step(X, Y).
 
-
 +pos(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
 /*
@@ -137,30 +135,6 @@ waiting(0).       // if 1 it means it's waiting for a response
 
 +cellD(X,Y,D,P) <-
     .print("Down cell: x=", X, " & y=", Y, " ; infrastructure=", D, " ; precedence=", P").
-*/
-
-/*
-//obs2
-+whoL(X,Y, W, P) : W == adultPedestrian <- 
-    !neighbours(P, "left").
-
-+whoR(X,Y, W, P) : W == adultPedestrian <-
-    !neighbours(P, "right").
-
-+whoU(X,Y, W, P) : W == adultPedestrian <-  
-    !neighbours(P, "upper").
-
-+whoD(X,Y, W, P) : W == adultPedestrian <-  
-    !neighbours(P, "down").
-
-+!neighbours(P, Position) <-  
-    -+waiting(1);
-    .print("I'm waiting for an hi from ",P," ...");
-    .wait(3000).
-
--!neighbours(P, Position)
-    <-  -+waiting(0);
-    .print("I already greeted ", P, "! I'll continue my day now.").
 */
 
 +greetings[source(Sender)] <-

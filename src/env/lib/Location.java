@@ -12,35 +12,10 @@ public final class Location implements Serializable {
     }
 
     /** calculates the Manhattan distance between two points */
-    public int distanceManhattan(Location l) {
-        return Math.abs(x - l.x) + Math.abs(y - l.y);
-    }
-    /** calculates the Manhattan distance between two points */
     public int distance(Location l) {
         return Math.abs(x - l.x) + Math.abs(y - l.y);
     }
 
-    /** calculates the Euclidean distance between two points */
-    public double distanceEuclidean(Location l) {
-        return Math.sqrt(Math.pow(x - l.x, 2) + Math.pow(y - l.y, 2));
-    }
-
-    /** returns the chessboard king (or Chebyshev) distance between two locations : max( |this.x - l.x| , |this.y - l.y|) */
-    public int distanceChebyshev(Location l) {
-        return Math.max( Math.abs(this.x - l.x), Math.abs(this.y - l.y));
-    }
-    /** @deprecated renamed to distanceChessboard */
-    @Deprecated
-    public int maxBorder(Location l) {
-        return Math.max( Math.abs(this.x - l.x), Math.abs(this.y - l.y));
-    }
-
-    public boolean isInArea(Location tl, Location br) {
-        return x >= tl.x && x <= br.x && y >= tl.y && y <= br.y;
-    }
-    public boolean isInArea(Area a) {
-        return a.contains(this);
-    }
     public boolean isNeigbour(Location l) {
         return
             distance(l) == 1 ||

@@ -36,8 +36,11 @@ public class WorldModel extends GridWorldModel {
     }
 
     // -------------------------------------------------------------------- //
+    /* ACTIONS OF THE AGENTS: MOVE, WALK, FLY */
 
-    /** Actions **/
+    /* Movements of the car agents
+     * Arguments: direction, id of the agent
+     * Return: Boolean [moves success or not, if fail it tells if it was because of a pedestrian on zebra crossing or not] */
     boolean[] move(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         boolean[] result = new boolean[2];
@@ -86,7 +89,10 @@ public class WorldModel extends GridWorldModel {
         return result;
     }
 
-    //movement of pedestrian agents
+    /* Movement of pedestrian agents 
+     * Arguments: direction, id of the agent
+     * Return: boolean for success or not
+    */
     boolean walk(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         boolean moved=false;
@@ -188,12 +194,13 @@ public class WorldModel extends GridWorldModel {
         return moved;
     }
     
-    //movement of the helicopter
+    /* Movement of the helicopter agent
+     * Arguments: direction, id of the agent
+     * Return: boolean for success or not */
     boolean fly(Move dir, int ag) throws Exception {
         Location l = getAgPos(ag);
         boolean moved=false;
         switch (dir) {
-            //check if in Grid
             case UP:
                 if (inGrid(l.x, l.y - 1)) { 
                     setHelicopterPos(ag, l.x, l.y - 1);
@@ -226,7 +233,7 @@ public class WorldModel extends GridWorldModel {
     // -------------------------------------------------------------------- //
 
 
-    /** Maps **/
+    /** DIFFERENT MAPS FOR THE ENVIROMENT **/
 
     // Map with a big crossroad in the middle (and zebra crossing, different buildings and helicopter)
     static WorldModel world1() throws Exception {
@@ -251,6 +258,7 @@ public class WorldModel extends GridWorldModel {
         // Parking helicopter
         model.remove(WorldModel.BUILDING, 7, 11);
         model.add(WorldModel.PARKING_HELICOPTER, 7, 11);
+
         // supermarket, a school, a park, and an office
         model.add(WorldModel.OFFICE, 0, 0);
         model.setOfficePos(0, 0);
@@ -354,6 +362,7 @@ public class WorldModel extends GridWorldModel {
         int h = 12;
         WorldModel model = WorldModel.create(w, h, 7);
         model.setId("Scenario 3");
+
         // Cars
         model.setCarPos(0, 11, 11);
         model.setCarPos(1, 0, 0);
@@ -465,6 +474,7 @@ public class WorldModel extends GridWorldModel {
         int h = 12;
         WorldModel model = WorldModel.create(w, h, 9);
         model.setId("Scenario 4");
+        
         // Cars
         model.setCarPos(0, 11, 11);
         model.setCarPos(1, 0, 0);

@@ -56,7 +56,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x, l.y + 1)) {
                     setCarPos(ag, l.x, l.y + 1);
                     moved=true;
-                } else if (inGrid(l.x, l.y+1) && (((data[l.x][l.y-1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y-1] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x, l.y+1) && (((data[l.x][l.y+1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y+1] & PEDESTRIAN_CHILD) != 0))){
                     pedestrian=true;
                 }
                 break;
@@ -64,7 +64,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x + 1, l.y)) {
                     setCarPos(ag, l.x + 1, l.y);
                     moved=true;
-                } else if (inGrid(l.x+1, l.y) && (((data[l.x][l.y-1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y-1] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x+1, l.y) && (((data[l.x+1][l.y] & PEDESTRIAN_ADULT) != 0) || ((data[l.x+1][l.y] & PEDESTRIAN_CHILD) != 0))){
                     pedestrian=true;
                 }
                 break;
@@ -72,7 +72,7 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x - 1, l.y)) {
                     setCarPos(ag, l.x - 1, l.y);
                     moved=true;
-                } else if (inGrid(l.x-1, l.y) && (((data[l.x][l.y-1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y-1] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x-1, l.y) && (((data[l.x-1][l.y] & PEDESTRIAN_ADULT) != 0) || ((data[l.x-1][l.y] & PEDESTRIAN_CHILD) != 0))){
                     pedestrian=true;
                 }
                 break;
@@ -499,7 +499,6 @@ public class WorldModel extends GridWorldModel {
         return model;
     }
     
-    
     static WorldModel world7() throws Exception {
         int w = 12;
         int h = 12;
@@ -614,4 +613,74 @@ public class WorldModel extends GridWorldModel {
         return model;
     }
     
+
+    static WorldModel world8() throws Exception {
+        int w = 12;
+        int h = 12;
+        WorldModel model = WorldModel.create(w, h, 9);
+        model.setId("Scenario 8");
+
+        // Cars
+        model.setCarPos(0, 0, 6);
+        model.setCarPos(1, 3, 5);
+        model.setCarPos(2, 6, 6);
+        model.setCarPos(3, 11, 5);
+
+        // Pedestrians
+        model.setChildPedestrianPos(5,10,11);
+        model.setAdultPedestrianPos(6,11,1);
+        model.setChildPedestrianPos(7,1,11);
+        model.setAdultPedestrianPos(8,1,0);    
+
+        // Helicopter
+        model.setHelicopterPos(4, 11, 7);
+
+        // Buildings
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                model.add(WorldModel.BUILDING, x, y);
+            }
+        }
+
+        // Parking helicopter
+        model.remove(WorldModel.BUILDING, 11, 7);
+        model.add(WorldModel.PARKING_HELICOPTER, 11, 7);
+
+        // streets in the middle
+        for (int x = 0; x < w; x++) {
+            model.remove(WorldModel.BUILDING, x, 6);
+            model.remove(WorldModel.BUILDING, x, 5);
+
+            model.add(WorldModel.STREET_RIGHT, x, 6);
+            model.add(WorldModel.STREET_LEFT, x, 5);
+        }
+        //zebra-crossing
+        model.add(WorldModel.ZEBRA_CROSSING, 2, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 2, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 8, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 8, 6);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 5);
+        model.add(WorldModel.ZEBRA_CROSSING, 5, 6);
+
+        //refinements
+        model.remove(WorldModel.STREET_RIGHT, 11, 6);
+        model.add(WorldModel.STREET_UP, 11, 6);
+        model.remove(WorldModel.STREET_LEFT, 0, 5);
+        model.add(WorldModel.STREET_DOWN, 0, 5);
+
+        //Special buildings for pedestrians
+        model.add(WorldModel.SCHOOL, 0, 0);
+        model.setSchoolPos(0, 0);
+        model.add(WorldModel.OFFICE, 0, 11);
+        model.setOfficePos(0, 11);
+        model.add(WorldModel.PARK, 11, 11);
+        model.setParkPos(11, 11);
+        model.add(WorldModel.SUPERMARKET, 11, 0);
+        model.setSupermarketPos(11, 0);
+
+        return model;
+    }
+
 }

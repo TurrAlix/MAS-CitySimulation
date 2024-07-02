@@ -112,13 +112,10 @@ public class City extends Artifact {
         try {
             if (model == null) {
                 switch (w) {
+                case 1: model = WorldModel.world1(); break;
                 case 2: model = WorldModel.world2(); break;
                 case 3: model = WorldModel.world3(); break;
                 case 4: model = WorldModel.world4(); break;
-                case 5: model = WorldModel.world5(); break;
-                case 6: model = WorldModel.world6(); break;
-                case 7: model = WorldModel.world7(); break;
-                case 8: model = WorldModel.world8(); break;
                 // case X: model = WorldModel.worldX(); break;
                 default:
                     logger.info("Invalid index for the environment!");
@@ -133,15 +130,11 @@ public class City extends Artifact {
             //----------------------------------------------------------------------------------------------------//
             // OBSERVABLE PROPERTIES OF CARTAGO
 
-            /*
-             * PERCEPTS REGARDING THE AGENT CURRENT SITUATION
-             */
+            /* PERCEPTS REGARDING THE AGENT CURRENT SITUATION */
             defineObsProperty("pos", -1, -1); //current position of the agent
             defineObsProperty("state", works); //if the agent is a car, it can break down from time to time
 
-            /*
-             * PERCEPTS REGARDING THE LOCATION OF FIXED INFRASTRUCTURES
-             */
+            /* PERCEPTS REGARDING THE LOCATION OF FIXED INFRASTRUCTURES */
             defineObsProperty("school", model.getSchoolPos().x, model.getSchoolPos().y);
             defineObsProperty("park", model.getParkPos().x, model.getParkPos().y);
             defineObsProperty("office", model.getOfficePos().x, model.getOfficePos().y);
@@ -149,41 +142,33 @@ public class City extends Artifact {
             defineObsProperty("helicopterParkingPos", model.getHelicopterParkingPos().x, model.getHelicopterParkingPos().y);
 
             
-            /*
-             * SURROUNDING PERCEPTS REGARDING THE INFRASTRUCTURE
+            /* SURROUNDING PERCEPTS REGARDING THE INFRASTRUCTURE
              * Arguments: positionX, positionY, type(building, or direction of the street), precedence)
-             * Every agent has access to the four blocks around it and to the current block it occupies
-             */
+             * Every agent has access to the four blocks around it and to the current block it occupies */
             defineObsProperty("cellL", -1, -1, -1, -1); //left
             defineObsProperty("cellR", -1, -1, -1, -1); //right
             defineObsProperty("cellC", -1, -1, -1, -1); //current
             defineObsProperty("cellU", -1, -1, -1, -1); //up
             defineObsProperty("cellD", -1, -1, -1, -1); //down
 
-            /*
-             * SURROUNDING PERCEPTS REGARDING THE AGENTS
+            /* SURROUNDING PERCEPTS REGARDING THE AGENTS
              * Arguments: positionX, positionY, type(car, pedestrian (adult or child) or nobody),
-             * name of the agen if any)
-             */
+             * name of the agen if any) */
             defineObsProperty("whoL", -1, -1, -1, -1); //is there an agent on the left?
             defineObsProperty("whoR", -1, -1, -1, -1);
             defineObsProperty("whoC", -1, -1, -1, -1);
             defineObsProperty("whoU", -1, -1, -1, -1);
             defineObsProperty("whoD", -1, -1, -1, -1);
 
-            /*
-             * PERCEPTS TO KEEP TRACK OF MOVEMENTS
-             */
+            /* PERCEPTS TO KEEP TRACK OF MOVEMENTS */
             defineObsProperty("success", ""); // last successful move in <argument> direction
             // last failed move in <argument> direction, true instead of false for 2d <argument>
             //if the reason of the failure was because of a pedestrian's presence
             //(useful for cars to wait at zebra-crossings)
             defineObsProperty("fail", "", false); 
 
-            //----------------------------------------------------------------------------------------------------//
-
             updateAgPercept();
-
+            
         } catch (Exception e) {
             logger.warning("Error creating world "+e);
             e.printStackTrace();

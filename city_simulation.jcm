@@ -1,8 +1,11 @@
 mas city_simulation {
 
-    //naming convention to always be respected:
-    //<type of agent (car/pedestrian_child/pedestrian_adult/helicopter)>
-    //<n° of the instance> ; example: car1, car2, pedestrian_child1, helicopter
+    //Naming convention to always be respected:
+    //<type of agent (car/pedestrian_child/pedestrian_adult/helicopter)><n° of the instance>
+    //Examples: car1, car2, pedestrian_child1, helicopter
+    //First instantiate the cars, then the pedestrians, and lastly the helicopter (only one per world):
+    //there must never be any gap in the id of the agents (so if you comment one of them, think of changing
+    // the id of the following ones here and also in WorlModel!!)
 
     agent car1 : car.asl  {
         focus: city.view1
@@ -17,43 +20,70 @@ mas city_simulation {
         focus: city.view4
     }
 
-    agent helicopter : helicopter.asl  {
+    agent pedestrian_child1: pedestrian_child.asl  {
         focus: city.view5
     }
-
-    agent pedestrian_child1: pedestrian_child.asl  {
+    agent pedestrian_adult1 : pedestrian_adult.asl  {
         focus: city.view6
     }
-    agent pedestrian_adult1 : pedestrian_adult.asl  {
+    agent pedestrian_child2: pedestrian_child.asl  {
         focus: city.view7
     }
-    agent pedestrian_child2: pedestrian_child.asl  {
+    agent pedestrian_adult2 : pedestrian_adult.asl  {
         focus: city.view8
     }
-    agent pedestrian_adult2 : pedestrian_adult.asl  {
+
+    agent helicopter : helicopter.asl  {
         focus: city.view9
     }
 
     workspace city {
         // 1° parameter: id of the city, 2° parameter: id of the agent in that scenario
 
-        // wordl2: One horizontal street (with 2 lanes) --> TODO doesn't work 
-        // wordl3: Big Cross in the middle (no spcific buildings, no zebra crossing, no helicopter)
-        // wordl4: Big Cross in the middle with Specific Buildings and Zebra crossing and helicopter
-        // wordl5: (maud) Testing world (very ugly)
-        // wordl6: A ring of streets all around and a cross in the middle, specific buildings and zebra crossing and helicopter
-        // world7: wordl6 + 2 pedestrians
-        // world8: world for zebra crossing interactions
-        artifact view1: city.City(6, 0) //car1
-        artifact view2: city.City(6, 1) //car2
-        artifact view3: city.City(6, 2) //car3 
-        artifact view4: city.City(6, 3) //car4
+        // Wordl 1: Big Cross in the middle (and zebra crossing, different buildings and helicopter)
+        /*
+        artifact view1: city.City(1, 0) //car1
+        artifact view2: city.City(1, 1) //car2
+        artifact view5: city.City(1, 2) //child1
+        artifact view6: city.City(1, 3) //adult1
+        artifact view9: city.City(1, 4) //helicopter
+        */
 
-        artifact view6: city.City(6, 4) //child1
-        artifact view7: city.City(6, 5) //adult1
-        // artifact view8: city.City(6, 6) //child2
-        // artifact view9: city.City(6, 7) //adult2
-        artifact view5: city.City(6, 6) //helicopter
+        // World 2: zebra crossing
+        /*
+        artifact view1: city.City(2, 0) //car1
+        artifact view2: city.City(2, 1) //car2
+        artifact view3: city.City(2, 2) //car3 
+        artifact view4: city.City(2, 3) //car4
+        artifact view5: city.City(2, 4) //child1
+        artifact view6: city.City(2, 5) //adult1
+        artifact view7: city.City(2, 6) //child2
+        artifact view8: city.City(2, 7) //adult2
+        */
+
+        // World 3: ring of streets all around and a cross in the middle (and zebra crossing, different buildings and helicopter)
+        /*
+        artifact view1: city.City(3, 0) //car1
+        artifact view2: city.City(3, 1) //car2
+        artifact view3: city.City(3, 2) //car3 
+        artifact view4: city.City(3, 3) //car4
+        artifact view5: city.City(3, 4) //child1
+        artifact view6: city.City(3, 5) //adult1
+        artifact view9: city.City(3, 6) //helicopter
+        */
+
+        // World 4: as World 3 but with 2 more pedestrian, to better see their communication
+        
+        artifact view1: city.City(4, 0) //car1
+        artifact view2: city.City(4, 1) //car2
+        artifact view3: city.City(4, 2) //car3 
+        artifact view4: city.City(4, 3) //car4
+        artifact view5: city.City(4, 4) //child1
+        artifact view6: city.City(4, 5) //adult1
+        artifact view7: city.City(4, 6) //child2
+        artifact view8: city.City(4, 7) //adult2
+        artifact view9: city.City(4, 8) //helicopter
+        // */
     }
 }
 

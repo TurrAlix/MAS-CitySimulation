@@ -48,7 +48,8 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x, l.y - 1)) {
                     setCarPos(ag, l.x, l.y - 1);
                     moved=true;
-                } else if (inGrid(l.x, l.y-1) && (((data[l.x][l.y-1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y-1] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x, l.y - 1) && (((data[l.x][l.y-1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y-1] & PEDESTRIAN_CHILD) != 0))
+                    && ((data[l.x][l.y] & ZEBRA_CROSSING) == 0) && ((data[l.x][l.y - 1] & BUILDING) == 0)){
                     pedestrian=true;
                 }
                 break;
@@ -56,7 +57,8 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x, l.y + 1)) {
                     setCarPos(ag, l.x, l.y + 1);
                     moved=true;
-                } else if (inGrid(l.x, l.y+1) && (((data[l.x][l.y+1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y+1] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x, l.y + 1) && (((data[l.x][l.y+1] & PEDESTRIAN_ADULT) != 0) || ((data[l.x][l.y+1] & PEDESTRIAN_CHILD) != 0))
+                    && ((data[l.x][l.y] & ZEBRA_CROSSING) == 0) && ((data[l.x][l.y + 1] & BUILDING) == 0)){
                     pedestrian=true;
                 }
                 break;
@@ -64,7 +66,8 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x + 1, l.y)) {
                     setCarPos(ag, l.x + 1, l.y);
                     moved=true;
-                } else if (inGrid(l.x+1, l.y) && (((data[l.x+1][l.y] & PEDESTRIAN_ADULT) != 0) || ((data[l.x+1][l.y] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x + 1, l.y) && (((data[l.x+1][l.y] & PEDESTRIAN_ADULT) != 0) || ((data[l.x+1][l.y] & PEDESTRIAN_CHILD) != 0))
+                    && ((data[l.x][l.y] & ZEBRA_CROSSING) == 0) && ((data[l.x + 1][l.y] & BUILDING) == 0)){
                     pedestrian=true;
                 }
                 break;
@@ -72,7 +75,8 @@ public class WorldModel extends GridWorldModel {
                 if (isFree(l.x - 1, l.y)) {
                     setCarPos(ag, l.x - 1, l.y);
                     moved=true;
-                } else if (inGrid(l.x-1, l.y) && (((data[l.x-1][l.y] & PEDESTRIAN_ADULT) != 0) || ((data[l.x-1][l.y] & PEDESTRIAN_CHILD) != 0))){
+                } else if (inGrid(l.x - 1, l.y) && (((data[l.x-1][l.y] & PEDESTRIAN_ADULT) != 0) || ((data[l.x-1][l.y] & PEDESTRIAN_CHILD) != 0))
+                    && ((data[l.x][l.y] & ZEBRA_CROSSING) == 0) && ((data[l.x - 1][l.y] & BUILDING) == 0)){
                     pedestrian=true;
                 }
                 break;

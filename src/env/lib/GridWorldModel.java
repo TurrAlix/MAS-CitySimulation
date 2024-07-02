@@ -267,15 +267,32 @@ public class GridWorldModel {
     // ----------------------------------------------------- //
     
     /** returns the agent at location l or -1 if there is not one there */
-    public int getAgAtPos(Location l) {
-        return getAgAtPos(l.x, l.y);
+    public int getAgAtPos(Location l, int type) {
+        return getAgAtPos(l.x, l.y, type);
     }
     /** returns the agent at x,y or -1 if there is not one there */
-    public static int getAgAtPos(int x, int y) {
-        for (int i=0; i<agPos.length; i++) {
-            if (agPos[i].x == x && agPos[i].y == y) {
-                return i;
+    public static int getAgAtPos(int x, int y, int type) {
+        if (type == CAR) {
+            for (int i=0; i<agPos.length; i++) {
+                if (agPos[i].x == x && agPos[i].y == y && agTypes[i] == CAR){
+                    return i;
+                }
             }
+            return -1;
+        } else if (type == PEDESTRIAN_ADULT || type == PEDESTRIAN_CHILD){
+            for (int i=0; i<agPos.length; i++) {
+                if (agPos[i].x == x && agPos[i].y == y && (agTypes[i] == PEDESTRIAN_ADULT || agTypes[i] == PEDESTRIAN_CHILD)){
+                    return i;
+                }
+            }
+            return -1;
+        } else if (type == HELICOPTER){
+            for (int i=0; i<agPos.length; i++) {
+                if (agPos[i].x == x && agPos[i].y == y && agTypes[i] == HELICOPTER){
+                    return i;
+                }
+            }
+            return -1;
         }
         return -1;
     }

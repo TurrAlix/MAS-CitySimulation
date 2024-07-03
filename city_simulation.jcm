@@ -6,6 +6,10 @@ mas city_simulation {
     // First instantiate the cars, then the pedestrians, and lastly the helicopter (only one per world):
     // there must never be any gap in the id of the agents used for the simulation (starting from 0 to
     // number of agents)
+    // We recommend you not instantiating more than 4 cars and 4 pedestrians (here and also in the related
+    // world described in WorldModel) so as for the simulation to not get too crowded
+    // Don't instantiate no helicopter is the helicopter parking has not been instantiated in the current
+    // world of WorldModel
 
     agent car1 : car.asl  {
         focus: city.view1
@@ -64,7 +68,7 @@ mas city_simulation {
         // */
 
         // World 3: Ring of streets all around and a cross in the middle (and zebra crossing, different buildings and helicopter)
-        /*
+        
         artifact view1: city.City(3, 0) //car1
         artifact view2: city.City(3, 1) //car2
         artifact view3: city.City(3, 2) //car3 
@@ -75,7 +79,7 @@ mas city_simulation {
         // */
 
         // World 4: as World 3 but with 2 more pedestrian, to better see their communication
-        
+        /*
         artifact view1: city.City(4, 0) //car1
         artifact view2: city.City(4, 1) //car2
         artifact view3: city.City(4, 2) //car3 

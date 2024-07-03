@@ -370,8 +370,8 @@ public class WorldModel extends GridWorldModel {
         model.setCarPos(3, 7, 10);
         
         // Pedestrians
-        model.setChildPedestrianPos(4,9,7);
-        model.setAdultPedestrianPos(5,9 ,8);
+        model.setChildPedestrianPos(4,7,7);
+        model.setAdultPedestrianPos(5,9 ,7);
         //Helicopter
         model.setHelicopterPos(6, 9, 9);
 

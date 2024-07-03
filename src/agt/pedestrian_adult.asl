@@ -141,34 +141,24 @@ count(0).         // to make sure that an adult does not wait indefinitely for a
 */
 
 
-+whoL(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <- 
-    !greet(P, "left", W).
++whoL(X, Y, W, P) : W == childPedestrian <- 
+    !greet(P, "left").
 
-+whoR(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !greet(P, "right", W).
++whoR(X, Y, W, P) : W == childPedestrian <-  
+    !greet(P, "right").
 
-+whoU(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !greet(P, "upper", W).
++whoU(X, Y, W, P) : W == childPedestrian <-  
+    !greet(P, "upper").
 
-+whoD(X, Y, W, P) : (W == adultPedestrian) | (W == childPedestrian) <-  
-    !greet(P, "down", W).
++whoD(X, Y, W, P) : W == childPedestrian <-  
+    !greet(P, "down").
 
 
 // ---------------------------------------------------------------------- //
 /*  COMMUNICATION */
 
 
-+!greet(P, Position, W) : not(last_greeted(P)) & W == adultPedestrian <-
-    -+waiting(1);
-    -+last_greeted(P);
-    .print("Oh, ", P, " is on the ", Position, " cell! Hello ", P, "!");
-    .send(P, tell, greetings);
-    .print("I'll wait for greetings back....").
-
-// since two adults meeting can be both ping and pong, making sure that the 
-// function to avoid the infinite wait is for communication with children only
-// avoids having some interferences
-+!greet(P, Position, W) : not(last_greeted(P)) & W == childPedestrian <-
++!greet(P, Position) : not(last_greeted(P)) <-
     -+waiting(1);
     -+last_greeted(P);
     .print("Oh, ", P, " is on the ", Position, " cell! Hello ", P, "!");
@@ -176,21 +166,10 @@ count(0).         // to make sure that an adult does not wait indefinitely for a
     .print("I'll wait for greetings back....");
     !wait_for_greetings_back.
 
--!greet(P, Position, W) <- // Last person greeted was P, so no need to greet again now
+-!greet(P, Position) <- // Last person greeted was P, so no need to greet again now
     -+waiting(0);
     .print("I already greeted ", P, "! I'll continue my day now.").
 
-
-// Other Adults could greet other Adults
-+greetings[source(Sender)] <-
-    !handle_initial_greeting(Sender).
-
-+!handle_initial_greeting(Sender) <-
-    .print(Sender, " just greeted me!");
-    .send(Sender, tell, greetings_back);
-    .print("Nice to meet you ", Sender, "! I'll continue my day..");
-    .wait(2000);
-    -+waiting(0).
 
 +!wait_for_greetings_back : waiting(1) & count(X) & X<3 <-
     -+count(X+1);
@@ -203,6 +182,7 @@ count(0).         // to make sure that an adult does not wait indefinitely for a
     -+waiting(0).
 
 -!wait_for_greetings_back : waiting(0) <-
+    -+count(0);
     .print("I'll continue my day now!").
 
 

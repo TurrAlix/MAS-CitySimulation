@@ -14,7 +14,7 @@ waiting(0).       // if 1 it means it's waiting for a response
     ?school(X,Y);
     .print("I'm going to school at ", school(X,Y), " now.");
     -+target("school",X, Y);
-    !goToPos(X,Y).
+    !go_to_pos(X,Y).
 
 -!live <- 
     .print("Failed to live a day");
@@ -24,34 +24,34 @@ waiting(0).       // if 1 it means it's waiting for a response
 // ---------------------------------------------------------------------- //
 
 // Movements toward the target position, it's going but not yet arrived
-+!goToPos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) & waiting(0) 
++!go_to_pos(X,Y) : pos(AgX, AgY) & (not(AgX == X) | not(AgY == Y)) & waiting(0) 
     <- !next_step(X,Y).
 
 // Arrived at school position, Child will go to Park after that!
-+!goToPos(X,Y) : pos(X, Y) & school(X, Y) & waiting(0)
++!go_to_pos(X,Y) : pos(X, Y) & school(X, Y) & waiting(0)
     <- .print("I'm at school!");
     .wait(4000);
     ?park(PX, PY);
     -+target("park", PX, PY);
     .print("I'm going to park at ", park(PX,PY), " now.");
-    !goToPos(PX, PY).
+    !go_to_pos(PX, PY).
 
 // It's in the park position
-+!goToPos(X,Y) : pos(X, Y) & park(X, Y) & waiting(0) <-
++!go_to_pos(X,Y) : pos(X, Y) & park(X, Y) & waiting(0) <-
     .print("I'm at park!");
     .wait(4000);
     -+target("stop", -1, -1);
     .print("I FINISH MY DAAAAY!").
 
--!goToPos(X,Y) : waiting(0)
+-!go_to_pos(X,Y) : waiting(0)
     <- .print("Failed to move to position: ", X, ", ", Y);
         .wait(1000);
-        !goToPos(X,Y).
+        !go_to_pos(X,Y).
 
--!goToPos(X,Y) : waiting(1)
+-!go_to_pos(X,Y) : waiting(1)
     <- .print("...I'm waiting..");
         .wait(1000);
-        !goToPos(X,Y).
+        !go_to_pos(X,Y).
 
 
 // ---------------------------------------------------------------------- //
@@ -85,7 +85,7 @@ waiting(0).       // if 1 it means it's waiting for a response
 +success("up") <-
     .print("Went up!");
     ?target(_, X, Y);
-    !goToPos(X, Y).
+    !go_to_pos(X, Y).
 +fail("up",P) <-
     .print("Cannot go up");
     ?target(_, X, Y);
@@ -94,7 +94,7 @@ waiting(0).       // if 1 it means it's waiting for a response
 +success("down") <-
     .print("Went down!");
     ?target(_, X, Y);
-    !goToPos(X, Y).
+    !go_to_pos(X, Y).
 +fail("down",P) <-
     .print("Cannot go down");
     ?target(_, X, Y);
@@ -103,7 +103,7 @@ waiting(0).       // if 1 it means it's waiting for a response
 +success("right") <-
     .print("Went right!");
     ?target(_, X, Y);
-    !goToPos(X, Y). 
+    !go_to_pos(X, Y). 
 +fail("right",P) <-
     .print("Cannot go right");
     ?target(_, X, Y);
@@ -112,7 +112,7 @@ waiting(0).       // if 1 it means it's waiting for a response
 +success("left") <-
     .print("Went left!"); 
     ?target(_, X, Y);
-    !goToPos(X, Y).   
+    !go_to_pos(X, Y).   
 +fail("left",P) <-
     .print("Cannot go left");
     ?target(_, X, Y);
@@ -143,7 +143,7 @@ waiting(0).       // if 1 it means it's waiting for a response
 +!handle_greeting(Sender) <-
     -+waiting(1);
     .print(Sender, " just greeted me!");
-    .wait(3000);
     .send(Sender, tell, greetings_back);
     .print("Nice to meet you ", Sender, "! I'll continue my day..");
+    .wait(2000);
     -+waiting(0).

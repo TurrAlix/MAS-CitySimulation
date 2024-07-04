@@ -67,8 +67,8 @@ mas city_simulation {
         artifact view8: city.City(2, 7) //adult2
         // */
 
-        // World 3: ring of streets all around and a cross in the middle (and zebra crossing, different buildings and helicopter)
-        // /*
+        // World 3: Ring of streets all around and a cross in the middle (and zebra crossing, different buildings and helicopter)
+        
         artifact view1: city.City(3, 0) //car1
         artifact view2: city.City(3, 1) //car2
         artifact view3: city.City(3, 2) //car3 
@@ -76,7 +76,6 @@ mas city_simulation {
         artifact view5: city.City(3, 4) //child1
         artifact view6: city.City(3, 5) //adult1
         artifact view9: city.City(3, 6) //helicopter
-        // */
         // */
 
         // World 4: as World 3 but with 2 more pedestrian, to better see their communication

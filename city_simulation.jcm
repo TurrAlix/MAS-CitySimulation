@@ -46,7 +46,7 @@ mas city_simulation {
         // 1° parameter: id of the city, 2° parameter: id of the agent in that scenario (cf. WorldModel)
         // Please uncomment the artifact section of the world you want to use
 
-        // Wordl 1: Big Cross in the middle (and zebra crossing, different buildings and helicopter)
+        // World 1: Big Cross in the middle (and zebra crossing, different buildings and helicopter)
         /*
         artifact view1: city.City(1, 0) //car1
         artifact view2: city.City(1, 1) //car2
